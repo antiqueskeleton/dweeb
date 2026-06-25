@@ -1,0 +1,420 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0"/>
+<title>SpreadPong — dweeb.co</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;}
+body{font-family:'Segoe UI',Arial,sans-serif;background:#217346;overflow:hidden;height:100vh;display:flex;flex-direction:column;}
+
+/* ── Excel chrome ── */
+.xl-title{background:#217346;color:#fff;font-size:12px;padding:4px 12px;display:flex;align-items:center;gap:8px;}
+.xl-title .app-name{font-weight:600;font-size:13px;}
+.xl-title .file-name{opacity:.8;}
+.xl-ribbon{background:#f0f0f0;border-bottom:1px solid #c0c0c0;}
+.xl-tabs{display:flex;background:#e0e0e0;}
+.xl-tab{padding:4px 14px;font-size:11px;border-right:1px solid #c0c0c0;cursor:default;color:#444;}
+.xl-tab.active{background:#f0f0f0;color:#217346;font-weight:600;border-bottom:2px solid #217346;}
+.xl-ribbon-btns{display:flex;gap:2px;padding:4px 8px;flex-wrap:wrap;}
+.xl-btn{padding:3px 8px;font-size:11px;background:#fff;border:1px solid #c0c0c0;cursor:default;color:#333;border-radius:2px;}
+.xl-btn.active{background:#dce9f5;border-color:#5b9bd5;}
+.formula-bar{display:flex;align-items:center;background:#fff;border-bottom:1px solid #c0c0c0;padding:2px 6px;gap:6px;}
+.cell-ref{width:60px;font-size:11px;border:1px solid #c0c0c0;padding:2px 4px;text-align:center;color:#333;}
+.formula-fx{font-size:12px;color:#666;padding:0 6px;}
+.formula-input{flex:1;font-size:11px;font-family:'Consolas','Courier New',monospace;border:none;outline:none;color:#333;padding:2px;}
+
+/* ── Sheet area ── */
+.sheet-wrap{flex:1;display:flex;flex-direction:column;overflow:hidden;background:#fff;}
+.col-headers{display:flex;background:#f5f5f5;border-bottom:1px solid #d0d0d0;padding-left:40px;}
+.col-h{width:64px;min-width:64px;font-size:10px;text-align:center;border-right:1px solid #d0d0d0;padding:2px 0;color:#555;font-family:'Segoe UI',Arial,sans-serif;}
+.sheet-body{display:flex;flex:1;overflow:hidden;}
+.row-headers{display:flex;flex-direction:column;background:#f5f5f5;border-right:1px solid #d0d0d0;width:40px;min-width:40px;}
+.row-h{height:20px;min-height:20px;font-size:10px;text-align:center;line-height:20px;border-bottom:1px solid #e0e0e0;color:#555;}
+.grid-area{flex:1;position:relative;overflow:hidden;}
+canvas{position:absolute;top:0;left:0;}
+
+/* ── Status bar ── */
+.status-bar{background:#217346;color:#fff;font-size:11px;padding:2px 12px;display:flex;gap:24px;}
+.status-bar span{opacity:.85;}
+.status-bar b{opacity:1;}
+
+/* ── Overlay ── */
+#overlay{position:absolute;inset:0;background:rgba(255,255,255,0.93);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;z-index:100;}
+#overlay.hidden{display:none;}
+.ov-badge{background:#217346;color:#fff;font-size:10px;font-weight:600;padding:3px 10px;letter-spacing:.08em;text-transform:uppercase;}
+.ov-title{font-size:28px;font-weight:700;color:#1a1a1a;letter-spacing:-.02em;}
+.ov-title span{color:#217346;}
+.ov-sub{font-size:13px;color:#666;text-align:center;max-width:320px;line-height:1.6;}
+.ov-btn{background:#217346;color:#fff;border:none;padding:10px 32px;font-size:13px;cursor:pointer;margin-top:6px;font-family:'Segoe UI',Arial,sans-serif;}
+.ov-btn:hover{background:#1a5c38;}
+.ov-score{font-size:13px;color:#444;}
+.ov-score b{color:#217346;}
+</style>
+</head>
+<body>
+
+<!-- Title bar -->
+<div class="xl-title">
+  <span>📊</span>
+  <span class="app-name">Microsoft Excel</span>
+  <span class="file-name">Q4_Performance_Review.xlsx — AutoSaved</span>
+</div>
+
+<!-- Ribbon -->
+<div class="xl-ribbon">
+  <div class="xl-tabs">
+    <div class="xl-tab active">Home</div>
+    <div class="xl-tab">Insert</div>
+    <div class="xl-tab">Formulas</div>
+    <div class="xl-tab">Data</div>
+    <div class="xl-tab">View</div>
+  </div>
+  <div class="xl-ribbon-btns">
+    <div class="xl-btn">📋 Paste</div>
+    <div class="xl-btn active">B</div>
+    <div class="xl-btn"><i>I</i></div>
+    <div class="xl-btn"><u>U</u></div>
+    <div class="xl-btn">% Format</div>
+    <div class="xl-btn">Σ AutoSum</div>
+    <div class="xl-btn">🔢 Sort</div>
+    <div class="xl-btn" onclick="startGame()" style="background:#dce9f5;border-color:#5b9bd5;cursor:pointer;">▶ Run Macro</div>
+  </div>
+</div>
+
+<!-- Formula bar -->
+<div class="formula-bar">
+  <input class="cell-ref" id="cell-ref" value="A1" readonly/>
+  <span class="formula-fx"><i>fx</i></span>
+  <input class="formula-input" id="formula-input" value="=PONG(LAUNCH_BALL, AWAIT_PLAYER)" readonly/>
+</div>
+
+<!-- Sheet -->
+<div class="sheet-wrap">
+  <div class="col-headers" id="col-headers"></div>
+  <div class="sheet-body">
+    <div class="row-headers" id="row-headers"></div>
+    <div class="grid-area" id="grid-area">
+      <canvas id="c"></canvas>
+      <div id="overlay">
+        <div class="ov-badge">dweeb.co</div>
+        <div class="ov-title">Spread<span>Pong</span></div>
+        <div class="ov-sub">Q4 performance review is live. Cells shatter on contact. Don't let the ball exit the spreadsheet.</div>
+        <div class="ov-score" id="ov-score" style="display:none">Score <b id="ov-s">0</b> &nbsp;·&nbsp; Best <b id="ov-b">0</b></div>
+        <button class="ov-btn" onclick="startGame()">Open Spreadsheet</button>
+        <div style="font-size:11px;color:#aaa;margin-top:4px;">mouse to move paddle · or click "Run Macro" above</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Status bar -->
+<div class="status-bar">
+  <span>Ready</span>
+  <span>Score: <b id="stat-score">0</b></span>
+  <span>Cells Destroyed: <b id="stat-cells">0</b></span>
+  <span>Ball Speed: <b id="stat-speed">—</b></span>
+  <span>Average: <b id="stat-avg">—</b></span>
+</div>
+
+<script>
+// Build column/row headers
+const COLS_COUNT = 10, ROWS_COUNT = 18;
+const colNames = ['A','B','C','D','E','F','G','H','I','J','K'];
+const colH = document.getElementById('col-headers');
+for(let i=0;i<COLS_COUNT;i++){
+  const d=document.createElement('div');d.className='col-h';d.textContent=colNames[i];colH.appendChild(d);
+}
+const rowH=document.getElementById('row-headers');
+for(let i=1;i<=ROWS_COUNT;i++){
+  const d=document.createElement('div');d.className='row-h';d.textContent=i;rowH.appendChild(d);
+}
+
+const canvas=document.getElementById('c');
+const ctx=canvas.getContext('2d');
+const area=document.getElementById('grid-area');
+
+let W,H,CELL_W,CELL_H;
+let gameState='idle',score=0,best=0,cellsDestroyed=0;
+let ball,paddle,cells,particles;
+let animId;
+
+function resize(){
+  W=area.clientWidth; H=area.clientHeight;
+  canvas.width=W; canvas.height=H;
+  CELL_W=W/COLS_COUNT; CELL_H=H/ROWS_COUNT;
+}
+
+function initCells(){
+  cells=[];
+  const rows=7;
+  for(let r=0;r<rows;r++){
+    for(let c=0;c<COLS_COUNT;c++){
+      const vals=['=SUM(B2:B9)','=AVERAGE(C3:C8)','=IF(D4>0,"YES","NO")','=VLOOKUP(A1,B:C,2)','=COUNT(A:A)','12,450','8,300','=MAX(D:D)','94.2%','=PRODUCT(A1,B1)'];
+      cells.push({
+        r,c,
+        alive:true,
+        val:vals[Math.floor(Math.random()*vals.length)],
+        color:r<2?'#dce9f5':r<4?'#e8f3e8':'#fff',
+        border:r<2?'#5b9bd5':r<4?'#217346':'#d0d0d0',
+        shards:[],
+        shattering:false,
+        alpha:1
+      });
+    }
+  }
+}
+
+function initBall(){
+  ball={
+    x:W/2, y:H*0.65,
+    vx:(Math.random()>0.5?1:-1)*3.5,
+    vy:-4,
+    r:7
+  };
+}
+
+function initPaddle(){
+  paddle={x:W/2, w:90, h:10, y:H-20};
+}
+
+function startGame(){
+  resize();
+  initCells();
+  initBall();
+  initPaddle();
+  score=0; cellsDestroyed=0; particles=[];
+  gameState='playing';
+  document.getElementById('overlay').classList.add('hidden');
+  cancelAnimationFrame(animId);
+  loop();
+}
+
+function loop(){
+  if(gameState!=='playing'){return;}
+  update();
+  draw();
+  animId=requestAnimationFrame(loop);
+}
+
+function update(){
+  // Move ball
+  ball.x+=ball.vx; ball.y+=ball.vy;
+
+  // Wall bounce
+  if(ball.x-ball.r<0){ball.x=ball.r;ball.vx=Math.abs(ball.vx);}
+  if(ball.x+ball.r>W){ball.x=W-ball.r;ball.vx=-Math.abs(ball.vx);}
+  if(ball.y-ball.r<0){ball.y=ball.r;ball.vy=Math.abs(ball.vy);}
+
+  // Bottom — lose
+  if(ball.y-ball.r>H){
+    endGame();return;
+  }
+
+  // Paddle collision
+  if(ball.vy>0 &&
+     ball.y+ball.r>=paddle.y &&
+     ball.y+ball.r<=paddle.y+paddle.h+ball.vy &&
+     ball.x>=paddle.x-paddle.w/2 &&
+     ball.x<=paddle.x+paddle.w/2){
+    ball.vy=-Math.abs(ball.vy);
+    // Angle based on hit position
+    const offset=(ball.x-(paddle.x))/( paddle.w/2);
+    ball.vx=offset*5;
+    ball.y=paddle.y-ball.r-1;
+    updateFormula();
+  }
+
+  // Cell collisions
+  cells.forEach(cell=>{
+    if(!cell.alive||cell.shattering)return;
+    const cx=cell.c*CELL_W, cy=cell.r*CELL_H;
+    if(ball.x+ball.r>cx && ball.x-ball.r<cx+CELL_W &&
+       ball.y+ball.r>cy && ball.y-ball.r<cy+CELL_H){
+      // Which side?
+      const fromLeft  = ball.x < cx+CELL_W/2;
+      const fromTop   = ball.y < cy+CELL_H/2;
+      const overlapX  = Math.min(ball.x+ball.r-cx, cx+CELL_W-ball.x+ball.r);
+      const overlapY  = Math.min(ball.y+ball.r-cy, cy+CELL_H-ball.y+ball.r);
+      if(overlapX < overlapY){ ball.vx *= -1; }
+      else { ball.vy *= -1; }
+      shatterCell(cell);
+      score++;
+      cellsDestroyed++;
+      // Tiny speed bump
+      const spd=Math.sqrt(ball.vx**2+ball.vy**2);
+      if(spd<9){ const f=(spd+0.15)/spd; ball.vx*=f; ball.vy*=f; }
+      updateStats();
+    }
+  });
+
+  // Particles
+  particles.forEach(p=>{p.x+=p.vx;p.y+=p.vy;p.vy+=0.15;p.alpha-=0.025;});
+  particles=particles.filter(p=>p.alpha>0);
+
+  // Check win
+  if(cells.every(c=>!c.alive)){
+    score+=50;
+    initCells();
+    updateStats();
+  }
+}
+
+function shatterCell(cell){
+  cell.alive=false;
+  cell.shattering=true;
+  const cx=cell.c*CELL_W+CELL_W/2, cy=cell.r*CELL_H+CELL_H/2;
+  for(let i=0;i<8;i++){
+    const angle=Math.random()*Math.PI*2;
+    const spd=1+Math.random()*3;
+    particles.push({
+      x:cx,y:cy,
+      vx:Math.cos(angle)*spd,
+      vy:Math.sin(angle)*spd-1,
+      w:Math.random()*CELL_W*0.4+4,
+      h:Math.random()*CELL_H*0.3+4,
+      color:cell.color,
+      alpha:1,
+      rot:Math.random()*Math.PI,
+      rotV:(Math.random()-.5)*0.2
+    });
+  }
+  // text shards
+  particles.push({x:cx,y:cy,vx:(Math.random()-.5)*2,vy:-2,text:cell.val,alpha:1,isText:true,vy2:-2});
+}
+
+function updateFormula(){
+  const formulas=[
+    `=PONG(BALL_X=${Math.round(ball.x)}, BALL_Y=${Math.round(ball.y)})`,
+    `=DEFLECT(PADDLE_POS=${Math.round(paddle.x)}, ANGLE=${Math.round(Math.atan2(ball.vy,ball.vx)*180/Math.PI)}°)`,
+    `=SCORE(CURRENT=${score}, CELLS_LEFT=${cells.filter(c=>c.alive).length})`,
+  ];
+  document.getElementById('formula-input').value=formulas[Math.floor(Math.random()*formulas.length)];
+  document.getElementById('cell-ref').value=colNames[Math.floor(Math.random()*10)]+(Math.floor(Math.random()*7)+1);
+}
+
+function updateStats(){
+  document.getElementById('stat-score').textContent=score;
+  document.getElementById('stat-cells').textContent=cellsDestroyed;
+  const spd=Math.sqrt(ball.vx**2+ball.vy**2).toFixed(1);
+  document.getElementById('stat-speed').textContent=spd;
+  document.getElementById('stat-avg').textContent=(score/Math.max(1,cellsDestroyed)*100).toFixed(0)+'%';
+  if(score>best)best=score;
+}
+
+function endGame(){
+  cancelAnimationFrame(animId);
+  gameState='dead';
+  draw();
+  if(score>best)best=score;
+  const ov=document.getElementById('overlay');
+  ov.classList.remove('hidden');
+  document.querySelector('.ov-title').innerHTML='Spread<span style="color:#217346">Pong</span>';
+  document.querySelector('.ov-sub').textContent='The ball exited the spreadsheet. Finance will be upset.';
+  document.getElementById('ov-score').style.display='block';
+  document.getElementById('ov-s').textContent=score;
+  document.getElementById('ov-b').textContent=best;
+  document.querySelector('.ov-btn').textContent='Reopen Spreadsheet';
+}
+
+function draw(){
+  ctx.clearRect(0,0,W,H);
+
+  // Grid background
+  for(let r=0;r<ROWS_COUNT;r++){
+    for(let c=0;c<COLS_COUNT;c++){
+      ctx.strokeStyle='#e0e0e0';
+      ctx.lineWidth=0.5;
+      ctx.strokeRect(c*CELL_W,r*CELL_H,CELL_W,CELL_H);
+    }
+  }
+
+  // Cells
+  cells.forEach(cell=>{
+    if(!cell.alive)return;
+    const x=cell.c*CELL_W, y=cell.r*CELL_H;
+    ctx.fillStyle=cell.color;
+    ctx.fillRect(x+0.5,y+0.5,CELL_W-1,CELL_H-1);
+    ctx.strokeStyle=cell.border;
+    ctx.lineWidth=1;
+    ctx.strokeRect(x+0.5,y+0.5,CELL_W-1,CELL_H-1);
+    ctx.fillStyle='#333';
+    ctx.font=`10px Consolas, monospace`;
+    ctx.textAlign='left';
+    ctx.textBaseline='middle';
+    ctx.save();
+    ctx.rect(x+2,y,CELL_W-4,CELL_H);
+    ctx.clip();
+    ctx.fillText(cell.val, x+4, y+CELL_H/2);
+    ctx.restore();
+  });
+
+  // Particles
+  particles.forEach(p=>{
+    ctx.save();
+    ctx.globalAlpha=p.alpha;
+    if(p.isText){
+      ctx.fillStyle='#217346';
+      ctx.font=`bold 10px Consolas,monospace`;
+      ctx.textAlign='center';
+      ctx.fillText(p.text,p.x,p.y);
+    } else {
+      ctx.translate(p.x,p.y);
+      ctx.rotate(p.rot||0);
+      ctx.fillStyle=p.color;
+      ctx.fillRect(-p.w/2,-p.h/2,p.w,p.h);
+      ctx.strokeStyle='#aaa';ctx.lineWidth=0.5;
+      ctx.strokeRect(-p.w/2,-p.h/2,p.w,p.h);
+    }
+    ctx.restore();
+    if(p.rot!==undefined)p.rot+=p.rotV||0;
+  });
+
+  // Paddle — styled as selected cell range
+  ctx.fillStyle='#dce9f5';
+  ctx.fillRect(paddle.x-paddle.w/2, paddle.y, paddle.w, paddle.h);
+  ctx.strokeStyle='#5b9bd5';
+  ctx.lineWidth=2;
+  ctx.strokeRect(paddle.x-paddle.w/2, paddle.y, paddle.w, paddle.h);
+  // Selection handles
+  ctx.fillStyle='#5b9bd5';
+  ctx.fillRect(paddle.x-paddle.w/2-3,paddle.y-3,6,6);
+  ctx.fillRect(paddle.x+paddle.w/2-3,paddle.y-3,6,6);
+  ctx.fillRect(paddle.x-paddle.w/2-3,paddle.y+paddle.h-3,6,6);
+  ctx.fillRect(paddle.x+paddle.w/2-3,paddle.y+paddle.h-3,6,6);
+
+  // Ball — cursor icon
+  ctx.fillStyle='#fff';
+  ctx.strokeStyle='#1a1a1a';
+  ctx.lineWidth=1.5;
+  ctx.beginPath();
+  ctx.arc(ball.x, ball.y, ball.r, 0, Math.PI*2);
+  ctx.fill();
+  ctx.stroke();
+  ctx.fillStyle='#217346';
+  ctx.beginPath();
+  ctx.arc(ball.x, ball.y, ball.r-3, 0, Math.PI*2);
+  ctx.fill();
+}
+
+// Mouse control
+area.addEventListener('mousemove', e=>{
+  const rect=area.getBoundingClientRect();
+  paddle.x=e.clientX-rect.left;
+  paddle.x=Math.max(paddle.w/2, Math.min(W-paddle.w/2, paddle.x));
+});
+
+// Touch
+area.addEventListener('touchmove', e=>{
+  e.preventDefault();
+  const rect=area.getBoundingClientRect();
+  paddle.x=e.touches[0].clientX-rect.left;
+  paddle.x=Math.max(paddle.w/2, Math.min(W-paddle.w/2, paddle.x));
+},{passive:false});
+
+window.addEventListener('resize',()=>{ if(gameState==='playing')startGame(); else resize(); });
+resize();
+draw();
+</script>
+</body>
+</html>

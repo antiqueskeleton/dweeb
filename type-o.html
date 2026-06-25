@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0"/>
+<title>Type-O — dweeb.co</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;}
+body{font-family:'Segoe UI',Arial,sans-serif;background:#2b579a;overflow:hidden;height:100vh;display:flex;flex-direction:column;user-select:none;}
+
+/* Word chrome */
+.w-titlebar{background:#2b579a;color:#fff;font-size:12px;padding:4px 12px;display:flex;align-items:center;gap:8px;}
+.w-titlebar .app{font-weight:600;font-size:13px;}
+.w-titlebar .file{opacity:.8;}
+.w-ribbon{background:#f0f0f0;border-bottom:1px solid #c0c0c0;}
+.w-tabs{display:flex;background:#e0e0e0;}
+.w-tab{padding:4px 14px;font-size:11px;border-right:1px solid #c0c0c0;cursor:default;color:#444;}
+.w-tab.active{background:#f0f0f0;color:#2b579a;font-weight:600;border-bottom:2px solid #2b579a;}
+.w-ribbon-row{display:flex;align-items:center;gap:4px;padding:4px 10px;flex-wrap:wrap;}
+.w-rbtn{padding:3px 8px;font-size:11px;background:#fff;border:1px solid #c0c0c0;cursor:default;color:#333;border-radius:2px;}
+.w-rbtn.bold{font-weight:700;}
+.w-rbtn.active{background:#dce6f1;border-color:#2b579a;}
+.w-sep{width:1px;height:24px;background:#c0c0c0;margin:0 4px;}
+
+/* Document area */
+.doc-area{flex:1;display:flex;justify-content:center;background:#b8c6d6;overflow:hidden;padding:16px 0 0;}
+.doc-page{background:#fff;width:min(680px,92vw);height:100%;position:relative;box-shadow:0 2px 12px rgba(0,0,0,.25);overflow:hidden;}
+
+/* Ruler */
+.ruler{height:18px;background:#e8e8e8;border-bottom:1px solid #c0c0c0;display:flex;align-items:flex-end;padding:0 60px;position:relative;}
+.ruler-mark{font-size:8px;color:#999;margin-right:28px;}
+
+/* Document content */
+.doc-inner{padding:40px 60px;position:relative;height:calc(100% - 18px);}
+.doc-header{margin-bottom:20px;}
+.doc-title{font-size:22px;font-weight:700;color:#1a1a1a;font-family:'Cambria','Georgia',serif;border-bottom:3px solid #2b579a;padding-bottom:6px;margin-bottom:4px;}
+.doc-meta{font-size:10px;color:#888;font-family:'Calibri','Segoe UI',sans-serif;}
+
+/* Word game elements */
+#game-canvas{position:absolute;top:0;left:0;pointer-events:none;}
+
+.type-input-row{position:absolute;bottom:24px;left:60px;right:60px;display:flex;gap:8px;align-items:center;}
+.type-input{flex:1;font-size:18px;font-family:'Calibri','Segoe UI',sans-serif;border:none;border-bottom:2px solid #2b579a;outline:none;padding:4px 2px;color:#1a1a1a;background:transparent;}
+.type-cursor{width:2px;height:24px;background:#2b579a;animation:blink 1s infinite;}
+@keyframes blink{0%,100%{opacity:1;}50%{opacity:0;}}
+
+/* Status */
+.w-statusbar{background:#2b579a;color:#fff;font-size:11px;padding:2px 12px;display:flex;gap:20px;}
+.w-statusbar span{opacity:.85;}
+.w-statusbar b{opacity:1;}
+
+/* Overlay */
+#overlay{position:absolute;inset:0;background:rgba(255,255,255,.94);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;z-index:100;}
+#overlay.hidden{display:none;}
+.ov-badge{background:#2b579a;color:#fff;font-size:10px;font-weight:600;padding:3px 10px;letter-spacing:.08em;text-transform:uppercase;}
+.ov-title{font-size:30px;font-weight:700;color:#1a1a1a;font-family:'Cambria',Georgia,serif;}
+.ov-title span{color:#2b579a;}
+.ov-sub{font-size:13px;color:#666;text-align:center;max-width:300px;line-height:1.6;}
+.ov-btn{background:#2b579a;color:#fff;border:none;padding:10px 32px;font-size:13px;cursor:pointer;font-family:'Segoe UI',Arial,sans-serif;margin-top:6px;}
+.ov-btn:hover{background:#1e4080;}
+.ov-score{font-size:13px;color:#444;}.ov-score b{color:#2b579a;}
+.word-badge{position:absolute;background:#fff3cd;border:1px solid #ffc107;border-radius:2px;font-family:'Calibri','Segoe UI',sans-serif;font-size:15px;color:#1a1a1a;padding:2px 8px;white-space:nowrap;cursor:default;transition:background .1s;}
+.word-badge.matched{background:#d4edda;border-color:#28a745;color:#155724;text-decoration:line-through;}
+.word-badge.danger{background:#f8d7da;border-color:#dc3545;color:#721c24;}
+</style>
+</head>
+<body>
+
+<div class="w-titlebar">
+  <span>📄</span>
+  <span class="app">Microsoft Word</span>
+  <span class="file">ProjectBrief_FINAL_v3_ACTUALFINAL.docx — Saved to OneDrive</span>
+</div>
+<div class="w-ribbon">
+  <div class="w-tabs">
+    <div class="w-tab active">Home</div>
+    <div class="w-tab">Insert</div>
+    <div class="w-tab">Layout</div>
+    <div class="w-tab">Review</div>
+    <div class="w-tab">View</div>
+  </div>
+  <div class="w-ribbon-row">
+    <div class="w-rbtn bold">B</div>
+    <div class="w-rbtn"><i>I</i></div>
+    <div class="w-rbtn"><u>U</u></div>
+    <div class="w-sep"></div>
+    <div class="w-rbtn">Calibri</div>
+    <div class="w-rbtn">11</div>
+    <div class="w-sep"></div>
+    <div class="w-rbtn active">¶ Spelling</div>
+    <div class="w-rbtn">🔤 AutoCorrect</div>
+    <div class="w-rbtn" onclick="startGame()" style="background:#dce6f1;border-color:#2b579a;cursor:pointer;">▶ Macro</div>
+  </div>
+</div>
+
+<div class="doc-area">
+  <div class="doc-page" id="doc-page">
+    <div class="ruler"><span class="ruler-mark">1</span><span class="ruler-mark">2</span><span class="ruler-mark">3</span><span class="ruler-mark">4</span><span class="ruler-mark">5</span></div>
+    <div class="doc-inner" id="doc-inner">
+      <div class="doc-header">
+        <div class="doc-title">Q4 Project Brief — Type to Delete</div>
+        <div class="doc-meta">Last modified by: You &nbsp;|&nbsp; Word Count: <span id="word-count">0</span> &nbsp;|&nbsp; WPM: <span id="wpm-count">0</span></div>
+      </div>
+      <canvas id="game-canvas"></canvas>
+      <div class="type-input-row">
+        <input type="text" id="type-input" class="type-input" placeholder="start typing…" autocomplete="off" spellcheck="false"/>
+        <div class="type-cursor"></div>
+      </div>
+    </div>
+    <div id="overlay">
+      <div class="ov-badge">dweeb.co</div>
+      <div class="ov-title">Type<span>-O</span></div>
+      <div class="ov-sub">Words are falling into your document. Type them before they reach the bottom and corrupt the file. WPM bonus at the end.</div>
+      <div class="ov-score" id="ov-score" style="display:none">Score <b id="ov-s">0</b> &nbsp;·&nbsp; WPM <b id="ov-w">0</b> &nbsp;·&nbsp; Best <b id="ov-b">0</b></div>
+      <button class="ov-btn" onclick="startGame()">Open Document</button>
+    </div>
+  </div>
+</div>
+
+<div class="w-statusbar">
+  <span>Page <b>1</b> of 1</span>
+  <span>Lives: <b id="stat-lives">♥♥♥</b></span>
+  <span>Score: <b id="stat-score">0</b></span>
+  <span>Level: <b id="stat-level">1</b></span>
+  <span>Combo: <b id="stat-combo">x1</b></span>
+</div>
+
+<script>
+const WORDS=[
+  'synergy','deliverable','bandwidth','leverage','paradigm','stakeholder','deep dive',
+  'circle back','pivot','scalable','agile','disruptive','ideation','alignment',
+  'touchpoint','onboarding','ecosystem','streamline','optimize','iterate',
+  'roadmap','baseline','visibility','action item','low hanging fruit',
+  'boil the ocean','move the needle','drill down','ping me','offline',
+  'holistic','robust','granular','end-to-end','value add','best practice',
+  'due diligence','going forward','at the end of the day','takeaway'
+];
+
+const canvas=document.getElementById('game-canvas');
+const ctx=canvas.getContext('2d');
+const inner=document.getElementById('doc-inner');
+const input=document.getElementById('type-input');
+
+let W,H,words,score,best=0,lives,level,combo,gameState='idle';
+let spawnTimer,gameLoop,wpmStart,wordsTyped=0,totalChars=0;
+let lastSpawn=0,spawnInterval=3000;
+
+function resize(){
+  W=inner.clientWidth; H=inner.clientHeight-80;
+  canvas.width=W; canvas.height=H;
+}
+
+function startGame(){
+  resize();
+  words=[]; score=0; lives=3; level=1; combo=1;
+  wordsTyped=0; totalChars=0;
+  gameState='playing';
+  wpmStart=Date.now();
+  lastSpawn=0;
+  spawnInterval=3000;
+  input.value='';
+  input.focus();
+  document.getElementById('overlay').classList.add('hidden');
+  cancelAnimationFrame(gameLoop);
+  requestAnimationFrame(tick);
+}
+
+let lastTime=0;
+function tick(ts){
+  if(gameState!=='playing')return;
+  const dt=ts-lastTime; lastTime=ts;
+
+  // Spawn
+  if(ts-lastSpawn>spawnInterval){
+    spawnWord();
+    lastSpawn=ts;
+    spawnInterval=Math.max(900, 3000-level*150);
+  }
+
+  // Move words down
+  words.forEach(w=>{
+    w.y+=w.speed;
+    // Color based on proximity
+    const pct=w.y/H;
+    if(pct>0.75)w.danger=true;
+    else w.danger=false;
+  });
+
+  // Check bottom
+  const fallen=words.filter(w=>w.y>H-30);
+  fallen.forEach(w=>{
+    lives--;
+    combo=1;
+    words=words.filter(x=>x!==w);
+    updateStats();
+  });
+  if(lives<=0){ endGame(); return; }
+
+  // Level up
+  level=1+Math.floor(score/10);
+  updateStats();
+  draw();
+  requestAnimationFrame(tick);
+}
+
+function spawnWord(){
+  const text=WORDS[Math.floor(Math.random()*WORDS.length)];
+  // Estimate text width
+  ctx.font='15px Calibri, Segoe UI, sans-serif';
+  const tw=ctx.measureText(text).width+20;
+  const x=Math.random()*(W-tw-40)+20;
+  words.push({
+    text, x, y:80+Math.random()*40,
+    speed:0.4+level*0.12+Math.random()*0.3,
+    typed:'',
+    danger:false,
+    w:tw
+  });
+}
+
+function draw(){
+  ctx.clearRect(0,0,W,H);
+  words.forEach(w=>{
+    const bg=w.danger?'#f8d7da':w.typed.length>0?'#d4f0da':'#fff3cd';
+    const border=w.danger?'#dc3545':w.typed.length>0?'#28a745':'#ffc107';
+    const tw=ctx.measureText(w.text).width+20;
+    // Card
+    ctx.fillStyle=bg;
+    ctx.strokeStyle=border;
+    ctx.lineWidth=1.5;
+    ctx.beginPath();
+    ctx.roundRect(w.x,w.y,tw,28,3);
+    ctx.fill(); ctx.stroke();
+    // Text — typed portion in green, rest in ink
+    ctx.font='15px Calibri, "Segoe UI", sans-serif';
+    ctx.textBaseline='middle';
+    const textY=w.y+14;
+    let xOff=w.x+10;
+    if(w.typed.length>0){
+      ctx.fillStyle='#28a745';
+      ctx.fillText(w.typed, xOff, textY);
+      xOff+=ctx.measureText(w.typed).width;
+    }
+    ctx.fillStyle=w.danger?'#721c24':'#1a1a1a';
+    ctx.fillText(w.text.slice(w.typed.length), xOff, textY);
+    // Underline progress
+    const prog=w.typed.length/w.text.length;
+    if(prog>0){
+      ctx.fillStyle='#28a745';
+      ctx.fillRect(w.x+10, w.y+26, (tw-20)*prog, 2);
+    }
+  });
+}
+
+input.addEventListener('input',()=>{
+  if(gameState!=='playing')return;
+  const val=input.value.toLowerCase().trim();
+  document.getElementById('word-count').textContent=val.length;
+
+  // Find matching word
+  let matched=null;
+  words.forEach(w=>{
+    if(w.text.toLowerCase().startsWith(val) && val.length>0){
+      w.typed=w.text.slice(0,val.length);
+      if(!matched || val.length>matched.typed.length) matched=w;
+    } else {
+      w.typed='';
+    }
+  });
+
+  // Full match
+  const full=words.find(w=>w.text.toLowerCase()===val);
+  if(full){
+    score+=combo;
+    wordsTyped++;
+    totalChars+=full.text.length;
+    combo=Math.min(combo+1,8);
+    // Boom effect
+    words=words.filter(w=>w!==full);
+    input.value='';
+    updateStats();
+    updateWPM();
+  }
+});
+
+function updateWPM(){
+  const mins=(Date.now()-wpmStart)/60000;
+  const wpm=Math.round(totalChars/5/Math.max(mins,0.01));
+  document.getElementById('wpm-count').textContent=wpm;
+}
+
+function updateStats(){
+  const livesStr='♥'.repeat(Math.max(0,lives))+'♡'.repeat(Math.max(0,3-lives));
+  document.getElementById('stat-lives').textContent=livesStr;
+  document.getElementById('stat-score').textContent=score;
+  document.getElementById('stat-level').textContent=level;
+  document.getElementById('stat-combo').textContent='x'+combo;
+  if(score>best)best=score;
+}
+
+function endGame(){
+  cancelAnimationFrame(gameLoop);
+  gameState='dead';
+  const mins=(Date.now()-wpmStart)/60000;
+  const wpm=Math.round(totalChars/5/Math.max(mins,0.01));
+  const ov=document.getElementById('overlay');
+  ov.classList.remove('hidden');
+  document.querySelector('.ov-title').innerHTML='Type<span style="color:#2b579a">-O</span>';
+  document.querySelector('.ov-sub').textContent='The document is corrupted. IT has been notified.';
+  document.getElementById('ov-score').style.display='block';
+  document.getElementById('ov-s').textContent=score;
+  document.getElementById('ov-w').textContent=wpm;
+  document.getElementById('ov-b').textContent=best;
+  document.querySelector('.ov-btn').textContent='Reopen Document';
+}
+
+input.addEventListener('keydown',e=>{
+  if(e.key==='Escape'&&gameState!=='playing')startGame();
+});
+window.addEventListener('resize',()=>{ if(gameState==='playing')resize(); });
+resize();
+</script>
+</body>
+</html>
