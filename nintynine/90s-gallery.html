@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Gallery - DWEEB.CO</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;}
+body{background:#000020;font-family:Arial,Helvetica,sans-serif;color:#fff;min-height:100vh;}
+.rainbow-bar{width:100%;height:7px;background:linear-gradient(90deg,#ff0000,#ff7700,#ffff00,#00ff00,#0000ff,#8b00ff,#ff0000);background-size:200%;animation:rb 2s linear infinite;}
+@keyframes rb{to{background-position:200% 0;}}
+.navbar{background:#000040;border-bottom:3px solid #0066ff;border-top:3px solid #0066ff;padding:4px 0;text-align:center;}
+.navbar a{color:#66aaff;text-decoration:none;font-size:12px;font-weight:bold;padding:3px 10px;border-right:1px solid #0066ff;font-family:Arial,sans-serif;}
+.navbar a:hover{background:#0066ff;color:#fff;}
+.navbar a:last-child{border-right:none;}
+.page-wrap{max-width:760px;margin:0 auto;padding:16px 12px 40px;}
+.page-title{text-align:center;padding:20px;font-size:clamp(1.5rem,6vw,2.8rem);font-weight:bold;font-family:Impact,sans-serif;color:#66aaff;text-shadow:2px 2px 0 #000066,0 0 20px #0066ff;}
+.subtitle{text-align:center;font-family:'Comic Sans MS',cursive;font-size:13px;color:#aaccff;margin-bottom:20px;}
+.warn-box{background:#001a33;border:2px solid #0066ff;padding:10px 14px;font-size:12px;color:#aaccff;margin-bottom:16px;font-family:'Comic Sans MS',cursive;text-align:center;}
+.warn-box b{color:#ffff00;}
+.section-hdr{background:#000040;border:2px outset #0066ff;color:#ffff00;font-weight:bold;padding:6px 12px;margin:18px 0 10px;font-size:13px;letter-spacing:1px;}
+
+/* Gallery grid */
+.gallery-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:8px;margin-bottom:20px;}
+.gallery-item{background:#000030;border:2px outset #003399;padding:6px;text-align:center;cursor:pointer;transition:border-color .15s;}
+.gallery-item:hover{border-color:#0066ff;}
+.gallery-thumb{width:100%;aspect-ratio:4/3;background:var(--c);display:flex;align-items:center;justify-content:center;font-size:3rem;margin-bottom:5px;overflow:hidden;}
+.gallery-caption{font-size:10px;color:#aaccff;line-height:1.4;}
+.gallery-caption b{color:#66aaff;display:block;margin-bottom:2px;}
+.gallery-caption .img-size{color:#555;font-size:9px;}
+
+.loading-bar-wrap{background:#000;border:1px solid #333;height:8px;margin-top:4px;}
+.loading-bar{height:100%;background:linear-gradient(90deg,#0066ff,#00aaff);animation:load var(--d) linear forwards;}
+@keyframes load{from{width:0%;}to{width:100%;}}
+
+/* Dial-up warning */
+.dialup{text-align:center;font-family:'Comic Sans MS',cursive;font-size:11px;color:#ff9900;margin-bottom:14px;animation:blink 1.5s infinite;}
+@keyframes blink{0%,49%{opacity:1;}50%,100%{opacity:0;}}
+
+a{color:#66aaff;} a:hover{color:#ffff00;}
+.footer-note{text-align:center;font-size:11px;color:#003366;margin-top:20px;line-height:1.8;}
+</style>
+</head>
+<body>
+<div class="rainbow-bar"></div>
+<div class="navbar">
+  <a href="90s-home.html">🏠 Home</a>
+  <a href="90s-about.html">👤 About Me</a>
+  <a href="90s-links.html">🔗 Links</a>
+  <a href="90s-guestbook.html">📖 Guestbook</a>
+  <a href="90s-gallery.html">📷 Gallery</a>
+  <a href="90s-fanfic.html">✍️ Fan Fiction</a>
+  <a href="office-hours.html">🎮 Da Office</a>
+</div>
+<div class="page-wrap">
+  <div class="page-title">📷 My Gallery</div>
+  <div class="subtitle">Photos, GIFs, and other cool images I have collected!!</div>
+
+  <div class="warn-box">
+    ⚠️ <b>DIAL-UP WARNING!!</b> ⚠️<br/>
+    This page contains <b>47 images</b> totaling approximately <b>4.2 MB</b>.<br/>
+    At 56k this will take about <b>10 minutes</b> to fully load. Get a snack. Or use the thumbnails page.<br/>
+    <span style="font-size:10px;color:#888;">AOL users: sorry about the download manager. Not my fault.</span>
+  </div>
+  <div class="dialup">📡 LOADING IMAGES... PLEASE BE PATIENT... YOUR PHONE LINE IS BUSY...</div>
+
+  <div class="section-hdr">🎞️ Real Life Photos</div>
+  <div class="gallery-grid">
+    <div class="gallery-item">
+      <div class="gallery-thumb" style="--c:#1a2a4a;">💻</div>
+      <div class="gallery-caption"><b>My Setup</b>Compaq Presario, CRT monitor, coaster collection<div class="img-size">me_computer.jpg · 128KB</div><div class="loading-bar-wrap"><div class="loading-bar" style="--d:3s;"></div></div></div>
+    </div>
+    <div class="gallery-item">
+      <div class="gallery-thumb" style="--c:#2a1a0a;">🐱</div>
+      <div class="gallery-caption"><b>Mr. Whiskers</b>He sits on the keyboard EVERY TIME<div class="img-size">cat.jpg · 89KB</div><div class="loading-bar-wrap"><div class="loading-bar" style="--d:2.1s;"></div></div></div>
+    </div>
+    <div class="gallery-item">
+      <div class="gallery-thumb" style="--c:#0a2a0a;">🥤</div>
+      <div class="gallery-caption"><b>Surge Collection</b>My discontinued soda shrine. RIP Surge 1997-1998 😢<div class="img-size">surge.jpg · 156KB</div><div class="loading-bar-wrap"><div class="loading-bar" style="--d:4s;"></div></div></div>
+    </div>
+    <div class="gallery-item">
+      <div class="gallery-thumb" style="--c:#1a1a2a;">🎮</div>
+      <div class="gallery-caption"><b>Tamagotchis</b>All three still alive. Don't disturb me after 9pm.<div class="img-size">tama.jpg · 201KB</div><div class="loading-bar-wrap"><div class="loading-bar" style="--d:5.2s;"></div></div></div>
+    </div>
+  </div>
+
+  <div class="section-hdr">✨ Animated GIF Collection</div>
+  <div class="gallery-grid">
+    <div class="gallery-item"><div class="gallery-thumb" style="--c:#000;">🚧</div><div class="gallery-caption"><b>Under Construction</b>Classic · 12KB</div></div>
+    <div class="gallery-item"><div class="gallery-thumb" style="--c:#000020;font-size:2rem;animation:spin 3s linear infinite;">🌐</div><div class="gallery-caption"><b>Spinning Globe</b>Animated · 34KB</div></div>
+    <div class="gallery-item"><div class="gallery-thumb" style="--c:#200000;">🔥</div><div class="gallery-caption"><b>Flames</b>Horizontal divider · 22KB</div></div>
+    <div class="gallery-item"><div class="gallery-thumb" style="--c:#002000;">✉️</div><div class="gallery-caption"><b>Email Me</b>Animated envelope · 8KB</div></div>
+    <div class="gallery-item"><div class="gallery-thumb" style="--c:#000020;">⭐</div><div class="gallery-caption"><b>New! Badge</b>Blinking · 5KB</div></div>
+    <div class="gallery-item"><div class="gallery-thumb" style="--c:#200020;">🦋</div><div class="gallery-caption"><b>Butterfly</b>Flies across screen · 44KB</div></div>
+    <div class="gallery-item"><div class="gallery-thumb" style="--c:#002020;">💎</div><div class="gallery-caption"><b>Rotating Diamond</b>Blue gem · 18KB</div></div>
+    <div class="gallery-item"><div class="gallery-thumb" style="--c:#201000;">☀️</div><div class="gallery-caption"><b>Spinning Sun</b>With sunglasses lol · 29KB</div></div>
+  </div>
+  <div style="font-size:11px;color:#888;text-align:center;margin-bottom:16px;font-family:'Comic Sans MS',cursive;">💡 All GIFs are FREE to use!! Just please link back to dweeb.co if you use them. Right-click → Save As!!</div>
+
+  <div class="footer-note">
+    <a href="90s-home.html">← Back to Main Page</a> &nbsp;·&nbsp;
+    <a href="90s-guestbook.html">Sign Guestbook</a> &nbsp;·&nbsp;
+    <a href="#">Back to Top ↑</a>
+  </div>
+</div>
+<style>@keyframes spin{to{transform:rotate(360deg);}}</style>
+</body>
+</html>

@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Fan Fiction - DWEEB.CO</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;}
+body{background:#200020;background-image:radial-gradient(ellipse at 30% 30%,rgba(80,0,80,.3) 0%,transparent 60%),radial-gradient(ellipse at 70% 70%,rgba(0,0,80,.3) 0%,transparent 60%);font-family:'Comic Sans MS',cursive;color:#fff;min-height:100vh;}
+.rainbow-bar{width:100%;height:7px;background:linear-gradient(90deg,#ff0000,#ff7700,#ffff00,#00ff00,#0000ff,#8b00ff,#ff0000);background-size:200%;animation:rb 2s linear infinite;}
+@keyframes rb{to{background-position:200% 0;}}
+.navbar{background:#330033;border-bottom:3px solid #cc00cc;border-top:3px solid #cc00cc;padding:4px 0;text-align:center;}
+.navbar a{color:#ff99ff;text-decoration:none;font-size:12px;font-weight:bold;padding:3px 10px;border-right:1px solid #cc00cc;font-family:Arial,sans-serif;}
+.navbar a:hover{background:#cc00cc;color:#fff;}
+.navbar a:last-child{border-right:none;}
+.page-wrap{max-width:720px;margin:0 auto;padding:16px 12px 40px;}
+.page-title{text-align:center;padding:16px;font-size:clamp(1.5rem,6vw,2.8rem);font-weight:bold;color:#ff99ff;text-shadow:2px 2px 0 #660066,0 0 20px #ff00ff;margin-bottom:4px;}
+.subtitle{text-align:center;font-size:13px;color:#cc99ff;margin-bottom:6px;}
+.disclaimer{background:#110011;border:2px solid #660066;padding:10px 14px;font-size:11px;color:#cc99ff;margin-bottom:16px;line-height:1.7;text-align:center;}
+.disclaimer b{color:#ffff00;}
+
+.fic-card{background:#1a001a;border:2px outset #990099;padding:12px;margin-bottom:14px;}
+.fic-header{display:flex;justify-content:space-between;flex-wrap:wrap;gap:6px;margin-bottom:8px;padding-bottom:8px;border-bottom:1px dotted #660066;}
+.fic-title{color:#ff99ff;font-weight:bold;font-size:16px;}
+.fic-fandom{color:#cc99ff;font-size:11px;background:#330033;padding:2px 8px;border:1px solid #660066;}
+.fic-meta{display:flex;gap:12px;flex-wrap:wrap;font-size:11px;color:#cc99ff;margin-bottom:8px;}
+.fic-meta span{display:flex;align-items:center;gap:4px;}
+.fic-rating{font-weight:bold;}
+.rating-g{color:#00ff00;}
+.rating-pg{color:#ffff00;}
+.fic-desc{font-size:12px;color:#ffccff;line-height:1.7;margin-bottom:8px;}
+.fic-excerpt{background:#110011;border-left:3px solid #990099;padding:10px 12px;font-size:12px;color:#e0c0e0;line-height:1.8;font-family:Georgia,serif;font-style:italic;margin-bottom:8px;}
+.read-link{color:#ff99ff;font-size:12px;font-weight:bold;text-decoration:none;}
+.read-link:hover{color:#ffff00;text-decoration:underline;}
+
+.tags{display:flex;flex-wrap:wrap;gap:4px;margin-top:6px;}
+.tag{background:#330033;border:1px solid #660066;color:#cc99ff;font-size:10px;padding:1px 6px;}
+
+.section-hdr{background:linear-gradient(90deg,#330033,#660066,#330033);border:2px outset #cc00cc;color:#ffff00;font-weight:bold;padding:6px 12px;margin:20px 0 10px;font-size:13px;letter-spacing:1px;}
+.author-note{background:#0a000a;border:1px dashed #660066;padding:8px 12px;font-size:11px;color:#cc99ff;margin-bottom:10px;line-height:1.6;}
+.author-note b{color:#ff99ff;}
+
+a{color:#ff99ff;} a:hover{color:#ffff00;}
+.footer-note{text-align:center;font-size:11px;color:#660066;margin-top:20px;line-height:1.8;}
+
+.wip-badge{background:#ff6600;color:#fff;font-size:9px;font-weight:bold;padding:1px 6px;font-family:Arial;animation:blink .8s infinite;}
+.complete-badge{background:#006600;color:#fff;font-size:9px;font-weight:bold;padding:1px 6px;font-family:Arial;}
+@keyframes blink{0%,49%{opacity:1;}50%,100%{opacity:0;}}
+</style>
+</head>
+<body>
+<div class="rainbow-bar"></div>
+<div class="navbar">
+  <a href="90s-home.html">🏠 Home</a>
+  <a href="90s-about.html">👤 About Me</a>
+  <a href="90s-links.html">🔗 Links</a>
+  <a href="90s-guestbook.html">📖 Guestbook</a>
+  <a href="90s-gallery.html">📷 Gallery</a>
+  <a href="90s-fanfic.html">✍️ Fan Fiction</a>
+  <a href="office-hours.html">🎮 Da Office</a>
+</div>
+<div class="page-wrap">
+
+  <div class="page-title">✍️ My Fan Fiction</div>
+  <div class="subtitle">~*~ Stories from the heart ~*~ All written by me!! ~*~</div>
+
+  <div class="disclaimer">
+    <b>DISCLAIMER:</b> I do not own any of these characters!! They belong to their creators!! I am not making any money from this, it is just for fun!! Please don't sue me. Also please be nice in the guestbook, these are my heart and soul and I worked really hard on them 🥺
+  </div>
+
+  <div class="section-hdr">📚 My Stories</div>
+
+  <!-- Story 1 -->
+  <div class="fic-card">
+    <div class="fic-header">
+      <span class="fic-title">When Packets Collide</span>
+      <span class="fic-fandom">📺 The Matrix</span>
+    </div>
+    <div class="fic-meta">
+      <span><span class="fic-rating rating-pg">Rating: PG-13</span></span>
+      <span>📄 Chapters: 7 <span class="wip-badge">WIP</span></span>
+      <span>💬 Reviews: 23</span>
+      <span>👁️ Hits: 1,847</span>
+    </div>
+    <div class="author-note"><b>Author's Note:</b> OK so this started as a oneshot but then it just KEPT GOING lol. This is what happens at 2am. Chapter 8 is coming soon I promise!! Also to reviewer xXDarkAngelXx: yes Neo and Trinity are holding hands in chapter 6, you caught that, well done 👀</div>
+    <div class="fic-desc">What if Neo hadn't taken the red pill? What if he'd gone back to his cubicle, to his spreadsheets, to his meaningless life in the Matrix — but something followed him? A story about choice, identity, and whether you can unknow a thing once you've learned it.</div>
+    <div class="fic-excerpt">
+      "The thing about the Matrix," Trinity said, watching the rain trace paths down the porthole glass, "is that it doesn't miss you. It just... fills in around the space where you were. Like you were never there at all."<br/><br/>
+      Thomas Anderson — he still thought of himself as Thomas Anderson sometimes, when the ship was quiet and the others were asleep — pressed his palm flat against the cold metal. "Maybe that's better," he said. "Maybe that's the kindest thing it does."
+    </div>
+    <div class="tags"><span class="tag">Neo/Trinity</span><span class="tag">angst</span><span class="tag">what if</span><span class="tag">slow burn</span><span class="tag">WIP</span></div>
+    <a class="read-link" href="#">📖 Read Chapter 1 →</a>
+  </div>
+
+  <!-- Story 2 -->
+  <div class="fic-card">
+    <div class="fic-header">
+      <span class="fic-title">Five Times Mulder Was Right (And One Time He Wasn't)</span>
+      <span class="fic-fandom">📺 The X-Files</span>
+    </div>
+    <div class="fic-meta">
+      <span><span class="fic-rating rating-g">Rating: G</span></span>
+      <span>📄 Oneshot <span class="complete-badge">COMPLETE</span></span>
+      <span>💬 Reviews: 41</span>
+      <span>👁️ Hits: 3,291</span>
+    </div>
+    <div class="author-note"><b>Author's Note:</b> MY MOST POPULAR STORY!! I can't believe 41 reviews omg thank you all so much 😭 This one basically wrote itself at 11pm after the season 6 finale destroyed me. The sixth time will make you cry. Sorry not sorry.</div>
+    <div class="fic-desc">A character study in six vignettes. Mulder has been right about aliens, about conspiracies, about things no rational person would believe. But there are smaller truths, closer ones, that take him longer to see.</div>
+    <div class="fic-excerpt">
+      Five: He was right about the crop circles in Bellefleur. He was right about the black oil. He was right about the consortium, about the bees, about the vaccine, about every impossible thing Scully had catalogued in her careful scientific handwriting as "unexplained."<br/><br/>
+      One: He was wrong about the thing he should have been most certain of. It was right in front of him for seven years, and he kept looking past it at the sky.
+    </div>
+    <div class="tags"><span class="tag">Mulder/Scully</span><span class="tag">5+1</span><span class="tag">UST</span><span class="tag">character study</span><span class="tag">complete</span></div>
+    <a class="read-link" href="#">📖 Read Story →</a>
+  </div>
+
+  <!-- Story 3 -->
+  <div class="fic-card">
+    <div class="fic-header">
+      <span class="fic-title">Dawson's Creek: The Pacey Years</span>
+      <span class="fic-fandom">📺 Dawson's Creek</span>
+    </div>
+    <div class="fic-meta">
+      <span><span class="fic-rating rating-pg">Rating: PG</span></span>
+      <span>📄 Chapters: 3 <span class="wip-badge">WIP</span></span>
+      <span>💬 Reviews: 18</span>
+      <span>👁️ Hits: 922</span>
+    </div>
+    <div class="author-note"><b>Author's Note:</b> I know everyone writes about Dawson but PACEY DESERVES BETTER and I am going to prove it with this fic. Chapter 4 is half written. I keep getting distracted by The Matrix fic. Sorry!! Also yes I know Dawson is supposed to be the main character. That's the point.</div>
+    <div class="fic-desc">Pacey Witter always figured he'd end up exactly like his father predicted. The thing nobody ever told him was that predictions aren't destiny. A coming-of-age story about the kid everyone wrote off, set in the summer between seasons 2 and 3.</div>
+    <div class="fic-excerpt">
+      Capeside in July smelled like salt and sunscreen and the specific kind of boredom that felt like it might last forever.<br/><br/>
+      Pacey sat on the dock with his feet in the water and thought about nothing in particular, which was the only kind of thinking he was any good at. Somewhere across the creek, Dawson was probably writing in his journal about his feelings. Pacey didn't keep a journal. He figured if his feelings wanted to be remembered, they'd have to work for it.
+    </div>
+    <div class="tags"><span class="tag">Pacey-centric</span><span class="tag">coming of age</span><span class="tag">summer</span><span class="tag">WIP</span><span class="tag">Pacey/Joey maybe?</span></div>
+    <a class="read-link" href="#">📖 Read Chapter 1 →</a>
+  </div>
+
+  <div class="section-hdr">📬 Leave a Review!!</div>
+  <div style="background:#1a001a;border:2px solid #660066;padding:12px;margin-bottom:14px;">
+    <div style="font-size:12px;color:#cc99ff;margin-bottom:8px;">Reviews make me write faster!! No joke!! Even just saying "update soon!!" helps a lot 💜</div>
+    <textarea style="width:100%;background:#000;border:1px solid #660066;color:#ff99ff;font-family:'Comic Sans MS',cursive;font-size:12px;padding:8px;resize:vertical;min-height:60px;outline:none;" placeholder="Tell me what you think!! Be nice please!! Which story is your fav??"></textarea>
+    <div style="display:flex;gap:8px;margin-top:8px;align-items:center;">
+      <input style="flex:1;background:#000;border:1px solid #660066;color:#ff99ff;font-family:'Comic Sans MS',cursive;font-size:12px;padding:5px 8px;outline:none;" placeholder="Your name / handle"/>
+      <button onclick="alert('Thank you for your review!! It means the world 💜 Chapter updates coming soon!!')" style="background:#330033;color:#ffff00;border:2px outset #cc00cc;padding:6px 18px;font-size:12px;cursor:pointer;font-family:'Comic Sans MS',cursive;">Submit!</button>
+    </div>
+  </div>
+
+  <div class="footer-note">
+    <a href="90s-home.html">← Back to Main Page</a> &nbsp;·&nbsp;
+    <a href="90s-guestbook.html">Sign Guestbook</a> &nbsp;·&nbsp;
+    <a href="#">Back to Top ↑</a><br/>
+    <span style="color:#440044;">All stories © dweeb.co 1999 — characters belong to their owners — please don't repost without permission!!</span>
+  </div>
+
+</div>
+</body>
+</html>

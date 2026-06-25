@@ -1,0 +1,717 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>DWEEB.CO - Home Page - Welcome!!!</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@700;900&display=swap');
+
+* { margin:0; padding:0; box-sizing:border-box; }
+
+body {
+  background-color: #000033;
+  background-image:
+    radial-gradient(circle at 20px 20px, rgba(0,0,80,0.8) 1px, transparent 0),
+    radial-gradient(circle at 60px 60px, rgba(0,0,80,0.6) 1px, transparent 0);
+  background-size: 80px 80px;
+  font-family: Arial, Helvetica, sans-serif;
+  color: #ffffff;
+  min-height: 100vh;
+}
+
+/* Rainbow top bar */
+.rainbow-bar { width:100%; height:7px; background:linear-gradient(90deg,#ff0000,#ff7700,#ffff00,#00ff00,#0000ff,#8b00ff,#ff0000); background-size:200%; animation:rb 2s linear infinite; }
+@keyframes rb { to{background-position:200% 0;} }
+
+/* Nav bar */
+.navbar {
+  background: #000080;
+  border-bottom: 3px solid #ffff00;
+  border-top: 3px solid #ffff00;
+  padding: 4px 0;
+  text-align: center;
+}
+.navbar a {
+  color: #ffff00;
+  text-decoration: none;
+  font-size: 12px;
+  font-weight: bold;
+  padding: 3px 10px;
+  border-right: 1px solid #ffff00;
+  font-family: Arial, sans-serif;
+}
+.navbar a:last-child { border-right: none; }
+.navbar a:hover { background: #ffff00; color: #000080; }
+
+/* Page header */
+.page-header {
+  text-align: center;
+  padding: 16px 10px 10px;
+  background: linear-gradient(180deg, #000000 0%, #000066 50%, #000033 100%);
+  border-bottom: 2px solid #00ffff;
+  position: relative;
+  overflow: hidden;
+}
+.page-title {
+  font-family: 'Orbitron', Impact, Arial Black, sans-serif;
+  font-size: clamp(1.8rem, 7vw, 4rem);
+  font-weight: 900;
+  color: #ffff00;
+  text-shadow: 3px 3px 0 #ff6600, 0 0 20px #ffff00;
+  animation: titlePulse 2s ease-in-out infinite;
+  letter-spacing: .05em;
+}
+@keyframes titlePulse { 0%,100%{text-shadow:3px 3px 0 #ff6600, 0 0 20px #ffff00;} 50%{text-shadow:3px 3px 0 #ff6600, 0 0 40px #ffff00, 0 0 60px #ff6600;} }
+
+.header-subtitle {
+  font-family: 'Comic Sans MS', cursive;
+  font-size: 14px;
+  color: #00ffff;
+  margin-top: 4px;
+  animation: blink 1.2s infinite;
+}
+@keyframes blink { 0%,49%{opacity:1;} 50%,100%{opacity:0;} }
+
+.header-stars {
+  font-size: 20px;
+  margin: 6px 0;
+  animation: spin 8s linear infinite;
+  display: inline-block;
+}
+@keyframes spin { to{transform:rotate(360deg);} }
+
+/* Main layout — fake 3-column */
+.main-layout {
+  display: grid;
+  grid-template-columns: 160px 1fr 160px;
+  gap: 0;
+  min-height: calc(100vh - 200px);
+}
+
+/* Left sidebar */
+.left-sidebar {
+  background: #000066;
+  border-right: 2px solid #0000ff;
+  padding: 10px 6px;
+}
+
+/* Center content */
+.center-content {
+  padding: 10px 12px;
+  background: #000033;
+}
+
+/* Right sidebar */
+.right-sidebar {
+  background: #000066;
+  border-left: 2px solid #0000ff;
+  padding: 10px 6px;
+}
+
+/* Section boxes */
+.section-box {
+  border: 2px outset #c0c0c0;
+  background: #000080;
+  margin-bottom: 10px;
+  overflow: hidden;
+}
+.section-title {
+  background: linear-gradient(90deg, #000080, #4040ff, #000080);
+  color: #ffff00;
+  font-size: 11px;
+  font-weight: bold;
+  padding: 3px 8px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  border-bottom: 1px solid #ffff00;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+.section-body {
+  padding: 8px;
+}
+
+/* Links */
+a { color: #00ffff; }
+a:visited { color: #ff99ff; }
+a:hover { color: #ffff00; text-decoration: underline; }
+
+/* Sidebar link list */
+.nav-links { list-style: none; }
+.nav-links li { border-bottom: 1px dotted #333; padding: 4px 0; }
+.nav-links li a { font-size: 11px; color: #00ff00; text-decoration: none; font-weight: bold; }
+.nav-links li a:hover { color: #ffff00; }
+.nav-links li a::before { content: '► '; color: #ff6600; }
+
+/* Welcome post */
+.welcome-box {
+  border: 2px solid #00ffff;
+  background: rgba(0,0,128,.5);
+  padding: 12px;
+  margin-bottom: 12px;
+  font-family: 'Comic Sans MS', cursive;
+}
+.welcome-box h2 {
+  color: #ffff00;
+  font-size: 16px;
+  margin-bottom: 8px;
+  text-shadow: 1px 1px 0 #ff6600;
+}
+.welcome-box p {
+  font-size: 12px;
+  color: #c0c0ff;
+  line-height: 1.7;
+  margin-bottom: 8px;
+}
+.welcome-box .sig {
+  font-size: 11px;
+  color: #ff99ff;
+  border-top: 1px dashed #555;
+  padding-top: 6px;
+  margin-top: 6px;
+}
+
+/* Updates list */
+.update-item {
+  display: flex;
+  gap: 8px;
+  padding: 5px 0;
+  border-bottom: 1px dotted #333;
+  font-size: 11px;
+}
+.update-date {
+  color: #ffff00;
+  font-family: 'Courier New', monospace;
+  white-space: nowrap;
+  font-size: 10px;
+  min-width: 60px;
+}
+.update-text { color: #c0c0c0; }
+.update-text .new-badge {
+  background: #ff0000;
+  color: #fff;
+  font-size: 9px;
+  font-weight: bold;
+  padding: 0 4px;
+  margin-right: 4px;
+  animation: blink 0.6s infinite;
+}
+
+/* About me section */
+.about-table { width:100%; border-collapse:collapse; font-size:11px; }
+.about-table td { padding:3px 6px; border-bottom:1px dotted #333; vertical-align:top; }
+.about-table td:first-child { color:#ffff00; font-weight:bold; white-space:nowrap; width:80px; }
+.about-table td:last-child { color:#c0c0c0; }
+
+/* Guestbook preview */
+.gb-entry {
+  background: rgba(0,0,0,.4);
+  border: 1px solid #333;
+  padding: 6px;
+  margin-bottom: 6px;
+  font-size: 11px;
+}
+.gb-name { color:#00ff00; font-weight:bold; font-size:12px; }
+.gb-date { color:#888; font-size:10px; }
+.gb-msg { color:#c0c0c0; margin-top:3px; line-height:1.5; }
+.gb-location { font-size:10px; color:#ff99ff; }
+
+/* Scrolling announcement */
+.announce {
+  background: #000080;
+  border: 2px inset #c0c0c0;
+  padding: 6px 8px;
+  margin-bottom: 10px;
+  overflow: hidden;
+  white-space: nowrap;
+}
+.announce-inner {
+  display: inline-block;
+  animation: marquee 14s linear infinite;
+  font-size: 12px;
+  font-weight: bold;
+  color: #ffff00;
+}
+@keyframes marquee { from{transform:translateX(100%);} to{transform:translateX(-100%);} }
+
+/* Web ring */
+.webring {
+  text-align: center;
+  font-size: 10px;
+  color: #888;
+  border: 2px outset #c0c0c0;
+  background: #000080;
+  padding: 8px;
+  margin-bottom: 10px;
+}
+.webring-title { color:#ffff00; font-weight:bold; font-size:11px; margin-bottom:4px; display:block; }
+.webring-nav { display:flex; justify-content:space-between; margin-top:4px; }
+.webring-nav a { color:#00ffff; font-size:10px; }
+
+/* Poll */
+.poll-option {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-bottom: 5px;
+  font-size: 11px;
+}
+.poll-bar {
+  height: 10px;
+  background: #00aa00;
+  transition: width .3s;
+}
+.poll-pct { color: #ffff00; font-size: 10px; min-width: 30px; }
+
+/* Awards */
+.award {
+  text-align: center;
+  border: 2px outset #ffff00;
+  background: #000080;
+  padding: 6px;
+  margin-bottom: 8px;
+  font-size: 10px;
+}
+.award-icon { font-size: 24px; display:block; margin-bottom:2px; }
+.award-title { color: #ffff00; font-weight:bold; font-size:11px; display:block; }
+.award-from { color: #888; }
+
+/* Counter / stats box */
+.stats-box { font-size:10px; color:#aaa; text-align:center; }
+.stats-box .stat { margin:3px 0; }
+.stats-box .stat b { color:#00ff00; }
+
+/* MIDI notice */
+.midi-notice {
+  background: #800000;
+  border: 2px outset #ff0000;
+  padding: 6px 8px;
+  font-size: 11px;
+  color: #ffff00;
+  margin-bottom: 10px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  animation: blink 2s infinite;
+}
+
+/* Cursor trail note */
+.cursor-note {
+  font-family: 'Comic Sans MS', cursive;
+  font-size: 11px;
+  color: #ff99ff;
+  text-align: center;
+  margin: 6px 0;
+}
+
+/* Under construction image */
+.uc-bar {
+  height: 16px;
+  background: repeating-linear-gradient(
+    45deg,
+    #ffff00 0px, #ffff00 10px,
+    #000000 10px, #000000 20px
+  );
+  margin: 8px 0;
+}
+
+/* Footer */
+.page-footer {
+  background: #000000;
+  border-top: 3px solid #ffff00;
+  padding: 14px;
+  text-align: center;
+}
+.footer-links a {
+  color: #00ffff;
+  font-size: 11px;
+  margin: 0 6px;
+  text-decoration: none;
+}
+.footer-links a:hover { color:#ffff00; }
+.footer-copy {
+  font-size: 10px;
+  color: #666;
+  margin-top: 8px;
+  font-family: 'Courier New', monospace;
+}
+.footer-badges {
+  display: flex;
+  justify-content: center;
+  gap: 6px;
+  flex-wrap: wrap;
+  margin-top: 10px;
+}
+.footer-badge {
+  background: #c0c0c0;
+  border: 2px outset #fff;
+  padding: 2px 6px;
+  font-size: 9px;
+  font-weight: bold;
+  color: #000080;
+}
+.footer-badge.blue { background:#000080; color:#ffff00; }
+
+/* Responsive — collapse sidebars on small screens */
+@media (max-width: 600px) {
+  .main-layout { grid-template-columns: 1fr; }
+  .left-sidebar, .right-sidebar { display: none; }
+}
+</style>
+</head>
+<body>
+
+<div class="rainbow-bar"></div>
+
+<!-- Navigation -->
+<div class="navbar">
+  <a href="90s-enter.html">🏠 Home</a>
+  <a href="90s-about.html">👤 About Me</a>
+  <a href="90s-links.html">🔗 Links</a>
+  <a href="90s-guestbook.html">📖 Guestbook</a>
+  <a href="90s-gallery.html">📷 Gallery</a>
+  <a href="90s-fanfic.html">✍️ Fan Fiction</a>
+  <a href="office-hours.html">🎮 Da Office</a>
+  <a href="#">📧 Contact</a>
+</div>
+
+<!-- Page Header -->
+<div class="page-header">
+  <div class="header-stars">✦ ★ ✦ ★ ✦</div>
+  <div class="page-title">★ DWEEB.CO ★</div>
+  <div class="header-subtitle">:: THE COOLEST HOMEPAGE ON THE INTERNET ::</div>
+  <div class="header-stars" style="font-size:14px;">~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~</div>
+</div>
+
+<!-- MIDI notice -->
+<div class="midi-notice" style="margin:0;border-radius:0;border-left:none;border-right:none;">
+  🎵 &nbsp; <b>♪ MIDI MUSIC PLAYING ♪</b> &nbsp;— &nbsp; "All Star" by Smash Mouth &nbsp;·&nbsp; <a href="#" style="color:#ffff00;">Turn off music</a> &nbsp;·&nbsp; <a href="#" style="color:#ffff00;">Download WinAmp</a>
+</div>
+
+<!-- Scrolling announcement -->
+<div class="announce">
+  <div class="announce-inner">
+    🔥 WELCOME TO DWEEB.CO!! 🔥 &nbsp;&nbsp;
+    NEW SECTION ADDED: "Da Office" — games that look like work!! &nbsp;&nbsp;
+    ★ Don't forget to SIGN MY GUESTBOOK ★ &nbsp;&nbsp;
+    🎮 SpreadPong · Type-O · SlideWrecker · Inbox Zero — PLAY NOW &nbsp;&nbsp;
+    Under construction: Winamp Skin Gallery · My MP3 Collection · Y2K Survival Guide
+  </div>
+</div>
+
+<!-- Main layout -->
+<div class="main-layout">
+
+  <!-- LEFT SIDEBAR -->
+  <div class="left-sidebar">
+
+    <div class="section-box">
+      <div class="section-title">🗺️ Navigation</div>
+      <div class="section-body">
+        <ul class="nav-links">
+          <li><a href="90s-home.html">Home</a></li>
+          <li><a href="90s-about.html">About Me</a></li>
+          <li><a href="90s-links.html">Cool Links</a></li>
+          <li><a href="90s-guestbook.html">Guestbook</a></li>
+          <li><a href="90s-gallery.html">Gallery</a></li>
+          <li><a href="90s-fanfic.html">Fan Fiction</a></li>
+          <li><a href="office-hours.html">Da Office 🎮</a></li>
+          <li><a href="#">MP3s</a></li>
+          <li><a href="#">Horoscope</a></li>
+          <li><a href="#">Web Rings</a></li>
+          <li><a href="#">Awards Won</a></li>
+          <li><a href="#">Contact Me</a></li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="section-box">
+      <div class="section-title">📊 Stats</div>
+      <div class="section-body stats-box">
+        <div class="stat">Online: <b>1</b></div>
+        <div class="stat">Today: <b id="today-visits">47</b></div>
+        <div class="stat">Total: <b>847,382</b></div>
+        <div class="stat">Since: <b>1997</b></div>
+        <div style="margin-top:6px;color:#ffff00;font-size:10px;">⭐ 5 Star Site ⭐</div>
+      </div>
+    </div>
+
+    <div class="section-box">
+      <div class="section-title">🌐 Web Ring</div>
+      <div class="section-body webring" style="border:none;margin:0;padding:4px;">
+        <span class="webring-title">Dweeb Web Ring</span>
+        <div style="font-size:10px;color:#c0c0c0;margin-bottom:4px;">Member since 1998</div>
+        <div class="webring-nav">
+          <a href="#">&lt;&lt; Prev</a>
+          <a href="#">List</a>
+          <a href="#">Next &gt;&gt;</a>
+        </div>
+      </div>
+    </div>
+
+    <div class="award">
+      <span class="award-icon">🏆</span>
+      <span class="award-title">Site of the Week!</span>
+      <span class="award-from">— GeoCool Awards '98</span>
+    </div>
+    <div class="award">
+      <span class="award-icon">⭐</span>
+      <span class="award-title">5 Stars!!</span>
+      <span class="award-from">— WebRater.com</span>
+    </div>
+
+  </div>
+
+  <!-- CENTER CONTENT -->
+  <div class="center-content">
+
+    <!-- Welcome -->
+    <div class="welcome-box">
+      <h2>🌟 Welcome to My Home on the Web!! 🌟</h2>
+      <p>
+        OMG you actually found it!!! Welcome welcome welcome!! 🎉 You have stumbled upon the most 
+        <span style="color:#ffff00;font-weight:bold;">TOTALLY RADICAL</span> homepage on the entire World Wide Web. 
+        I have been working on this site since 1997 and it is STILL under construction (lol) but there is tons of stuff to check out!!
+      </p>
+      <p>
+        This site has: 🎮 <a href="office-hours.html">games that look like office software</a> · 
+        📖 fan fiction · 📷 my photo gallery · 🔗 the best links on the net · 
+        and so much more coming soon!!!
+      </p>
+      <p>
+        <span style="color:#ff6600;font-weight:bold;font-family:'Comic Sans MS',cursive;">PLEASE PLEASE PLEASE sign my guestbook!!</span> 
+        I can see your IP address so I know if you left without signing 👀
+      </p>
+      <div class="sig">
+        — <span style="color:#ff99ff;font-family:'Comic Sans MS',cursive;">~*~ dWeEb ~*~</span> 
+        &nbsp;|&nbsp; Last updated: <span style="color:#ffff00;">June 18, 1999</span>
+        &nbsp;|&nbsp; <span style="color:#00ff00;">● Online Now</span>
+      </div>
+    </div>
+
+    <!-- Latest Updates -->
+    <div class="section-box" style="margin-bottom:12px;">
+      <div class="section-title">📢 Site Updates</div>
+      <div class="section-body">
+        <div class="update-item">
+          <span class="update-date">06/18/99</span>
+          <span class="update-text"><span class="new-badge">NEW!</span> Added "Da Office" games section!! Play SpreadPong, Type-O, SlideWrecker &amp; Inbox Zero!!</span>
+        </div>
+        <div class="update-item">
+          <span class="update-date">06/11/99</span>
+          <span class="update-text"><span class="new-badge">NEW!</span> Added 47 new animated GIFs to the gallery page. DIAL-UP WARNING.</span>
+        </div>
+        <div class="update-item">
+          <span class="update-date">06/03/99</span>
+          <span class="update-text">Changed background color. Again. This one is staying forever I think.</span>
+        </div>
+        <div class="update-item">
+          <span class="update-date">05/28/99</span>
+          <span class="update-text">Added MIDI music!! If you can't hear it your speakers might be broken.</span>
+        </div>
+        <div class="update-item">
+          <span class="update-date">05/15/99</span>
+          <span class="update-text">The guestbook is working again sorry about that!! Please re-sign if your entry got deleted.</span>
+        </div>
+        <div class="update-item">
+          <span class="update-date">04/01/99</span>
+          <span class="update-text"><span class="new-badge">NEW!</span> Fan Fiction section is UP!! First story posted: "Dawson's Creek: The Untold Chapter"</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Under construction bar -->
+    <div class="uc-bar"></div>
+    <div style="text-align:center;font-family:'Comic Sans MS',cursive;font-size:11px;color:#ffff00;margin:4px 0 10px;">
+      🚧 &nbsp; Pages still under construction: MP3 Collection · Horoscope · Y2K Survival Guide · My Tamagotchi Diary &nbsp; 🚧
+    </div>
+    <div class="uc-bar"></div>
+
+    <!-- Guestbook preview -->
+    <div class="section-box" style="margin-top:12px;">
+      <div class="section-title">📖 Guestbook — Recent Entries</div>
+      <div class="section-body">
+        <div class="gb-entry">
+          <div style="display:flex;justify-content:space-between;">
+            <span class="gb-name">~*~StArGiRl~*~</span>
+            <span class="gb-date">June 17, 1999</span>
+          </div>
+          <div class="gb-location">📍 Orlando, Florida</div>
+          <div class="gb-msg">OMG I LOVE YOUR SITE!!! The background is so cool and the music is my fav song lol!! Adding you to my links page right now!! 💜💜💜</div>
+        </div>
+        <div class="gb-entry">
+          <div style="display:flex;justify-content:space-between;">
+            <span class="gb-name">xXDarkAngelXx</span>
+            <span class="gb-date">June 15, 1999</span>
+          </div>
+          <div class="gb-location">📍 Unknown (proxy?)</div>
+          <div class="gb-msg">Cool site. Could use more frames. Have you tried FrontPage 98? It's pretty good for tables. — your webring neighbor</div>
+        </div>
+        <div class="gb-entry">
+          <div style="display:flex;justify-content:space-between;">
+            <span class="gb-name">CoolDude2000</span>
+            <span class="gb-date">June 12, 1999</span>
+          </div>
+          <div class="gb-location">📍 Somewhere, MI</div>
+          <div class="gb-msg">first!!!! 😎 awesome page dude the games are sick. bookmarked!!!!</div>
+        </div>
+        <div style="text-align:center;margin-top:8px;">
+          <a href="90s-guestbook.html" style="background:#000080;color:#ffff00;padding:5px 16px;font-size:12px;font-weight:bold;text-decoration:none;border:2px outset #c0c0c0;">✍️ Sign Guestbook</a>
+          &nbsp;
+          <a href="90s-guestbook.html" style="background:#000080;color:#00ffff;padding:5px 16px;font-size:12px;font-weight:bold;text-decoration:none;border:2px outset #c0c0c0;">📖 View All</a>
+        </div>
+      </div>
+    </div>
+
+    <!-- Poll -->
+    <div class="section-box" style="margin-top:12px;">
+      <div class="section-title">📊 This Week's Poll</div>
+      <div class="section-body">
+        <div style="font-family:'Comic Sans MS',cursive;font-size:12px;color:#ffff00;margin-bottom:8px;">
+          What is the BEST Spice Girl??
+        </div>
+        <div class="poll-option"><input type="radio" name="poll"/><span style="color:#c0c0c0;font-size:11px;flex:1;">Scary Spice</span><div class="poll-bar" style="width:62px;"></div><span class="poll-pct">31%</span></div>
+        <div class="poll-option"><input type="radio" name="poll"/><span style="color:#c0c0c0;font-size:11px;flex:1;">Sporty Spice</span><div class="poll-bar" style="width:50px;background:#ff6600;"></div><span class="poll-pct">25%</span></div>
+        <div class="poll-option"><input type="radio" name="poll"/><span style="color:#c0c0c0;font-size:11px;flex:1;">Baby Spice</span><div class="poll-bar" style="width:46px;background:#ff99ff;"></div><span class="poll-pct">23%</span></div>
+        <div class="poll-option"><input type="radio" name="poll"/><span style="color:#c0c0c0;font-size:11px;flex:1;">Ginger Spice</span><div class="poll-bar" style="width:26px;background:#ff0000;"></div><span class="poll-pct">13%</span></div>
+        <div class="poll-option"><input type="radio" name="poll"/><span style="color:#c0c0c0;font-size:11px;flex:1;">Posh Spice</span><div class="poll-bar" style="width:16px;background:#9900ff;"></div><span class="poll-pct">8%</span></div>
+        <div style="margin-top:8px;text-align:center;">
+          <button onclick="alert('Your vote has been counted!! Thanks! :D')" style="background:#000080;color:#ffff00;border:2px outset #c0c0c0;padding:4px 16px;font-size:11px;cursor:pointer;font-weight:bold;">Vote!</button>
+          <span style="font-size:10px;color:#888;margin-left:8px;">200 votes so far</span>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- RIGHT SIDEBAR -->
+  <div class="right-sidebar">
+
+    <div class="section-box">
+      <div class="section-title">☀️ Today</div>
+      <div class="section-body" style="font-size:11px;color:#c0c0c0;text-align:center;">
+        <div style="color:#ffff00;font-size:16px;font-weight:bold;" id="time-display">--:--:--</div>
+        <div style="color:#00ffff;margin-top:2px;" id="date-display">-- / -- / --</div>
+        <div style="margin-top:6px;">☀️ Sunny<br/>72°F · Duluth, MN</div>
+        <div style="margin-top:6px;color:#ffff00;font-size:10px;">Day <span id="day-of-year">--</span> of 1999</div>
+      </div>
+    </div>
+
+    <div class="section-box">
+      <div class="section-title">💫 Horoscope</div>
+      <div class="section-body" style="font-size:11px;color:#c0c0c0;">
+        <div style="color:#ffff00;font-weight:bold;margin-bottom:4px;">♊ Gemini</div>
+        <div style="line-height:1.5;">The stars say: Today is a great day to update your homepage!! Mercury is in GeoCities. Avoid dial-up after 9pm.</div>
+      </div>
+    </div>
+
+    <div class="section-box">
+      <div class="section-title">🔥 My Fav Sites</div>
+      <div class="section-body" style="font-size:10px;">
+        <div style="padding:2px 0;border-bottom:1px dotted #333;"><a href="#" style="color:#00ff00;text-decoration:none;">🌐 AltaVista</a></div>
+        <div style="padding:2px 0;border-bottom:1px dotted #333;"><a href="#" style="color:#00ff00;text-decoration:none;">📧 Hotmail</a></div>
+        <div style="padding:2px 0;border-bottom:1px dotted #333;"><a href="#" style="color:#00ff00;text-decoration:none;">💬 ICQ</a></div>
+        <div style="padding:2px 0;border-bottom:1px dotted #333;"><a href="#" style="color:#00ff00;text-decoration:none;">🎮 Newgrounds</a></div>
+        <div style="padding:2px 0;border-bottom:1px dotted #333;"><a href="#" style="color:#00ff00;text-decoration:none;">📰 Slashdot</a></div>
+        <div style="padding:2px 0;border-bottom:1px dotted #333;"><a href="#" style="color:#00ff00;text-decoration:none;">🎵 MP3.com</a></div>
+        <div style="padding:2px 0;border-bottom:1px dotted #333;"><a href="#" style="color:#00ff00;text-decoration:none;">🔍 Ask Jeeves</a></div>
+        <div style="padding:2px 0;"><a href="#" style="color:#00ff00;text-decoration:none;">💾 Napster 🔥</a></div>
+      </div>
+    </div>
+
+    <div class="section-box">
+      <div class="section-title">😎 AIM Status</div>
+      <div class="section-body" style="font-size:11px;color:#c0c0c0;text-align:center;">
+        <div style="color:#00ff00;font-weight:bold;font-size:14px;">● Online</div>
+        <div style="margin-top:4px;font-family:'Comic Sans MS',cursive;font-size:10px;color:#ff99ff;">
+          "currently vibing to:<br/>all star 🎵 smash mouth"
+        </div>
+        <div style="margin-top:6px;font-size:10px;">
+          AIM: <span style="color:#ffff00;">dWeEbMaStEr99</span>
+        </div>
+        <div style="font-size:9px;color:#888;margin-top:2px;">ICQ: 12847291</div>
+      </div>
+    </div>
+
+    <div class="section-box">
+      <div class="section-title">🌡️ Y2K Countdown</div>
+      <div class="section-body" style="text-align:center;">
+        <div style="font-size:20px;font-weight:bold;color:#ff0000;font-family:'Courier New',monospace;" id="y2k-days">--</div>
+        <div style="font-size:10px;color:#ffff00;font-weight:bold;">DAYS UNTIL Y2K</div>
+        <div style="font-size:9px;color:#888;margin-top:4px;">Are YOU prepared?</div>
+        <a href="#" style="font-size:9px;color:#ff6600;">Y2K Survival Guide →</a>
+      </div>
+    </div>
+
+    <div class="cursor-note">✨ Move your mouse around the page for a surprise! ✨</div>
+
+  </div>
+
+</div><!-- end main-layout -->
+
+<!-- Footer -->
+<div class="page-footer">
+  <div class="footer-links">
+    <a href="90s-enter.html">Home</a>
+    <a href="90s-about.html">About</a>
+    <a href="90s-links.html">Links</a>
+    <a href="90s-guestbook.html">Guestbook</a>
+    <a href="90s-gallery.html">Gallery</a>
+    <a href="office-hours.html">Da Office</a>
+    <a href="#">Top</a>
+  </div>
+  <div class="footer-badges">
+    <div class="footer-badge blue">IE 4.0</div>
+    <div class="footer-badge">800×600</div>
+    <div class="footer-badge blue">Netscape OK</div>
+    <div class="footer-badge">HTML 3.2</div>
+    <div class="footer-badge blue">No Cookies</div>
+    <div class="footer-badge">Y2K Ready ✓</div>
+    <div class="footer-badge blue">Made w/ NotePad</div>
+    <div class="footer-badge">GeoCities</div>
+  </div>
+  <div class="footer-copy">
+    © 1997-1999 dweeb.co — All Rights Reserved — Do Not Steal My GIFs!!<br/>
+    This page has been visited <b style="color:#00ff00;">847,382</b> times since October 1997.<br/>
+    <span style="color:#555;">Best experienced with a 56k modem, a can of Surge, and the lights off.</span>
+  </div>
+</div>
+
+<script>
+// Live clock
+function updateTime(){
+  const now=new Date();
+  document.getElementById('time-display').textContent=now.toLocaleTimeString();
+  document.getElementById('date-display').textContent=now.toLocaleDateString();
+  const start=new Date(now.getFullYear(),0,0);
+  const diff=now-start;
+  document.getElementById('day-of-year').textContent=Math.floor(diff/86400000);
+}
+setInterval(updateTime,1000);
+updateTime();
+
+// Y2K countdown
+const y2k=new Date('2000-01-01');
+const days=Math.ceil((y2k-new Date())/86400000);
+document.getElementById('y2k-days').textContent=days>0?days:'IT HAPPENED';
+
+// Today visits — random but stable per day
+document.getElementById('today-visits').textContent=Math.floor(Math.random()*80+20);
+
+// Cursor sparkles
+document.addEventListener('mousemove',function(e){
+  if(Math.random()>.75)return;
+  const el=document.createElement('div');
+  el.style.cssText=`position:fixed;pointer-events:none;z-index:9999;left:${e.clientX}px;top:${e.clientY}px;font-size:${8+Math.random()*12}px;animation:sf .9s forwards;`;
+  el.textContent=['✨','⭐','💫','★','✦','·'][Math.floor(Math.random()*6)];
+  document.body.appendChild(el);
+  setTimeout(()=>el.remove(),900);
+});
+const st=document.createElement('style');
+st.textContent='@keyframes sf{0%{opacity:1;transform:translate(-50%,-50%) scale(1);}100%{opacity:0;transform:translate(-50%,-200%) scale(.2);}}';
+document.head.appendChild(st);
+</script>
+</body>
+</html>

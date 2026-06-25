@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Guestbook - DWEEB.CO</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;}
+body{background-color:#001a00;background-image:repeating-linear-gradient(0deg,transparent,transparent 19px,rgba(0,100,0,.15) 19px,rgba(0,100,0,.15) 20px),repeating-linear-gradient(90deg,transparent,transparent 19px,rgba(0,100,0,.15) 19px,rgba(0,100,0,.15) 20px);font-family:Arial,Helvetica,sans-serif;color:#00ff00;min-height:100vh;}
+.rainbow-bar{width:100%;height:7px;background:linear-gradient(90deg,#ff0000,#ff7700,#ffff00,#00ff00,#0000ff,#8b00ff,#ff0000);background-size:200%;animation:rb 2s linear infinite;}
+@keyframes rb{to{background-position:200% 0;}}
+.navbar{background:#003300;border-bottom:3px solid #00ff00;border-top:3px solid #00ff00;padding:4px 0;text-align:center;}
+.navbar a{color:#00ff00;text-decoration:none;font-size:12px;font-weight:bold;padding:3px 10px;border-right:1px solid #00ff00;font-family:Arial,sans-serif;}
+.navbar a:hover{background:#00ff00;color:#000;}
+.navbar a:last-child{border-right:none;}
+.page-wrap{max-width:720px;margin:0 auto;padding:16px 12px 40px;}
+.page-title{text-align:center;padding:16px;font-family:'Courier New',monospace;font-size:clamp(1.4rem,5vw,2.4rem);font-weight:bold;color:#00ff00;text-shadow:0 0 20px #00ff00,0 0 40px #00ff00;margin-bottom:4px;}
+.subtitle{text-align:center;font-family:'Comic Sans MS',cursive;font-size:13px;color:#00cc00;margin-bottom:20px;}
+.section-hdr{background:#003300;border:2px outset #00ff00;color:#ffff00;font-weight:bold;padding:5px 12px;margin:18px 0 10px;font-size:13px;letter-spacing:1px;}
+/* Guestbook entries */
+.gb-entry{background:#001400;border:1px solid #005500;padding:10px 12px;margin-bottom:10px;position:relative;}
+.gb-entry-header{display:flex;justify-content:space-between;align-items:baseline;flex-wrap:wrap;gap:6px;margin-bottom:6px;padding-bottom:5px;border-bottom:1px dotted #005500;}
+.gb-name{color:#ffff00;font-weight:bold;font-size:14px;font-family:'Comic Sans MS',cursive;}
+.gb-date{font-size:10px;color:#007700;font-family:'Courier New',monospace;}
+.gb-location{font-size:11px;color:#00aa00;margin-bottom:4px;}
+.gb-msg{font-size:12px;color:#00dd00;line-height:1.7;}
+.gb-email{font-size:10px;color:#007700;margin-top:4px;}
+/* Sign form */
+.sign-form{background:#001400;border:2px solid #00ff00;padding:14px;margin-bottom:20px;}
+.sign-form h3{color:#ffff00;font-size:14px;margin-bottom:12px;font-family:'Comic Sans MS',cursive;}
+.form-row{margin-bottom:8px;display:flex;flex-direction:column;gap:3px;}
+.form-row label{font-size:11px;color:#00ff00;font-weight:bold;}
+.form-row input,.form-row textarea,.form-row select{background:#000;border:1px solid #00aa00;color:#00ff00;font-family:'Courier New',monospace;font-size:12px;padding:4px 6px;width:100%;outline:none;}
+.form-row input:focus,.form-row textarea:focus{border-color:#00ff00;box-shadow:0 0 6px #00ff00;}
+.form-row textarea{resize:vertical;min-height:70px;}
+.submit-btn{background:#003300;color:#ffff00;border:2px outset #00ff00;padding:7px 24px;font-size:13px;font-weight:bold;cursor:pointer;font-family:'Comic Sans MS',cursive;margin-top:8px;}
+.submit-btn:hover{background:#00ff00;color:#000;}
+a{color:#00ff00;} a:hover{color:#ffff00;}
+.footer-note{text-align:center;font-size:11px;color:#007700;margin-top:20px;line-height:1.8;}
+</style>
+</head>
+<body>
+<div class="rainbow-bar"></div>
+<div class="navbar">
+  <a href="90s-home.html">🏠 Home</a>
+  <a href="90s-about.html">👤 About Me</a>
+  <a href="90s-links.html">🔗 Links</a>
+  <a href="90s-guestbook.html">📖 Guestbook</a>
+  <a href="90s-gallery.html">📷 Gallery</a>
+  <a href="90s-fanfic.html">✍️ Fan Fiction</a>
+  <a href="office-hours.html">🎮 Da Office</a>
+</div>
+<div class="page-wrap">
+  <div class="page-title">📖 My Guestbook</div>
+  <div class="subtitle">You've visited — now prove it!! Sign below!! 👇</div>
+
+  <div class="sign-form">
+    <h3>✍️ Sign My Guestbook!!</h3>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
+      <div class="form-row"><label>Your Name / Handle*</label><input type="text" placeholder="xXCoolPersonXx" id="gb-name"/></div>
+      <div class="form-row"><label>Email (optional)</label><input type="text" placeholder="you@hotmail.com"/></div>
+      <div class="form-row"><label>Homepage URL</label><input type="text" placeholder="http://www.geocities.com/..."/></div>
+      <div class="form-row"><label>City, State</label><input type="text" placeholder="Springfield, IL"/></div>
+    </div>
+    <div class="form-row" style="margin-top:6px;"><label>Your Message* (be nice!!)</label><textarea placeholder="OMG I love your site!! The background is so cool and..." id="gb-msg"></textarea></div>
+    <div class="form-row"><label>How did you find this site?</label>
+      <select><option>Web Ring</option><option>AltaVista Search</option><option>Friend told me</option><option>Random clicking</option><option>I made a wrong turn</option><option>The Hamster Dance site linked here</option></select>
+    </div>
+    <button class="submit-btn" onclick="submitGuestbook()">📝 Sign It!!</button>
+    <span style="font-size:10px;color:#007700;margin-left:10px;">* = required fields</span>
+  </div>
+
+  <div class="section-hdr">📬 Recent Entries — <span style="color:#00ff00;">42 total entries</span></div>
+
+  <div id="gb-entries">
+    <div class="gb-entry">
+      <div class="gb-entry-header"><span class="gb-name">~*~StArGiRl~*~</span><span class="gb-date">June 17, 1999 · 11:42pm</span></div>
+      <div class="gb-location">📍 Orlando, Florida &nbsp;|&nbsp; 🌐 <a href="#">www.geocities.com/stargirl_forever</a></div>
+      <div class="gb-msg">OMG I LOVE YOUR SITE!!!! The music is my absolute fav song right now and the background is SO COOL!! I added you to my links page you have to check it out!! We should totally be web friends!! ICQ me!! 💜💜💜</div>
+    </div>
+    <div class="gb-entry">
+      <div class="gb-entry-header"><span class="gb-name">xXDarkAngelXx</span><span class="gb-date">June 15, 1999 · 3:17pm</span></div>
+      <div class="gb-location">📍 Location unknown</div>
+      <div class="gb-msg">Cool site. I think you should add more frames though, frames are the future of web design. Also have you tried using tables for layout? It makes everything line up better. Just a tip from a fellow webmaster. — your neighbor in the Dweeb Web Ring</div>
+    </div>
+    <div class="gb-entry">
+      <div class="gb-entry-header"><span class="gb-name">CoolDude2000</span><span class="gb-date">June 12, 1999 · 7:55pm</span></div>
+      <div class="gb-location">📍 Detroit, MI</div>
+      <div class="gb-msg">FIRST TO SIGN THE NEW GUESTBOOK!! lol. Awesome games dude the spreadsheet pong one is so addictive i played it for like 2 hours. bookmarked!! 😎</div>
+    </div>
+    <div class="gb-entry">
+      <div class="gb-entry-header"><span class="gb-name">MidnightRaverGirl</span><span class="gb-date">June 9, 1999 · 1:33am</span></div>
+      <div class="gb-location">📍 Chicago, IL &nbsp;|&nbsp; 🌐 <a href="#">geocities.com/midnightraver</a></div>
+      <div class="gb-msg">cant sleep again so I'm browsing and found your site via web ring!! love the vibe!! also I just wanted to say if you're reading this at 1am you are my kind of person. the internet at night is a completely different place. anyway sign my guestbook too!! 🌙</div>
+    </div>
+    <div class="gb-entry">
+      <div class="gb-entry-header"><span class="gb-name">TechWizard42</span><span class="gb-date">May 31, 1999 · 4:22pm</span></div>
+      <div class="gb-location">📍 Seattle, WA</div>
+      <div class="gb-msg">Found you on AltaVista while searching for "cool dweeb websites" (yes really). Pretty solid HTML for a personal page. Pro tip: you can make your hit counter look better if you use a &lt;table&gt; with bgcolor. Also save your pages as .htm not .html, some older servers don't support it.</div>
+    </div>
+    <div class="gb-entry">
+      <div class="gb-entry-header"><span class="gb-name">PokeManiac_J</span><span class="gb-date">May 28, 1999 · 8:01pm</span></div>
+      <div class="gb-location">📍 Pallet Town (lol jk Toronto Canada)</div>
+      <div class="gb-msg">Pikachu sent me here!! jk lol. Cool site!! I just got Pokemon Yellow and I cannot stop playing it. anyway the games on here are really creative especially the outlook one i sent it to my mom at work and she said LOL. high praise. sign my book too please!!</div>
+    </div>
+    <div class="gb-entry" style="border-color:#440000;">
+      <div class="gb-entry-header"><span class="gb-name" style="color:#ff6666;">WebmasterPro_1997</span><span class="gb-date">May 22, 1999 · 11:04am</span></div>
+      <div class="gb-location">📍 ???</div>
+      <div class="gb-msg" style="color:#ff6666;">⚠️ CHAIN LETTER: Forward this to 10 people in 10 minutes or something bad will happen to your computer. Bill Gates is testing email and will pay you $1 for each person you forward— [ENTRY DELETED BY WEBMASTER: DO NOT BELIEVE CHAIN LETTERS!!]</div>
+    </div>
+  </div>
+
+  <div class="footer-note">
+    <a href="90s-home.html">← Back to Main Page</a> &nbsp;·&nbsp;
+    <a href="#">View All 42 Entries</a> &nbsp;·&nbsp;
+    <a href="#">Back to Top ↑</a><br/>
+    <span style="color:#004400;">This guestbook is hosted by GuestWorld.com · Spam will be deleted · Be nice!!</span>
+  </div>
+</div>
+<script>
+function submitGuestbook(){
+  const name=document.getElementById('gb-name').value||'Anonymous';
+  const msg=document.getElementById('gb-msg').value||'(no message)';
+  const entry=document.createElement('div');
+  entry.className='gb-entry';
+  entry.style.borderColor='#00ff00';
+  entry.innerHTML=`
+    <div class="gb-entry-header"><span class="gb-name">${name}</span><span class="gb-date">Just now ✨ NEW!!</span></div>
+    <div class="gb-location">📍 Your Location</div>
+    <div class="gb-msg">${msg}</div>
+    <div class="gb-email" style="color:#00ff00;font-style:italic;font-size:11px;">Thanks for signing!! 🎉</div>
+  `;
+  document.getElementById('gb-entries').prepend(entry);
+  document.getElementById('gb-name').value='';
+  document.getElementById('gb-msg').value='';
+  alert('Thanks for signing my guestbook!! You are awesome!! 🎉\nYour entry has been added!!');
+}
+</script>
+</body>
+</html>

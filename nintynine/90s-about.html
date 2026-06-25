@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>About Me!! - DWEEB.CO</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;}
+body{
+  background-color:#330033;
+  background-image:
+    radial-gradient(ellipse at 50% 50%, rgba(100,0,100,.15) 0%, transparent 70%),
+    repeating-linear-gradient(45deg, transparent 0px, transparent 10px, rgba(80,0,80,.1) 10px, rgba(80,0,80,.1) 11px);
+  font-family:'Comic Sans MS',cursive;
+  color:#ffffff;
+  min-height:100vh;
+}
+.rainbow-bar{width:100%;height:7px;background:linear-gradient(90deg,#ff0000,#ff7700,#ffff00,#00ff00,#0000ff,#8b00ff,#ff0000);background-size:200%;animation:rb 2s linear infinite;}
+@keyframes rb{to{background-position:200% 0;}}
+.navbar{background:#330033;border-bottom:3px solid #ff00ff;border-top:3px solid #ff00ff;padding:4px 0;text-align:center;}
+.navbar a{color:#ff99ff;text-decoration:none;font-size:12px;font-weight:bold;padding:3px 10px;border-right:1px solid #ff00ff;font-family:Arial,sans-serif;}
+.navbar a:hover{background:#ff00ff;color:#000;}
+.navbar a:last-child{border-right:none;}
+
+.page-wrap{max-width:760px;margin:0 auto;padding:16px 12px 40px;}
+
+.page-title{
+  text-align:center;
+  padding:20px;
+  font-size:clamp(1.6rem,6vw,3rem);
+  font-weight:bold;
+  color:#ff00ff;
+  text-shadow:2px 2px 0 #660066, 0 0 20px #ff00ff;
+  animation:glow 2s ease-in-out infinite;
+}
+@keyframes glow{0%,100%{text-shadow:2px 2px 0 #660066,0 0 20px #ff00ff;}50%{text-shadow:2px 2px 0 #660066,0 0 40px #ff00ff,0 0 60px #ff99ff;}}
+
+.subtitle{text-align:center;color:#ff99ff;font-size:13px;margin-bottom:16px;animation:blink 1.5s infinite;}
+@keyframes blink{0%,49%{opacity:1;}50%,100%{opacity:0;}}
+
+.avatar-section{
+  display:flex;
+  gap:16px;
+  margin-bottom:20px;
+  align-items:flex-start;
+  flex-wrap:wrap;
+}
+.avatar-box{
+  background:#220022;
+  border:3px outset #ff00ff;
+  padding:10px;
+  text-align:center;
+  min-width:140px;
+}
+.avatar-emoji{
+  font-size:80px;
+  display:block;
+  animation:float 3s ease-in-out infinite;
+}
+@keyframes float{0%,100%{transform:translateY(0);}50%{transform:translateY(-8px);}}
+.avatar-name{
+  color:#ff00ff;
+  font-size:16px;
+  font-weight:bold;
+  margin-top:6px;
+  display:block;
+}
+.avatar-sub{color:#ff99ff;font-size:10px;}
+
+.bio-text{flex:1;min-width:200px;}
+.bio-text p{color:#ffccff;font-size:13px;line-height:1.8;margin-bottom:10px;}
+
+.info-table{width:100%;border-collapse:collapse;margin-bottom:16px;}
+.info-table tr{border-bottom:1px dotted #660066;}
+.info-table td{padding:5px 8px;font-size:12px;vertical-align:top;}
+.info-table td:first-child{color:#ff99ff;font-weight:bold;white-space:nowrap;width:120px;}
+.info-table td:last-child{color:#ffccff;}
+
+.section-header{
+  background:linear-gradient(90deg,#660066,#cc00cc,#660066);
+  color:#ffff00;
+  font-size:14px;
+  font-weight:bold;
+  padding:6px 12px;
+  margin:16px 0 8px;
+  border:2px outset #c0c0c0;
+  text-transform:uppercase;
+  letter-spacing:2px;
+}
+.section-header::before{content:'★ ';}
+.section-header::after{content:' ★';}
+
+.fav-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:8px;margin-bottom:16px;}
+.fav-card{background:#220022;border:2px outset #cc00cc;padding:8px;font-size:11px;}
+.fav-card .fav-label{color:#ff99ff;font-weight:bold;font-size:10px;text-transform:uppercase;letter-spacing:1px;margin-bottom:4px;display:block;}
+.fav-card .fav-val{color:#ffccff;line-height:1.5;}
+
+.quiz-result{
+  background:#220022;
+  border:2px solid #ff00ff;
+  padding:12px;
+  text-align:center;
+  margin-bottom:14px;
+}
+.quiz-result .result-title{font-size:18px;color:#ffff00;font-weight:bold;margin-bottom:4px;}
+.quiz-result .result-sub{font-size:12px;color:#ff99ff;}
+.quiz-result .result-img{font-size:48px;margin:8px 0;display:block;}
+
+.friend-list{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:14px;}
+.friend-tag{background:#330033;border:2px outset #cc00cc;padding:3px 10px;font-size:11px;color:#ff99ff;}
+.friend-tag:hover{background:#cc00cc;color:#fff;cursor:default;}
+
+.contact-box{
+  background:#220022;
+  border:3px outset #ff00ff;
+  padding:12px;
+  font-size:12px;
+}
+.contact-row{display:flex;align-items:center;gap:8px;padding:4px 0;border-bottom:1px dotted #440044;color:#ffccff;}
+.contact-row:last-child{border-bottom:none;}
+.contact-label{color:#ff99ff;font-weight:bold;min-width:80px;}
+
+.uc-bar{height:16px;background:repeating-linear-gradient(45deg,#ffff00 0px,#ffff00 10px,#000000 10px,#000000 20px);margin:14px 0;}
+
+.footer-note{text-align:center;font-size:11px;color:#ff99ff;margin-top:20px;line-height:1.8;}
+
+a{color:#ff99ff;} a:hover{color:#ffff00;}
+</style>
+</head>
+<body>
+<div class="rainbow-bar"></div>
+<div class="navbar">
+  <a href="90s-home.html">🏠 Home</a>
+  <a href="90s-about.html">👤 About Me</a>
+  <a href="90s-links.html">🔗 Links</a>
+  <a href="90s-guestbook.html">📖 Guestbook</a>
+  <a href="90s-gallery.html">📷 Gallery</a>
+  <a href="90s-fanfic.html">✍️ Fan Fiction</a>
+  <a href="office-hours.html">🎮 Da Office</a>
+</div>
+
+<div class="page-wrap">
+
+  <div class="page-title">~*~ About Me ~*~</div>
+  <div class="subtitle">✨ Get to know the REAL me!! ✨</div>
+
+  <div class="avatar-section">
+    <div class="avatar-box">
+      <span class="avatar-emoji">🧑‍💻</span>
+      <span class="avatar-name">~*~ dWeEb ~*~</span>
+      <span class="avatar-sub">Webmaster · Internet Person<br/>Online Since 1994</span>
+    </div>
+    <div class="bio-text">
+      <p>
+        HEY!!! Welcome to my About Me page!! 😊 My name is dWeEb and I have been on the internet since like 1994 on dial-up which was SO SLOW but I loved it anyway!! I taught myself HTML from a library book and I have been building websites ever since!!
+      </p>
+      <p>
+        I am totally obsessed with computers, video games, music (mostly alternative rock and some techno), and Tamagotchis (I have 3 right now all still alive somehow). I spend way too much time online but that's okay because the internet is where all the cool people are!!
+      </p>
+      <p>
+        <span style="color:#ffff00;font-weight:bold;">THIS PAGE IS ALWAYS UNDER CONSTRUCTION</span> because I am always learning new HTML tricks!! Right now I am trying to figure out how to make a hit counter with JavaScript. Wish me luck!! 😂
+      </p>
+    </div>
+  </div>
+
+  <div class="section-header">The Stats</div>
+  <table class="info-table">
+    <tr><td>Name:</td><td>dWeEb (real name classified 🕵️)</td></tr>
+    <tr><td>Age:</td><td>Old enough to have a Hotmail account from 1997</td></tr>
+    <tr><td>Location:</td><td>The Internet, mostly. Also probably Duluth MN</td></tr>
+    <tr><td>School:</td><td>Currently enrolled in the School of Hard Knocks (also community college)</td></tr>
+    <tr><td>Job:</td><td>Professional Website Builder (asking my parents for a real job soon)</td></tr>
+    <tr><td>Sign:</td><td>♊ Gemini · Moon: Scorpio · Rising: According to iVillage, probably Aquarius</td></tr>
+    <tr><td>Hair:</td><td>Currently: brown. Previously: attempted frosted tips. Never again.</td></tr>
+    <tr><td>Eyes:</td><td>The kind that stare at monitors too long</td></tr>
+    <tr><td>AIM:</td><td>dWeEbMaStEr99 (I'm usually on)</td></tr>
+    <tr><td>ICQ:</td><td>12847291</td></tr>
+    <tr><td>Email:</td><td>dweeb@hotmail.com (I check it like every hour)</td></tr>
+    <tr><td>Tamagotchi:</td><td>Mimitchi (age 9), Mimitchi (age 12), dead one (age 0, rip)</td></tr>
+    <tr><td>Computer:</td><td>Compaq Presario · Pentium II 333MHz · 64MB RAM · 4GB HDD</td></tr>
+    <tr><td>Internet:</td><td>56k modem (US Robotics, very reliable, only disconnects sometimes)</td></tr>
+    <tr><td>Browser:</td><td>Internet Explorer 4.0 mainly, Netscape 3 for backup</td></tr>
+    <tr><td>OS:</td><td>Windows 98 SE (much better than 95 btw)</td></tr>
+  </table>
+
+  <div class="section-header">My Favorites</div>
+  <div class="fav-grid">
+    <div class="fav-card"><span class="fav-label">🎵 Music</span><span class="fav-val">Smash Mouth, Blink-182, Offspring, No Doubt, Hanson (don't judge me)</span></div>
+    <div class="fav-card"><span class="fav-label">🎬 Movies</span><span class="fav-val">The Matrix, Hackers (so realistic), Clueless, Titanic, Office Space</span></div>
+    <div class="fav-card"><span class="fav-label">📺 TV Shows</span><span class="fav-val">Dawson's Creek, X-Files, Buffy, Friends, Seinfeld reruns</span></div>
+    <div class="fav-card"><span class="fav-label">🎮 Games</span><span class="fav-val">Starcraft, Diablo II, Pokémon Red, GoldenEye, Oregon Trail</span></div>
+    <div class="fav-card"><span class="fav-label">📚 Books</span><span class="fav-val">Ender's Game, Harry Potter, Jurassic Park, any HTML book</span></div>
+    <div class="fav-card"><span class="fav-label">🍕 Food</span><span class="fav-val">Pizza obviously, Surge soda, Gushers, Hot Pockets, whatever is in the vending machine</span></div>
+    <div class="fav-card"><span class="fav-label">🌐 Websites</span><span class="fav-val">Newgrounds, Slashdot, this one, AltaVista, that one weird Japanese site I can't read</span></div>
+    <div class="fav-card"><span class="fav-label">💿 Album</span><span class="fav-val">Nimrod - Green Day / Astro Lounge - Smash Mouth / Enema of the State - Blink (coming soon!)</span></div>
+  </div>
+
+  <div class="section-header">Quiz Results!!</div>
+  <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:10px;margin-bottom:14px;">
+    <div class="quiz-result">
+      <span class="result-img">🧙</span>
+      <div class="result-title">Gandalf</div>
+      <div class="result-sub">Which LOTR Character Are You?<br/><span style="color:#888;font-size:10px;">TakenFromQuizilla.com</span></div>
+    </div>
+    <div class="quiz-result">
+      <span class="result-img">🌊</span>
+      <div class="result-title">Water</div>
+      <div class="result-sub">What Element Are You?<br/><span style="color:#888;font-size:10px;">TakenFromQuizilla.com</span></div>
+    </div>
+    <div class="quiz-result">
+      <span class="result-img">🐉</span>
+      <div class="result-title">Dragon</div>
+      <div class="result-sub">What Mythical Creature Are You?<br/><span style="color:#888;font-size:10px;">TakenFromQuizilla.com</span></div>
+    </div>
+  </div>
+
+  <div class="section-header">Online Friends!!</div>
+  <div style="font-size:11px;color:#ff99ff;margin-bottom:8px;">People who are cool on the internet (some I have never met IRL but they are still real friends OK)</div>
+  <div class="friend-list">
+    <div class="friend-tag">~*~StArGiRl~*~</div>
+    <div class="friend-tag">xXDarkAngelXx</div>
+    <div class="friend-tag">CoolDude2000</div>
+    <div class="friend-tag">MidnightRaverGirl</div>
+    <div class="friend-tag">sk8erboy_99</div>
+    <div class="friend-tag">PokeManiac_J</div>
+    <div class="friend-tag">TechWizard42</div>
+    <div class="friend-tag">BuffyFan4Ever</div>
+    <div class="friend-tag">NetNerd_97</div>
+    <div class="friend-tag">HTML_Hero</div>
+  </div>
+  <div style="font-size:10px;color:#888;margin-bottom:14px;">⚠️ If you are on my friends list and we had a fight, please know it was just a misunderstanding. We're still cool right?? AIM me.</div>
+
+  <div class="section-header">Contact Me!!</div>
+  <div class="contact-box">
+    <div class="contact-row"><span class="contact-label">📧 Email:</span>dweeb@hotmail.com (response time: 2-48 hours depending on if I'm offline)</div>
+    <div class="contact-row"><span class="contact-label">💬 AIM:</span>dWeEbMaStEr99 — usually online after 4pm EST</div>
+    <div class="contact-row"><span class="contact-label">📟 ICQ:</span>12847291 — add me!! I'll add back</div>
+    <div class="contact-row"><span class="contact-label">📖 Guestbook:</span><a href="90s-guestbook.html">Sign it here!!</a> I read every entry</div>
+    <div class="contact-row"><span class="contact-label">⚠️ Note:</span>Please do NOT email me chain letters. I will not send them on. They are NOT real. Bill Gates is NOT giving away money.</div>
+  </div>
+
+  <div class="uc-bar"></div>
+  <div class="footer-note">
+    This page was last updated: June 18, 1999<br/>
+    Made with ❤️ and Notepad and a lot of trial and error<br/>
+    <a href="90s-home.html">← Back to Main Page</a>
+    &nbsp;·&nbsp;
+    <a href="90s-guestbook.html">Sign Guestbook</a>
+    &nbsp;·&nbsp;
+    <a href="#">Back to Top ↑</a>
+  </div>
+
+</div>
+</body>
+</html>
