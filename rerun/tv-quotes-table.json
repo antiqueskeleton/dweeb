@@ -1,0 +1,1083 @@
+{
+  "_meta": {
+    "title": "TV quote index \u2014 dweeb.co",
+    "note": "Curated famous short lines only. A quote index, NOT a script archive. Episode metadata (season, number, air date) are facts, each cross-checked against multiple reliable sources.",
+    "sources": "Wikipedia, Wikidata, Apple TV, TVmaze, IMDb, Peacock, HBO Max, Rotten Tomatoes, Metacritic, Wikisimpsons, TV Tropes",
+    "count": 189,
+    "by_show": {
+      "Seinfeld": 52,
+      "Beavis and Butt-Head": 42,
+      "The Simpsons": 39,
+      "The Office": 32,
+      "King of the Hill": 8,
+      "Married... with Children": 7,
+      "Family Guy": 6,
+      "Curb Your Enthusiasm": 2,
+      "Malcolm in the Middle": 1
+    },
+    "schema": "q = quote, who = character, show = series. Episode-cited rows add: ep (episode title), s (season), e (episode number), aired (original US air date). Video-cited rows add: artist, song. A row has one shape or the other, never both.",
+    "rules": [
+      "Short famous catchphrases only \u2014 no extended dialogue, no song lyrics.",
+      "Every quote's episode must exist in the verified registry (build script rejects otherwise).",
+      "80-character ceiling per quote, enforced by the validator.",
+      "All quotes from one episode must carry identical metadata, enforced by the validator.",
+      "No recurring catchphrase is included unless the episode is its verified origin.",
+      "Music-video commentary rows cite artist + song in place of season/episode. This is not a substitute for provenance \u2014 for a video-commentary segment the video IS the provenance.",
+      "Validator checks for season/episode SLOT COLLISIONS \u2014 two different episode titles claiming the same season+number within one show. This caught a real error in a user-supplied source."
+    ],
+    "episodes_verified": {
+      "Seinfeld": {
+        "The Alternate Side": "S3E11 \u2014 1991-12-04",
+        "The Bubble Boy": "S4E07 \u2014 1992-10-07",
+        "The Contest": "S4E11 \u2014 1992-11-18  (Fandom says E10; reliable-source majority says E11)",
+        "The Junior Mint": "S4E20 \u2014 1993-03-18  (Fandom says E21; majority says E20)",
+        "The Puffy Shirt": "S5E02 \u2014 1993-09-23",
+        "The Marine Biologist": "S5E14 \u2014 1994-02-10",
+        "The Opposite": "S5E22 \u2014 1994-05-19",
+        "The Soup Nazi": "S7E06 \u2014 1995-11-02",
+        "The Comeback": "S8E13 \u2014 1997-01-30"
+      },
+      "The Office": {
+        "Dinner Party": "S4E13 \u2014 2008-04-10",
+        "Stress Relief": "S5E14 \u2014 2009-02-01 (two-parter S5E14/15; aired after Super Bowl XLIII)",
+        "The Incentive": "S8E02 \u2014 2011-09-29"
+      },
+      "The Simpsons": {
+        "Homer at the Bat": "S3E17 \u2014 1992-02-20",
+        "Marge vs. the Monorail": "S4E12 \u2014 1993-01-14",
+        "Last Exit to Springfield": "S4E17 \u2014 1993-03-11",
+        "Cape Feare": "S5E02 \u2014 1993-10-07",
+        "22 Short Films About Springfield": "S7E21 \u2014 1996-04-14"
+      },
+      "King of the Hill": {
+        "Pilot": "S1E01 \u2014 1997-01-12",
+        "The Texas Skilsaw Massacre": "S7E07 \u2014 2002-12-15",
+        "Reborn to Be Wild": "S8E02 \u2014 2003-11-09"
+      },
+      "Beavis and Butt-Head": {
+        "The Great Cornholio": "S4E31 \u2014 1994-07-15  (Cornholio's origin episode)"
+      },
+      "Malcolm in the Middle": {
+        "Pilot": "S1E01 \u2014 2000-01-09"
+      },
+      "Family Guy": {
+        "Death Has a Shadow": "S1E01 \u2014 1999-01-31  (aired after Super Bowl XXXIII; a rough cut aired 1998-12-20)",
+        "Road to Rhode Island": "S2E13 \u2014 2000-05-30",
+        "And Then There Were Fewer": "S9E01 \u2014 2010-09-26",
+        "Road to the North Pole": "S9E07 \u2014 2010-12-12"
+      },
+      "Married... with Children": {
+        "Pilot": "S1E01 \u2014 1987-04-05  (first primetime program ever broadcast on Fox)"
+      },
+      "Curb Your Enthusiasm": {
+        "Palestinian Chicken": "S8E03 \u2014 2011-07-24  (CONFLICT: Wikipedia says Jul 17; IMDb, Rotten Tomatoes, Apple TV, Fandom and the Forward oral history all say Jul 24 \u2014 went with the 5-to-1 majority)"
+      }
+    },
+    "excluded_deliberately": {
+      "song_lyrics": "The Monorail Song, Talkin' Softball \u2014 separately credited copyrighted compositions.",
+      "recurring_catchphrases_no_home_episode": [
+        "The Simpsons: 'Eat my shorts!', 'Ay caramba!', 'Excellent...'",
+        "King of the Hill: 'That boy ain't right', 'I sell propane and propane accessories', 'Bwah!' \u2014 Fandom documents these as serieswide catchphrases.",
+        "Married... with Children: 'Four touchdowns in one game' \u2014 referenced across all 11 seasons; the Al Bundy Store page itself notes it recurs throughout.",
+        "Beavis and Butt-Head: 'Fire! Fire!', 'This sucks', 'Huh huh huh' \u2014 recur serieswide with no single home episode and no associated video. Cornholio lines ARE included with an episode cite (S4E31 is their verified origin); the 39 music-video one-liners are included with a video cite."
+      ],
+      "rationale": "Per user decision: exclude any catchphrase that cannot be assigned a verifiable episode, rather than assigning a fitting-but-unverified one. The page renders season/episode/air-date as a factual claim indistinguishable from verified entries, so an invented citation would undermine every other row."
+    },
+    "source_notes": {
+      "albundystore.com": "User-supplied Al Bundy quote page attaches S/E/title to most lines, which is unusual and useful as a LEAD. It is a merch store blog, not a citation-grade source, and two of its own entries conflict internally (NO MA'AM founding listed as both S7E13 and S9E5). Only its Pilot (S1E1) attributions were used, after independently verifying the episode against Wikipedia, IMDb, Metacritic, Fandom, FoxWorld and Grokipedia.",
+      "tvdatabase.fandom.com": "DISCARDED as a source. Returned mangled/copy-pasted data 5+ times across shows.",
+      "screenrant.com": "User-supplied Family Guy quote list. Better than a merch blog: named editorial writer (Cathal Gunning), and cites season/episode/title for every entry. Used as a LEAD only. Its S/E attributions for 'Road to Rhode Island' (S2E13), 'And Then There Were Fewer' (S9E1) and 'Road to the North Pole' (S9E7) were each independently confirmed against Wikipedia, TVmaze, IMDb, TV Tropes, Fandom and TMDB \u2014 all matched. Only standalone lines were taken; setup lines and multi-part exchanges (e.g. the Brady Bunch bait-and-switch) were skipped as dialogue rather than quotes. Note the fetched page only exposed entries 25-16; the top 15 are lazy-loaded.",
+      "ultimateclassicrock.com": "User-supplied Beavis and Butt-Head list \u2014 'Top 40 Beavis and Butt-Head One-Liners', Annie Zaleski, 2018-03-08, Townsquare Media. Bylined editorial writer; lists artist + song for all 40 entries. Critically, it lists NO season/episode numbers, and states the entries are sourced from video clips available online rather than episode records. Rather than invent episode numbers, these rows cite the music video itself. 39 rows taken: stage-direction entries (e.g. 'falls asleep in the middle of the video', 'sings Boston's More Than A Feeling') were skipped as not being quotes; 5 over-length lines were trimmed to their core; a few two-way exchanges were split into separate attributed rows.",
+      "ranker.com": "User-supplied King of the Hill list \u2014 '18 Times King Of The Hill Made A Really Good Point', Stephan Roget. Cites season/episode for most entries (no titles, no air dates), and its S7E7 and S8E2 attributions both checked out. Used as a LEAD ONLY, for two reasons. (1) CENSORED TEXT: the list bracket-substitutes words for ad-safety \u2014 'Guns don't [terminate] people', 'Al Yankovic [took his own life]', 'why would anyone [ingest substances]', 'You either [go] or you don't', 'he knows for sure he gonna [perish]'. Those are the site's words, not the characters'. Any entry whose quote could not be sourced uncensored elsewhere was EXCLUDED rather than shipped with invented wording. (2) PARAPHRASE: even its uncensored entries drift \u2014 it renders the Christian-rock line as 'not making Christianity any better? You're making rock n roll worse', where the episode transcript reads 'not making Christianity better? You're just making rock and roll worse.' All shipped wording was taken from episode transcripts, Wikiquote and IMDb quote pages, not from the list.",
+      "ranker.com \u2014 Simpsons list": "User-supplied: 'The Simpsons Quotes We'll Never Get Tired Of', M. Muir, 29 entries. Much stronger than the same publisher's KOTH list \u2014 no censorship, and each entry carries season, episode AND title, many with full transcript context. BUT it contains a provable internal contradiction: it cites 'Bake him away, toys' as S5E2 'Cape Feare' (#20) AND 'No, it's the children who are wrong' as S5E2 'The Boy Who Knew Too Much' (#14). Both cannot be S5E2. Verification confirms Cape Feare IS S5E2 (aired 1993-10-07), so the Skinner line's citation is wrong and that entry was EXCLUDED pending its own verification. Its S7E21 and S5E2/Cape Feare attributions were independently confirmed. All shipped wording taken from IMDb quote pages and Simpsons Archive transcripts, not from the list's summaries.",
+      "ranker.com \u2014 Kevin Malone list": "User-supplied: 'The Best Things Kevin Malone Ever Said', credited to Ranker's 'Movie and TV Quotes' house account, 30 entries. Carries NO episode or season data whatsoever \u2014 every entry is bare text \u2014 so unlike the other Ranker lists it provided no attributions to check. Every episode below was researched and verified from scratch: 'The Incentive' S8E2 (Wikipedia, Wikidata, Rotten Tomatoes, Metacritic, TV Guide, Dunderpedia, TheTVDB) and the CPR cold open traced to the already-verified 'Stress Relief' S5E14 (Dunderpedia transcript). The list also paraphrases: it renders Kevin's CPR line as 'I can't do this forever' where the transcript reads 'I can't keep doing this forever', and drops 'Me think' from the famous line. All wording taken from Dunderpedia transcripts and IMDb quote pages. Entries whose home episode could not be verified were EXCLUDED per the standing rule \u2014 this includes most of the list, since single bare lines like 'I have very little patience for stupidity' or 'My name in high school was Kool-Aid Man' are not individually traceable without a per-line search each."
+    },
+    "citation_modes": {
+      "episode": "150 rows \u2014 show / season / episode / episode title / original air date.",
+      "music_video": "39 rows \u2014 show / artist / song."
+    }
+  },
+  "quotes": [
+    {
+      "q": "No soup for you!",
+      "who": "The Soup Nazi",
+      "show": "Seinfeld",
+      "ep": "The Soup Nazi",
+      "s": 7,
+      "e": 6,
+      "aired": "November 2, 1995"
+    },
+    {
+      "q": "No soup for you! Come back, one year!",
+      "who": "The Soup Nazi",
+      "show": "Seinfeld",
+      "ep": "The Soup Nazi",
+      "s": 7,
+      "e": 6,
+      "aired": "November 2, 1995"
+    },
+    {
+      "q": "These pretzels are making me thirsty!",
+      "who": "Kramer",
+      "show": "Seinfeld",
+      "ep": "The Alternate Side",
+      "s": 3,
+      "e": 11,
+      "aired": "December 4, 1991"
+    },
+    {
+      "q": "But I don't wanna be a pirate!",
+      "who": "Jerry",
+      "show": "Seinfeld",
+      "ep": "The Puffy Shirt",
+      "s": 5,
+      "e": 2,
+      "aired": "September 23, 1993"
+    },
+    {
+      "q": "You look like the Count of Monte Cristo!",
+      "who": "Elaine",
+      "show": "Seinfeld",
+      "ep": "The Puffy Shirt",
+      "s": 5,
+      "e": 2,
+      "aired": "September 23, 1993"
+    },
+    {
+      "q": "My whole life was ruined because of the puffy shirt.",
+      "who": "George",
+      "show": "Seinfeld",
+      "ep": "The Puffy Shirt",
+      "s": 5,
+      "e": 2,
+      "aired": "September 23, 1993"
+    },
+    {
+      "q": "I think you're all a little touched in the head.",
+      "who": "Estelle",
+      "show": "Seinfeld",
+      "ep": "The Puffy Shirt",
+      "s": 5,
+      "e": 2,
+      "aired": "September 23, 1993"
+    },
+    {
+      "q": "So let him have bananas on the side!",
+      "who": "Frank",
+      "show": "Seinfeld",
+      "ep": "The Puffy Shirt",
+      "s": 5,
+      "e": 2,
+      "aired": "September 23, 1993"
+    },
+    {
+      "q": "Stress is very damaging to the epidermis.",
+      "who": "George",
+      "show": "Seinfeld",
+      "ep": "The Puffy Shirt",
+      "s": 5,
+      "e": 2,
+      "aired": "September 23, 1993"
+    },
+    {
+      "q": "You're gonna be the first pirate!",
+      "who": "Kramer",
+      "show": "Seinfeld",
+      "ep": "The Puffy Shirt",
+      "s": 5,
+      "e": 2,
+      "aired": "September 23, 1993"
+    },
+    {
+      "q": "You're all puffed up!",
+      "who": "Elaine",
+      "show": "Seinfeld",
+      "ep": "The Puffy Shirt",
+      "s": 5,
+      "e": 2,
+      "aired": "September 23, 1993"
+    },
+    {
+      "q": "I'm out! I'm out of the contest!",
+      "who": "Kramer",
+      "show": "Seinfeld",
+      "ep": "The Contest",
+      "s": 4,
+      "e": 11,
+      "aired": "November 18, 1992"
+    },
+    {
+      "q": "I'm still master of my domain.",
+      "who": "Jerry",
+      "show": "Seinfeld",
+      "ep": "The Contest",
+      "s": 4,
+      "e": 11,
+      "aired": "November 18, 1992"
+    },
+    {
+      "q": "Are you still master of your domain?",
+      "who": "Jerry",
+      "show": "Seinfeld",
+      "ep": "The Contest",
+      "s": 4,
+      "e": 11,
+      "aired": "November 18, 1992"
+    },
+    {
+      "q": "I'm king of the county. You?",
+      "who": "George",
+      "show": "Seinfeld",
+      "ep": "The Contest",
+      "s": 4,
+      "e": 11,
+      "aired": "November 18, 1992"
+    },
+    {
+      "q": "Because it's there!",
+      "who": "George",
+      "show": "Seinfeld",
+      "ep": "The Contest",
+      "s": 4,
+      "e": 11,
+      "aired": "November 18, 1992"
+    },
+    {
+      "q": "The sea was angry that day, my friends.",
+      "who": "George",
+      "show": "Seinfeld",
+      "ep": "The Marine Biologist",
+      "s": 5,
+      "e": 14,
+      "aired": "February 10, 1994"
+    },
+    {
+      "q": "Is that a Titleist?",
+      "who": "Kramer",
+      "show": "Seinfeld",
+      "ep": "The Marine Biologist",
+      "s": 5,
+      "e": 14,
+      "aired": "February 10, 1994"
+    },
+    {
+      "q": "The jerk store called. They're running out of you!",
+      "who": "George",
+      "show": "Seinfeld",
+      "ep": "The Comeback",
+      "s": 8,
+      "e": 13,
+      "aired": "January 30, 1997"
+    },
+    {
+      "q": "The ocean called. They're running out of shrimp.",
+      "who": "Reilly",
+      "show": "Seinfeld",
+      "ep": "The Comeback",
+      "s": 8,
+      "e": 13,
+      "aired": "January 30, 1997"
+    },
+    {
+      "q": "What's the difference? You're their all-time best seller!",
+      "who": "Reilly",
+      "show": "Seinfeld",
+      "ep": "The Comeback",
+      "s": 8,
+      "e": 13,
+      "aired": "January 30, 1997"
+    },
+    {
+      "q": "Your cranium called. It's got some space to rent.",
+      "who": "Elaine",
+      "show": "Seinfeld",
+      "ep": "The Comeback",
+      "s": 8,
+      "e": 13,
+      "aired": "January 30, 1997"
+    },
+    {
+      "q": "The zoo called. You're due back by six.",
+      "who": "Jerry",
+      "show": "Seinfeld",
+      "ep": "The Comeback",
+      "s": 8,
+      "e": 13,
+      "aired": "January 30, 1997"
+    },
+    {
+      "q": "There are no jerk stores.",
+      "who": "Jerry",
+      "show": "Seinfeld",
+      "ep": "The Comeback",
+      "s": 8,
+      "e": 13,
+      "aired": "January 30, 1997"
+    },
+    {
+      "q": "I'm going with jerk store!",
+      "who": "George",
+      "show": "Seinfeld",
+      "ep": "The Comeback",
+      "s": 8,
+      "e": 13,
+      "aired": "January 30, 1997"
+    },
+    {
+      "q": "Jerk store is the line.",
+      "who": "George",
+      "show": "Seinfeld",
+      "ep": "The Comeback",
+      "s": 8,
+      "e": 13,
+      "aired": "January 30, 1997"
+    },
+    {
+      "q": "This is why I hate writing with a large group.",
+      "who": "George",
+      "show": "Seinfeld",
+      "ep": "The Comeback",
+      "s": 8,
+      "e": 13,
+      "aired": "January 30, 1997"
+    },
+    {
+      "q": "Let's see how many I can fit in my mouth!",
+      "who": "George",
+      "show": "Seinfeld",
+      "ep": "The Comeback",
+      "s": 8,
+      "e": 13,
+      "aired": "January 30, 1997"
+    },
+    {
+      "q": "Who's gonna turn down a Junior Mint?",
+      "who": "Kramer",
+      "show": "Seinfeld",
+      "ep": "The Junior Mint",
+      "s": 4,
+      "e": 20,
+      "aired": "March 18, 1993"
+    },
+    {
+      "q": "It's chocolate, it's peppermint, it's delicious!",
+      "who": "Kramer",
+      "show": "Seinfeld",
+      "ep": "The Junior Mint",
+      "s": 4,
+      "e": 20,
+      "aired": "March 18, 1993"
+    },
+    {
+      "q": "It's very refreshing!",
+      "who": "Kramer",
+      "show": "Seinfeld",
+      "ep": "The Junior Mint",
+      "s": 4,
+      "e": 20,
+      "aired": "March 18, 1993"
+    },
+    {
+      "q": "Mulva?",
+      "who": "Jerry",
+      "show": "Seinfeld",
+      "ep": "The Junior Mint",
+      "s": 4,
+      "e": 20,
+      "aired": "March 18, 1993"
+    },
+    {
+      "q": "Dolores!",
+      "who": "Jerry",
+      "show": "Seinfeld",
+      "ep": "The Junior Mint",
+      "s": 4,
+      "e": 20,
+      "aired": "March 18, 1993"
+    },
+    {
+      "q": "It's the Moops!",
+      "who": "George",
+      "show": "Seinfeld",
+      "ep": "The Bubble Boy",
+      "s": 4,
+      "e": 7,
+      "aired": "October 7, 1992"
+    },
+    {
+      "q": "Moors! Say Moors!",
+      "who": "The Bubble Boy",
+      "show": "Seinfeld",
+      "ep": "The Bubble Boy",
+      "s": 4,
+      "e": 7,
+      "aired": "October 7, 1992"
+    },
+    {
+      "q": "The card says Moops.",
+      "who": "George",
+      "show": "Seinfeld",
+      "ep": "The Bubble Boy",
+      "s": 4,
+      "e": 7,
+      "aired": "October 7, 1992"
+    },
+    {
+      "q": "He's a bubble boy.",
+      "who": "Jerry",
+      "show": "Seinfeld",
+      "ep": "The Bubble Boy",
+      "s": 4,
+      "e": 7,
+      "aired": "October 7, 1992"
+    },
+    {
+      "q": "He lives in a bubble.",
+      "who": "Jerry",
+      "show": "Seinfeld",
+      "ep": "The Bubble Boy",
+      "s": 4,
+      "e": 7,
+      "aired": "October 7, 1992"
+    },
+    {
+      "q": "Elmer Fudd sitting on a juicer.",
+      "who": "Jerry",
+      "show": "Seinfeld",
+      "ep": "The Bubble Boy",
+      "s": 4,
+      "e": 7,
+      "aired": "October 7, 1992"
+    },
+    {
+      "q": "It's not enough to get there. You gotta make good time.",
+      "who": "Elaine",
+      "show": "Seinfeld",
+      "ep": "The Bubble Boy",
+      "s": 4,
+      "e": 7,
+      "aired": "October 7, 1992"
+    },
+    {
+      "q": "Nothing's finer than being in your diner.",
+      "who": "Jerry",
+      "show": "Seinfeld",
+      "ep": "The Bubble Boy",
+      "s": 4,
+      "e": 7,
+      "aired": "October 7, 1992"
+    },
+    {
+      "q": "My name is George. I'm unemployed and I live with my parents.",
+      "who": "George",
+      "show": "Seinfeld",
+      "ep": "The Opposite",
+      "s": 5,
+      "e": 22,
+      "aired": "May 19, 1994"
+    },
+    {
+      "q": "If every instinct you have is wrong, then the opposite would have to be right.",
+      "who": "Jerry",
+      "show": "Seinfeld",
+      "ep": "The Opposite",
+      "s": 5,
+      "e": 22,
+      "aired": "May 19, 1994"
+    },
+    {
+      "q": "Yes, I will do the opposite.",
+      "who": "George",
+      "show": "Seinfeld",
+      "ep": "The Opposite",
+      "s": 5,
+      "e": 22,
+      "aired": "May 19, 1994"
+    },
+    {
+      "q": "Every decision I've ever made has been wrong.",
+      "who": "George",
+      "show": "Seinfeld",
+      "ep": "The Opposite",
+      "s": 5,
+      "e": 22,
+      "aired": "May 19, 1994"
+    },
+    {
+      "q": "Chicken salad's not the opposite of tuna.",
+      "who": "Jerry",
+      "show": "Seinfeld",
+      "ep": "The Opposite",
+      "s": 5,
+      "e": 22,
+      "aired": "May 19, 1994"
+    },
+    {
+      "q": "Salmon is the opposite of tuna.",
+      "who": "Jerry",
+      "show": "Seinfeld",
+      "ep": "The Opposite",
+      "s": 5,
+      "e": 22,
+      "aired": "May 19, 1994"
+    },
+    {
+      "q": "Good for the tuna.",
+      "who": "George",
+      "show": "Seinfeld",
+      "ep": "The Opposite",
+      "s": 5,
+      "e": 22,
+      "aired": "May 19, 1994"
+    },
+    {
+      "q": "I've become George.",
+      "who": "Elaine",
+      "show": "Seinfeld",
+      "ep": "The Opposite",
+      "s": 5,
+      "e": 22,
+      "aired": "May 19, 1994"
+    },
+    {
+      "q": "Even Steven.",
+      "who": "Kramer",
+      "show": "Seinfeld",
+      "ep": "The Opposite",
+      "s": 5,
+      "e": 22,
+      "aired": "May 19, 1994"
+    },
+    {
+      "q": "Hire this man.",
+      "who": "Steinbrenner",
+      "show": "Seinfeld",
+      "ep": "The Opposite",
+      "s": 5,
+      "e": 22,
+      "aired": "May 19, 1994"
+    },
+    {
+      "q": "This guy's bonkos!",
+      "who": "Regis",
+      "show": "Seinfeld",
+      "ep": "The Opposite",
+      "s": 5,
+      "e": 22,
+      "aired": "May 19, 1994"
+    },
+    {
+      "q": "That's what she said!",
+      "who": "Michael",
+      "show": "The Office",
+      "ep": "Dinner Party",
+      "s": 4,
+      "e": 13,
+      "aired": "April 10, 2008"
+    },
+    {
+      "q": "I'll be your first customer!",
+      "who": "Michael",
+      "show": "The Office",
+      "ep": "Dinner Party",
+      "s": 4,
+      "e": 13,
+      "aired": "April 10, 2008"
+    },
+    {
+      "q": "You're hardly my first.",
+      "who": "Jan",
+      "show": "The Office",
+      "ep": "Dinner Party",
+      "s": 4,
+      "e": 13,
+      "aired": "April 10, 2008"
+    },
+    {
+      "q": "When in Rome.",
+      "who": "Michael",
+      "show": "The Office",
+      "ep": "Dinner Party",
+      "s": 4,
+      "e": 13,
+      "aired": "April 10, 2008"
+    },
+    {
+      "q": "Snip snap! Snip snap! Snip snap!",
+      "who": "Michael",
+      "show": "The Office",
+      "ep": "Dinner Party",
+      "s": 4,
+      "e": 13,
+      "aired": "April 10, 2008"
+    },
+    {
+      "q": "I did the exact same thing to you, Michael.",
+      "who": "Jan",
+      "show": "The Office",
+      "ep": "Dinner Party",
+      "s": 4,
+      "e": 13,
+      "aired": "April 10, 2008"
+    },
+    {
+      "q": "Today, smoking is gonna save lives.",
+      "who": "Dwight",
+      "show": "The Office",
+      "ep": "Stress Relief",
+      "s": 5,
+      "e": 14,
+      "aired": "February 1, 2009"
+    },
+    {
+      "q": "Does anyone smell anything smoky?",
+      "who": "Dwight",
+      "show": "The Office",
+      "ep": "Stress Relief",
+      "s": 5,
+      "e": 14,
+      "aired": "February 1, 2009"
+    },
+    {
+      "q": "Use the surge of fear and adrenaline to sharpen your decision-making.",
+      "who": "Dwight",
+      "show": "The Office",
+      "ep": "Stress Relief",
+      "s": 5,
+      "e": 14,
+      "aired": "February 1, 2009"
+    },
+    {
+      "q": "Save Bandit!",
+      "who": "Angela",
+      "show": "The Office",
+      "ep": "Stress Relief",
+      "s": 5,
+      "e": 14,
+      "aired": "February 1, 2009"
+    },
+    {
+      "q": "I only weigh 82 pounds!",
+      "who": "Angela",
+      "show": "The Office",
+      "ep": "Stress Relief",
+      "s": 5,
+      "e": 14,
+      "aired": "February 1, 2009"
+    },
+    {
+      "q": "Stay alive! I'm getting help!",
+      "who": "Oscar",
+      "show": "The Office",
+      "ep": "Stress Relief",
+      "s": 5,
+      "e": 14,
+      "aired": "February 1, 2009"
+    },
+    {
+      "q": "A lot of ideas were not appreciated in their time.",
+      "who": "Dwight",
+      "show": "The Office",
+      "ep": "Stress Relief",
+      "s": 5,
+      "e": 14,
+      "aired": "February 1, 2009"
+    },
+    {
+      "q": "I did not kill anyone. Stanley was attacked by his own heart.",
+      "who": "Dwight",
+      "show": "The Office",
+      "ep": "Stress Relief",
+      "s": 5,
+      "e": 14,
+      "aired": "February 1, 2009"
+    },
+    {
+      "q": "We are not mad, we are just disappointed.",
+      "who": "Michael",
+      "show": "The Office",
+      "ep": "Stress Relief",
+      "s": 5,
+      "e": 14,
+      "aired": "February 1, 2009"
+    },
+    {
+      "q": "Did I stutter?",
+      "who": "Stanley",
+      "show": "The Office",
+      "ep": "Stress Relief",
+      "s": 5,
+      "e": 14,
+      "aired": "February 1, 2009"
+    },
+    {
+      "q": "Boy, have you lost your mind? 'Cause I'll help you find it.",
+      "who": "Stanley",
+      "show": "The Office",
+      "ep": "Stress Relief",
+      "s": 5,
+      "e": 14,
+      "aired": "February 1, 2009"
+    },
+    {
+      "q": "Are you from another planet?",
+      "who": "Stanley",
+      "show": "The Office",
+      "ep": "Stress Relief",
+      "s": 5,
+      "e": 14,
+      "aired": "February 1, 2009"
+    },
+    {
+      "q": "Boom! Roasted.",
+      "who": "Michael",
+      "show": "The Office",
+      "ep": "Stress Relief",
+      "s": 5,
+      "e": 14,
+      "aired": "February 1, 2009"
+    },
+    {
+      "q": "Dental plan!",
+      "who": "Lenny",
+      "show": "The Simpsons",
+      "ep": "Last Exit to Springfield",
+      "s": 4,
+      "e": 17,
+      "aired": "March 11, 1993"
+    },
+    {
+      "q": "Lisa needs braces.",
+      "who": "Marge",
+      "show": "The Simpsons",
+      "ep": "Last Exit to Springfield",
+      "s": 4,
+      "e": 17,
+      "aired": "March 11, 1993"
+    },
+    {
+      "q": "Homer Simpson was not the brilliant tactician I thought he was.",
+      "who": "Mr. Burns",
+      "show": "The Simpsons",
+      "ep": "Last Exit to Springfield",
+      "s": 4,
+      "e": 17,
+      "aired": "March 11, 1993"
+    },
+    {
+      "q": "It was the best of times, it was the blurst of times.",
+      "who": "Mr. Burns",
+      "show": "The Simpsons",
+      "ep": "Last Exit to Springfield",
+      "s": 4,
+      "e": 17,
+      "aired": "March 11, 1993"
+    },
+    {
+      "q": "You couldn't hit water if you fell out of a boat!",
+      "who": "Mr. Burns",
+      "show": "The Simpsons",
+      "ep": "Last Exit to Springfield",
+      "s": 4,
+      "e": 17,
+      "aired": "March 11, 1993"
+    },
+    {
+      "q": "Fifteen minutes from now, I will wreak a terrible vengeance upon this city!",
+      "who": "Mr. Burns",
+      "show": "The Simpsons",
+      "ep": "Last Exit to Springfield",
+      "s": 4,
+      "e": 17,
+      "aired": "March 11, 1993"
+    },
+    {
+      "q": "There's nobody that evil in real life.",
+      "who": "Homer",
+      "show": "The Simpsons",
+      "ep": "Last Exit to Springfield",
+      "s": 4,
+      "e": 17,
+      "aired": "March 11, 1993"
+    },
+    {
+      "q": "And that's the tooth!",
+      "who": "Lisa",
+      "show": "The Simpsons",
+      "ep": "Last Exit to Springfield",
+      "s": 4,
+      "e": 17,
+      "aired": "March 11, 1993"
+    },
+    {
+      "q": "And by gum, it put them on the map!",
+      "who": "Lyle Lanley",
+      "show": "The Simpsons",
+      "ep": "Marge vs. the Monorail",
+      "s": 4,
+      "e": 12,
+      "aired": "January 14, 1993"
+    },
+    {
+      "q": "Well, my work is done here.",
+      "who": "Leonard Nimoy",
+      "show": "The Simpsons",
+      "ep": "Marge vs. the Monorail",
+      "s": 4,
+      "e": 12,
+      "aired": "January 14, 1993"
+    },
+    {
+      "q": "What do you mean, your work is done?",
+      "who": "Barney",
+      "show": "The Simpsons",
+      "ep": "Marge vs. the Monorail",
+      "s": 4,
+      "e": 12,
+      "aired": "January 14, 1993"
+    },
+    {
+      "q": "Solar powered. When will people learn?",
+      "who": "Technician",
+      "show": "The Simpsons",
+      "ep": "Marge vs. the Monorail",
+      "s": 4,
+      "e": 12,
+      "aired": "January 14, 1993"
+    },
+    {
+      "q": "I call the big one Bitey.",
+      "who": "Homer",
+      "show": "The Simpsons",
+      "ep": "Marge vs. the Monorail",
+      "s": 4,
+      "e": 12,
+      "aired": "January 14, 1993"
+    },
+    {
+      "q": "Donuts. Is there anything they can't do?",
+      "who": "Homer",
+      "show": "The Simpsons",
+      "ep": "Marge vs. the Monorail",
+      "s": 4,
+      "e": 12,
+      "aired": "January 14, 1993"
+    },
+    {
+      "q": "We're too late!",
+      "who": "Marge",
+      "show": "The Simpsons",
+      "ep": "Marge vs. the Monorail",
+      "s": 4,
+      "e": 12,
+      "aired": "January 14, 1993"
+    },
+    {
+      "q": "I shouldn't have stopped for that haircut.",
+      "who": "Sebastian Cobb",
+      "show": "The Simpsons",
+      "ep": "Marge vs. the Monorail",
+      "s": 4,
+      "e": 12,
+      "aired": "January 14, 1993"
+    },
+    {
+      "q": "D'oh!",
+      "who": "Homer",
+      "show": "The Simpsons",
+      "ep": "Marge vs. the Monorail",
+      "s": 4,
+      "e": 12,
+      "aired": "January 14, 1993"
+    },
+    {
+      "q": "You watch too many movies, Sax!",
+      "who": "Lou",
+      "show": "The Simpsons",
+      "ep": "Homer at the Bat",
+      "s": 3,
+      "e": 17,
+      "aired": "February 20, 1992"
+    },
+    {
+      "q": "Don't I at least get to call my lawyer?",
+      "who": "Steve Sax",
+      "show": "The Simpsons",
+      "ep": "Homer at the Bat",
+      "s": 3,
+      "e": 17,
+      "aired": "February 20, 1992"
+    },
+    {
+      "q": "We can close the book on just about every unsolved crime in our fair city.",
+      "who": "Chief Wiggum",
+      "show": "The Simpsons",
+      "ep": "Homer at the Bat",
+      "s": 3,
+      "e": 17,
+      "aired": "February 20, 1992"
+    },
+    {
+      "q": "You know what Ford stands for? Fix It Again Tony.",
+      "who": "Dale",
+      "show": "King of the Hill",
+      "ep": "Pilot",
+      "s": 1,
+      "e": 1,
+      "aired": "January 12, 1997"
+    },
+    {
+      "q": "Dale, that's a Fiat.",
+      "who": "Hank",
+      "show": "King of the Hill",
+      "ep": "Pilot",
+      "s": 1,
+      "e": 1,
+      "aired": "January 12, 1997"
+    },
+    {
+      "q": "I am the Great Cornholio!",
+      "who": "Beavis",
+      "show": "Beavis and Butt-Head",
+      "ep": "The Great Cornholio",
+      "s": 4,
+      "e": 31,
+      "aired": "July 15, 1994"
+    },
+    {
+      "q": "I need TP for my bunghole!",
+      "who": "Beavis",
+      "show": "Beavis and Butt-Head",
+      "ep": "The Great Cornholio",
+      "s": 4,
+      "e": 31,
+      "aired": "July 15, 1994"
+    },
+    {
+      "q": "Are you threatening me?",
+      "who": "Beavis",
+      "show": "Beavis and Butt-Head",
+      "ep": "The Great Cornholio",
+      "s": 4,
+      "e": 31,
+      "aired": "July 15, 1994"
+    },
+    {
+      "q": "The best thing about childhood is that at some point it stops.",
+      "who": "Malcolm",
+      "show": "Malcolm in the Middle",
+      "ep": "Pilot",
+      "s": 1,
+      "e": 1,
+      "aired": "January 9, 2000"
+    },
+    {
+      "q": "You've got to be kidding me. I'm on welfare?",
+      "who": "Peter",
+      "show": "Family Guy",
+      "ep": "Death Has a Shadow",
+      "s": 1,
+      "e": 1,
+      "aired": "January 31, 1999"
+    },
+    {
+      "q": "Lois, this is not my Batman glass.",
+      "who": "Peter",
+      "show": "Family Guy",
+      "ep": "Death Has a Shadow",
+      "s": 1,
+      "e": 1,
+      "aired": "January 31, 1999"
+    },
+    {
+      "q": "I'm Stewie Griffin. I'm a baby.",
+      "who": "Stewie",
+      "show": "Family Guy",
+      "ep": "Road to Rhode Island",
+      "s": 2,
+      "e": 13,
+      "aired": "May 30, 2000"
+    },
+    {
+      "q": "I'm sorry, honey. I didn't hear you. I was just thinking of killing myself.",
+      "who": "Al",
+      "show": "Married... with Children",
+      "ep": "Pilot",
+      "s": 1,
+      "e": 1,
+      "aired": "April 5, 1987"
+    },
+    {
+      "q": "We have lived here for 15 years, and we have no friends.",
+      "who": "Al",
+      "show": "Married... with Children",
+      "ep": "Pilot",
+      "s": 1,
+      "e": 1,
+      "aired": "April 5, 1987"
+    },
+    {
+      "q": "You know, if I wanted you to know, I'd be talking.",
+      "who": "Al",
+      "show": "Married... with Children",
+      "ep": "Pilot",
+      "s": 1,
+      "e": 1,
+      "aired": "April 5, 1987"
+    },
+    {
+      "q": "That hair is there for a reason. It keeps you off of me at night.",
+      "who": "Al",
+      "show": "Married... with Children",
+      "ep": "Pilot",
+      "s": 1,
+      "e": 1,
+      "aired": "April 5, 1987"
+    },
+    {
+      "q": "Don't wait up.",
+      "who": "Al",
+      "show": "Married... with Children",
+      "ep": "Pilot",
+      "s": 1,
+      "e": 1,
+      "aired": "April 5, 1987"
+    },
+    {
+      "q": "Die, commie bimbo!",
+      "who": "Bud",
+      "show": "Married... with Children",
+      "ep": "Pilot",
+      "s": 1,
+      "e": 1,
+      "aired": "April 5, 1987"
+    },
+    {
+      "q": "What is their last name, Gorme?",
+      "who": "Al",
+      "show": "Married... with Children",
+      "ep": "Pilot",
+      "s": 1,
+      "e": 1,
+      "aired": "April 5, 1987"
+    },
+    {
+      "q": "You're always attracted to someone who doesn't want you.",
+      "who": "Larry",
+      "show": "Curb Your Enthusiasm",
+      "ep": "Palestinian Chicken",
+      "s": 8,
+      "e": 3,
+      "aired": "July 24, 2011"
+    },
+    {
+      "q": "Social assassin.",
+      "who": "Larry",
+      "show": "Curb Your Enthusiasm",
+      "ep": "Palestinian Chicken",
+      "s": 8,
+      "e": 3,
+      "aired": "July 24, 2011"
+    }
+  ]
+}

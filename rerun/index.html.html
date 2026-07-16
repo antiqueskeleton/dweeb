@@ -1,0 +1,365 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Quotes &mdash; dweeb.co</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;1,400&family=Inter:wght@400;500&display=swap');
+
+  *{ box-sizing:border-box; margin:0; padding:0; }
+  html,body{ height:100%; }
+
+  body{
+    background:#F7F5F0;
+    color:#171310;
+    font-family:'EB Garamond', Georgia, serif;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    padding:40px 26px;
+    overflow:hidden;
+  }
+
+  /* The whole block breathes as one unit — no staggered parts. */
+  #stage{
+    max-width:660px;
+    width:100%;
+    text-align:center;
+    opacity:0;
+    transform:translateY(7px);
+    transition:opacity 1.8s cubic-bezier(.37,0,.28,1),
+               transform 1.8s cubic-bezier(.37,0,.28,1);
+    will-change:opacity, transform;
+  }
+  #stage.in{
+    opacity:1;
+    transform:translateY(0);
+  }
+
+  #quote{
+    font-size:clamp(26px, 5.2vw, 46px);
+    line-height:1.34;
+    letter-spacing:-0.012em;
+    text-wrap:balance;
+    margin-bottom:26px;
+  }
+
+  #who{
+    font-size:clamp(13px, 1.9vw, 16px);
+    font-style:italic;
+    color:#5c534a;
+    letter-spacing:0.02em;
+    margin-bottom:22px;
+  }
+  #who::before{
+    content:'';
+    display:block;
+    width:28px;
+    height:1px;
+    background:#cfc7ba;
+    margin:0 auto 20px;
+  }
+
+  #meta{
+    font-family:'Inter', system-ui, sans-serif;
+    font-size:10px;
+    letter-spacing:0.14em;
+    text-transform:uppercase;
+    color:#9c9186;
+    line-height:1.9;
+  }
+  #meta .show{
+    color:#6f6459;
+    font-weight:500;
+    letter-spacing:0.18em;
+  }
+  /* artist gets the same weight as an episode title — the two modes stay parallel */
+  #meta .artist{
+    color:#7d7266;
+  }
+
+  #wm{
+    position:fixed;
+    bottom:22px;
+    left:50%;
+    transform:translateX(-50%);
+    font-family:'Inter', system-ui, sans-serif;
+    font-size:10px;
+    font-weight:500;
+    letter-spacing:0.08em;
+    color:#c9c0b6;
+    text-decoration:none;
+    transition:color .4s ease;
+  }
+  #wm:hover{ color:#8a7f74; }
+  #wm b{ font-weight:500; color:#bab0a5; }
+
+  @media (prefers-reduced-motion:reduce){
+    #stage{ transition:opacity .3s ease; transform:none; }
+    #stage.in{ transform:none; }
+  }
+</style>
+</head>
+<body>
+
+<div id="stage">
+  <div id="quote">&nbsp;</div>
+  <div id="who">&nbsp;</div>
+  <div id="meta">&nbsp;</div>
+</div>
+
+<a id="wm" href="https://dweeb.co">dweeb<b>.co</b></a>
+
+<script>
+/* Curated short quotes. Every episode's season / number / air date was
+   cross-checked against Wikipedia, Wikidata, Apple TV, TVmaze and IMDb.
+   A quote index — not a script archive. */
+const Q = [
+  { q:"No soup for you!", who:"The Soup Nazi", show:"Seinfeld", ep:"The Soup Nazi", s:7, e:6, aired:"November 2, 1995" },
+  { q:"No soup for you! Come back, one year!", who:"The Soup Nazi", show:"Seinfeld", ep:"The Soup Nazi", s:7, e:6, aired:"November 2, 1995" },
+  { q:"These pretzels are making me thirsty!", who:"Kramer", show:"Seinfeld", ep:"The Alternate Side", s:3, e:11, aired:"December 4, 1991" },
+  { q:"But I don't wanna be a pirate!", who:"Jerry", show:"Seinfeld", ep:"The Puffy Shirt", s:5, e:2, aired:"September 23, 1993" },
+  { q:"You look like the Count of Monte Cristo!", who:"Elaine", show:"Seinfeld", ep:"The Puffy Shirt", s:5, e:2, aired:"September 23, 1993" },
+  { q:"My whole life was ruined because of the puffy shirt.", who:"George", show:"Seinfeld", ep:"The Puffy Shirt", s:5, e:2, aired:"September 23, 1993" },
+  { q:"I think you're all a little touched in the head.", who:"Estelle", show:"Seinfeld", ep:"The Puffy Shirt", s:5, e:2, aired:"September 23, 1993" },
+  { q:"So let him have bananas on the side!", who:"Frank", show:"Seinfeld", ep:"The Puffy Shirt", s:5, e:2, aired:"September 23, 1993" },
+  { q:"Stress is very damaging to the epidermis.", who:"George", show:"Seinfeld", ep:"The Puffy Shirt", s:5, e:2, aired:"September 23, 1993" },
+  { q:"You're gonna be the first pirate!", who:"Kramer", show:"Seinfeld", ep:"The Puffy Shirt", s:5, e:2, aired:"September 23, 1993" },
+  { q:"You're all puffed up!", who:"Elaine", show:"Seinfeld", ep:"The Puffy Shirt", s:5, e:2, aired:"September 23, 1993" },
+  { q:"I'm out! I'm out of the contest!", who:"Kramer", show:"Seinfeld", ep:"The Contest", s:4, e:11, aired:"November 18, 1992" },
+  { q:"I'm still master of my domain.", who:"Jerry", show:"Seinfeld", ep:"The Contest", s:4, e:11, aired:"November 18, 1992" },
+  { q:"Are you still master of your domain?", who:"Jerry", show:"Seinfeld", ep:"The Contest", s:4, e:11, aired:"November 18, 1992" },
+  { q:"I'm king of the county. You?", who:"George", show:"Seinfeld", ep:"The Contest", s:4, e:11, aired:"November 18, 1992" },
+  { q:"Because it's there!", who:"George", show:"Seinfeld", ep:"The Contest", s:4, e:11, aired:"November 18, 1992" },
+  { q:"The sea was angry that day, my friends.", who:"George", show:"Seinfeld", ep:"The Marine Biologist", s:5, e:14, aired:"February 10, 1994" },
+  { q:"Is that a Titleist?", who:"Kramer", show:"Seinfeld", ep:"The Marine Biologist", s:5, e:14, aired:"February 10, 1994" },
+  { q:"The jerk store called. They're running out of you!", who:"George", show:"Seinfeld", ep:"The Comeback", s:8, e:13, aired:"January 30, 1997" },
+  { q:"The ocean called. They're running out of shrimp.", who:"Reilly", show:"Seinfeld", ep:"The Comeback", s:8, e:13, aired:"January 30, 1997" },
+  { q:"What's the difference? You're their all-time best seller!", who:"Reilly", show:"Seinfeld", ep:"The Comeback", s:8, e:13, aired:"January 30, 1997" },
+  { q:"Your cranium called. It's got some space to rent.", who:"Elaine", show:"Seinfeld", ep:"The Comeback", s:8, e:13, aired:"January 30, 1997" },
+  { q:"The zoo called. You're due back by six.", who:"Jerry", show:"Seinfeld", ep:"The Comeback", s:8, e:13, aired:"January 30, 1997" },
+  { q:"There are no jerk stores.", who:"Jerry", show:"Seinfeld", ep:"The Comeback", s:8, e:13, aired:"January 30, 1997" },
+  { q:"I'm going with jerk store!", who:"George", show:"Seinfeld", ep:"The Comeback", s:8, e:13, aired:"January 30, 1997" },
+  { q:"Jerk store is the line.", who:"George", show:"Seinfeld", ep:"The Comeback", s:8, e:13, aired:"January 30, 1997" },
+  { q:"This is why I hate writing with a large group.", who:"George", show:"Seinfeld", ep:"The Comeback", s:8, e:13, aired:"January 30, 1997" },
+  { q:"Let's see how many I can fit in my mouth!", who:"George", show:"Seinfeld", ep:"The Comeback", s:8, e:13, aired:"January 30, 1997" },
+  { q:"Who's gonna turn down a Junior Mint?", who:"Kramer", show:"Seinfeld", ep:"The Junior Mint", s:4, e:20, aired:"March 18, 1993" },
+  { q:"It's chocolate, it's peppermint, it's delicious!", who:"Kramer", show:"Seinfeld", ep:"The Junior Mint", s:4, e:20, aired:"March 18, 1993" },
+  { q:"It's very refreshing!", who:"Kramer", show:"Seinfeld", ep:"The Junior Mint", s:4, e:20, aired:"March 18, 1993" },
+  { q:"Mulva?", who:"Jerry", show:"Seinfeld", ep:"The Junior Mint", s:4, e:20, aired:"March 18, 1993" },
+  { q:"Dolores!", who:"Jerry", show:"Seinfeld", ep:"The Junior Mint", s:4, e:20, aired:"March 18, 1993" },
+  { q:"It's the Moops!", who:"George", show:"Seinfeld", ep:"The Bubble Boy", s:4, e:7, aired:"October 7, 1992" },
+  { q:"Moors! Say Moors!", who:"The Bubble Boy", show:"Seinfeld", ep:"The Bubble Boy", s:4, e:7, aired:"October 7, 1992" },
+  { q:"The card says Moops.", who:"George", show:"Seinfeld", ep:"The Bubble Boy", s:4, e:7, aired:"October 7, 1992" },
+  { q:"He's a bubble boy.", who:"Jerry", show:"Seinfeld", ep:"The Bubble Boy", s:4, e:7, aired:"October 7, 1992" },
+  { q:"He lives in a bubble.", who:"Jerry", show:"Seinfeld", ep:"The Bubble Boy", s:4, e:7, aired:"October 7, 1992" },
+  { q:"Elmer Fudd sitting on a juicer.", who:"Jerry", show:"Seinfeld", ep:"The Bubble Boy", s:4, e:7, aired:"October 7, 1992" },
+  { q:"It's not enough to get there. You gotta make good time.", who:"Elaine", show:"Seinfeld", ep:"The Bubble Boy", s:4, e:7, aired:"October 7, 1992" },
+  { q:"Nothing's finer than being in your diner.", who:"Jerry", show:"Seinfeld", ep:"The Bubble Boy", s:4, e:7, aired:"October 7, 1992" },
+  { q:"My name is George. I'm unemployed and I live with my parents.", who:"George", show:"Seinfeld", ep:"The Opposite", s:5, e:22, aired:"May 19, 1994" },
+  { q:"If every instinct you have is wrong, then the opposite would have to be right.", who:"Jerry", show:"Seinfeld", ep:"The Opposite", s:5, e:22, aired:"May 19, 1994" },
+  { q:"Yes, I will do the opposite.", who:"George", show:"Seinfeld", ep:"The Opposite", s:5, e:22, aired:"May 19, 1994" },
+  { q:"Every decision I've ever made has been wrong.", who:"George", show:"Seinfeld", ep:"The Opposite", s:5, e:22, aired:"May 19, 1994" },
+  { q:"Chicken salad's not the opposite of tuna.", who:"Jerry", show:"Seinfeld", ep:"The Opposite", s:5, e:22, aired:"May 19, 1994" },
+  { q:"Salmon is the opposite of tuna.", who:"Jerry", show:"Seinfeld", ep:"The Opposite", s:5, e:22, aired:"May 19, 1994" },
+  { q:"Good for the tuna.", who:"George", show:"Seinfeld", ep:"The Opposite", s:5, e:22, aired:"May 19, 1994" },
+  { q:"I've become George.", who:"Elaine", show:"Seinfeld", ep:"The Opposite", s:5, e:22, aired:"May 19, 1994" },
+  { q:"Even Steven.", who:"Kramer", show:"Seinfeld", ep:"The Opposite", s:5, e:22, aired:"May 19, 1994" },
+  { q:"Hire this man.", who:"Steinbrenner", show:"Seinfeld", ep:"The Opposite", s:5, e:22, aired:"May 19, 1994" },
+  { q:"This guy's bonkos!", who:"Regis", show:"Seinfeld", ep:"The Opposite", s:5, e:22, aired:"May 19, 1994" },
+  { q:"That's what she said!", who:"Michael", show:"The Office", ep:"Dinner Party", s:4, e:13, aired:"April 10, 2008" },
+  { q:"I'll be your first customer!", who:"Michael", show:"The Office", ep:"Dinner Party", s:4, e:13, aired:"April 10, 2008" },
+  { q:"You're hardly my first.", who:"Jan", show:"The Office", ep:"Dinner Party", s:4, e:13, aired:"April 10, 2008" },
+  { q:"When in Rome.", who:"Michael", show:"The Office", ep:"Dinner Party", s:4, e:13, aired:"April 10, 2008" },
+  { q:"Snip snap! Snip snap! Snip snap!", who:"Michael", show:"The Office", ep:"Dinner Party", s:4, e:13, aired:"April 10, 2008" },
+  { q:"I did the exact same thing to you, Michael.", who:"Jan", show:"The Office", ep:"Dinner Party", s:4, e:13, aired:"April 10, 2008" },
+  { q:"Today, smoking is gonna save lives.", who:"Dwight", show:"The Office", ep:"Stress Relief", s:5, e:14, aired:"February 1, 2009" },
+  { q:"Does anyone smell anything smoky?", who:"Dwight", show:"The Office", ep:"Stress Relief", s:5, e:14, aired:"February 1, 2009" },
+  { q:"Use the surge of fear and adrenaline to sharpen your decision-making.", who:"Dwight", show:"The Office", ep:"Stress Relief", s:5, e:14, aired:"February 1, 2009" },
+  { q:"Save Bandit!", who:"Angela", show:"The Office", ep:"Stress Relief", s:5, e:14, aired:"February 1, 2009" },
+  { q:"I only weigh 82 pounds!", who:"Angela", show:"The Office", ep:"Stress Relief", s:5, e:14, aired:"February 1, 2009" },
+  { q:"Stay alive! I'm getting help!", who:"Oscar", show:"The Office", ep:"Stress Relief", s:5, e:14, aired:"February 1, 2009" },
+  { q:"A lot of ideas were not appreciated in their time.", who:"Dwight", show:"The Office", ep:"Stress Relief", s:5, e:14, aired:"February 1, 2009" },
+  { q:"I did not kill anyone. Stanley was attacked by his own heart.", who:"Dwight", show:"The Office", ep:"Stress Relief", s:5, e:14, aired:"February 1, 2009" },
+  { q:"We are not mad, we are just disappointed.", who:"Michael", show:"The Office", ep:"Stress Relief", s:5, e:14, aired:"February 1, 2009" },
+  { q:"Did I stutter?", who:"Stanley", show:"The Office", ep:"Stress Relief", s:5, e:14, aired:"February 1, 2009" },
+  { q:"Boy, have you lost your mind? 'Cause I'll help you find it.", who:"Stanley", show:"The Office", ep:"Stress Relief", s:5, e:14, aired:"February 1, 2009" },
+  { q:"Are you from another planet?", who:"Stanley", show:"The Office", ep:"Stress Relief", s:5, e:14, aired:"February 1, 2009" },
+  { q:"Boom! Roasted.", who:"Michael", show:"The Office", ep:"Stress Relief", s:5, e:14, aired:"February 1, 2009" },
+  { q:"Dental plan!", who:"Lenny", show:"The Simpsons", ep:"Last Exit to Springfield", s:4, e:17, aired:"March 11, 1993" },
+  { q:"Lisa needs braces.", who:"Marge", show:"The Simpsons", ep:"Last Exit to Springfield", s:4, e:17, aired:"March 11, 1993" },
+  { q:"Homer Simpson was not the brilliant tactician I thought he was.", who:"Mr. Burns", show:"The Simpsons", ep:"Last Exit to Springfield", s:4, e:17, aired:"March 11, 1993" },
+  { q:"It was the best of times, it was the blurst of times.", who:"Mr. Burns", show:"The Simpsons", ep:"Last Exit to Springfield", s:4, e:17, aired:"March 11, 1993" },
+  { q:"You couldn't hit water if you fell out of a boat!", who:"Mr. Burns", show:"The Simpsons", ep:"Last Exit to Springfield", s:4, e:17, aired:"March 11, 1993" },
+  { q:"Fifteen minutes from now, I will wreak a terrible vengeance upon this city!", who:"Mr. Burns", show:"The Simpsons", ep:"Last Exit to Springfield", s:4, e:17, aired:"March 11, 1993" },
+  { q:"There's nobody that evil in real life.", who:"Homer", show:"The Simpsons", ep:"Last Exit to Springfield", s:4, e:17, aired:"March 11, 1993" },
+  { q:"And that's the tooth!", who:"Lisa", show:"The Simpsons", ep:"Last Exit to Springfield", s:4, e:17, aired:"March 11, 1993" },
+  { q:"And by gum, it put them on the map!", who:"Lyle Lanley", show:"The Simpsons", ep:"Marge vs. the Monorail", s:4, e:12, aired:"January 14, 1993" },
+  { q:"Well, my work is done here.", who:"Leonard Nimoy", show:"The Simpsons", ep:"Marge vs. the Monorail", s:4, e:12, aired:"January 14, 1993" },
+  { q:"What do you mean, your work is done?", who:"Barney", show:"The Simpsons", ep:"Marge vs. the Monorail", s:4, e:12, aired:"January 14, 1993" },
+  { q:"Solar powered. When will people learn?", who:"Technician", show:"The Simpsons", ep:"Marge vs. the Monorail", s:4, e:12, aired:"January 14, 1993" },
+  { q:"I call the big one Bitey.", who:"Homer", show:"The Simpsons", ep:"Marge vs. the Monorail", s:4, e:12, aired:"January 14, 1993" },
+  { q:"Donuts. Is there anything they can't do?", who:"Homer", show:"The Simpsons", ep:"Marge vs. the Monorail", s:4, e:12, aired:"January 14, 1993" },
+  { q:"We're too late!", who:"Marge", show:"The Simpsons", ep:"Marge vs. the Monorail", s:4, e:12, aired:"January 14, 1993" },
+  { q:"I shouldn't have stopped for that haircut.", who:"Sebastian Cobb", show:"The Simpsons", ep:"Marge vs. the Monorail", s:4, e:12, aired:"January 14, 1993" },
+  { q:"D'oh!", who:"Homer", show:"The Simpsons", ep:"Marge vs. the Monorail", s:4, e:12, aired:"January 14, 1993" },
+  { q:"You watch too many movies, Sax!", who:"Lou", show:"The Simpsons", ep:"Homer at the Bat", s:3, e:17, aired:"February 20, 1992" },
+  { q:"Don't I at least get to call my lawyer?", who:"Steve Sax", show:"The Simpsons", ep:"Homer at the Bat", s:3, e:17, aired:"February 20, 1992" },
+  { q:"We can close the book on just about every unsolved crime in our fair city.", who:"Chief Wiggum", show:"The Simpsons", ep:"Homer at the Bat", s:3, e:17, aired:"February 20, 1992" },
+  { q:"You know what Ford stands for? Fix It Again Tony.", who:"Dale", show:"King of the Hill", ep:"Pilot", s:1, e:1, aired:"January 12, 1997" },
+  { q:"Dale, that's a Fiat.", who:"Hank", show:"King of the Hill", ep:"Pilot", s:1, e:1, aired:"January 12, 1997" },
+  { q:"I am the Great Cornholio!", who:"Beavis", show:"Beavis and Butt-Head", ep:"The Great Cornholio", s:4, e:31, aired:"July 15, 1994" },
+  { q:"I need TP for my bunghole!", who:"Beavis", show:"Beavis and Butt-Head", ep:"The Great Cornholio", s:4, e:31, aired:"July 15, 1994" },
+  { q:"Are you threatening me?", who:"Beavis", show:"Beavis and Butt-Head", ep:"The Great Cornholio", s:4, e:31, aired:"July 15, 1994" },
+  { q:"The best thing about childhood is that at some point it stops.", who:"Malcolm", show:"Malcolm in the Middle", ep:"Pilot", s:1, e:1, aired:"January 9, 2000" },
+  { q:"You've got to be kidding me. I'm on welfare?", who:"Peter", show:"Family Guy", ep:"Death Has a Shadow", s:1, e:1, aired:"January 31, 1999" },
+  { q:"Lois, this is not my Batman glass.", who:"Peter", show:"Family Guy", ep:"Death Has a Shadow", s:1, e:1, aired:"January 31, 1999" },
+  { q:"I'm Stewie Griffin. I'm a baby.", who:"Stewie", show:"Family Guy", ep:"Road to Rhode Island", s:2, e:13, aired:"May 30, 2000" },
+  { q:"I'm sorry, honey. I didn't hear you. I was just thinking of killing myself.", who:"Al", show:"Married... with Children", ep:"Pilot", s:1, e:1, aired:"April 5, 1987" },
+  { q:"We have lived here for 15 years, and we have no friends.", who:"Al", show:"Married... with Children", ep:"Pilot", s:1, e:1, aired:"April 5, 1987" },
+  { q:"You know, if I wanted you to know, I'd be talking.", who:"Al", show:"Married... with Children", ep:"Pilot", s:1, e:1, aired:"April 5, 1987" },
+  { q:"That hair is there for a reason. It keeps you off of me at night.", who:"Al", show:"Married... with Children", ep:"Pilot", s:1, e:1, aired:"April 5, 1987" },
+  { q:"Don't wait up.", who:"Al", show:"Married... with Children", ep:"Pilot", s:1, e:1, aired:"April 5, 1987" },
+  { q:"Die, commie bimbo!", who:"Bud", show:"Married... with Children", ep:"Pilot", s:1, e:1, aired:"April 5, 1987" },
+  { q:"What is their last name, Gorme?", who:"Al", show:"Married... with Children", ep:"Pilot", s:1, e:1, aired:"April 5, 1987" },
+  { q:"You're always attracted to someone who doesn't want you.", who:"Larry", show:"Curb Your Enthusiasm", ep:"Palestinian Chicken", s:8, e:3, aired:"July 24, 2011" },
+  { q:"Social assassin.", who:"Larry", show:"Curb Your Enthusiasm", ep:"Palestinian Chicken", s:8, e:3, aired:"July 24, 2011" },
+  { q:"You hear that tone you're using? That's penis repellent right there.", who:"Tom Tucker", show:"Family Guy", ep:"And Then There Were Fewer", s:9, e:1, aired:"September 26, 2010" },
+  { q:"No one kills Lois but me.", who:"Stewie", show:"Family Guy", ep:"And Then There Were Fewer", s:9, e:1, aired:"September 26, 2010" },
+  { q:"Dogs don't have a good sense of time.", who:"Brian", show:"Family Guy", ep:"Road to the North Pole", s:9, e:7, aired:"December 12, 2010" },
+  { q:"I don't have an anger problem, I have an idiot problem.", who:"Hank", show:"King of the Hill", ep:"The Texas Skilsaw Massacre", s:7, e:7, aired:"December 15, 2002" },
+  { q:"Objection, conjecture, objecture!", who:"Dale", show:"King of the Hill", ep:"The Texas Skilsaw Massacre", s:7, e:7, aired:"December 15, 2002" },
+  { q:"That's not a word!", who:"Hank", show:"King of the Hill", ep:"The Texas Skilsaw Massacre", s:7, e:7, aired:"December 15, 2002" },
+  { q:"You're not making Christianity better. You're just making rock and roll worse.", who:"Hank", show:"King of the Hill", ep:"Reborn to Be Wild", s:8, e:2, aired:"November 9, 2003" },
+  { q:"Come on, even Jesus had long hair.", who:"Pastor K", show:"King of the Hill", ep:"Reborn to Be Wild", s:8, e:2, aired:"November 9, 2003" },
+  { q:"Only because I wasn't his dad.", who:"Hank", show:"King of the Hill", ep:"Reborn to Be Wild", s:8, e:2, aired:"November 9, 2003" },
+  { q:"Take him away, boys.", who:"Bart", show:"The Simpsons", ep:"Cape Feare", s:5, e:2, aired:"October 7, 1993" },
+  { q:"Hey, I'm the chief here. Bake him away, toys.", who:"Chief Wiggum", show:"The Simpsons", ep:"Cape Feare", s:5, e:2, aired:"October 7, 1993" },
+  { q:"Do what the kid says.", who:"Chief Wiggum", show:"The Simpsons", ep:"Cape Feare", s:5, e:2, aired:"October 7, 1993" },
+  { q:"No one who speaks German could be an evil man.", who:"Parole Board Woman", show:"The Simpsons", ep:"Cape Feare", s:5, e:2, aired:"October 7, 1993" },
+  { q:"Oh, I'll stay away from your son, all right. Stay away... forever!", who:"Sideshow Bob", show:"The Simpsons", ep:"Cape Feare", s:5, e:2, aired:"October 7, 1993" },
+  { q:"Ice Cream-Ville!", who:"Homer", show:"The Simpsons", ep:"Cape Feare", s:5, e:2, aired:"October 7, 1993" },
+  { q:"Sideshow Bob has no decency. He called me Chief Piggum!", who:"Chief Wiggum", show:"The Simpsons", ep:"Cape Feare", s:5, e:2, aired:"October 7, 1993" },
+  { q:"Aurora borealis?", who:"Skinner", show:"The Simpsons", ep:"22 Short Films About Springfield", s:7, e:21, aired:"April 14, 1996" },
+  { q:"Localized entirely within your kitchen?", who:"Chalmers", show:"The Simpsons", ep:"22 Short Films About Springfield", s:7, e:21, aired:"April 14, 1996" },
+  { q:"May I see it?", who:"Chalmers", show:"The Simpsons", ep:"22 Short Films About Springfield", s:7, e:21, aired:"April 14, 1996" },
+  { q:"I thought we were having steamed clams.", who:"Chalmers", show:"The Simpsons", ep:"22 Short Films About Springfield", s:7, e:21, aired:"April 14, 1996" },
+  { q:"Oh, not in Utica, no. It's an Albany expression.", who:"Skinner", show:"The Simpsons", ep:"22 Short Films About Springfield", s:7, e:21, aired:"April 14, 1996" },
+  { q:"Patented Skinner Burgers. Old family recipe!", who:"Skinner", show:"The Simpsons", ep:"22 Short Films About Springfield", s:7, e:21, aired:"April 14, 1996" },
+  { q:"Well, that was wonderful. A good time was had by all. I'm pooped.", who:"Skinner", show:"The Simpsons", ep:"22 Short Films About Springfield", s:7, e:21, aired:"April 14, 1996" },
+  { q:"No, Mother, it's just the Northern Lights.", who:"Skinner", show:"The Simpsons", ep:"22 Short Films About Springfield", s:7, e:21, aired:"April 14, 1996" },
+  { q:"So I tied an onion to my belt, which was the style at the time.", who:"Grampa", show:"The Simpsons", ep:"Last Exit to Springfield", s:4, e:17, aired:"March 11, 1993" },
+  { q:"We can't bust heads like we used to, but we have our ways.", who:"Grampa", show:"The Simpsons", ep:"Last Exit to Springfield", s:4, e:17, aired:"March 11, 1993" },
+  { q:"Gimme five bees for a quarter, you'd say.", who:"Grampa", show:"The Simpsons", ep:"Last Exit to Springfield", s:4, e:17, aired:"March 11, 1993" },
+  { q:"Mattingly! Get rid of those sideburns!", who:"Mr. Burns", show:"The Simpsons", ep:"Homer at the Bat", s:3, e:17, aired:"February 20, 1992" },
+  { q:"Why waste time say lot word when few word do trick?", who:"Kevin", show:"The Office", ep:"The Incentive", s:8, e:2, aired:"September 29, 2011" },
+  { q:"When me president, they see. They see.", who:"Kevin", show:"The Office", ep:"The Incentive", s:8, e:2, aired:"September 29, 2011" },
+  { q:"Many small time make big time.", who:"Kevin", show:"The Office", ep:"The Incentive", s:8, e:2, aired:"September 29, 2011" },
+  { q:"Me feel good, body strong, sleep big last night.", who:"Kevin", show:"The Office", ep:"The Incentive", s:8, e:2, aired:"September 29, 2011" },
+  { q:"Oceans, fish, jump, China.", who:"Kevin", show:"The Office", ep:"The Incentive", s:8, e:2, aired:"September 29, 2011" },
+  { q:"You keep think that.", who:"Kevin", show:"The Office", ep:"The Incentive", s:8, e:2, aired:"September 29, 2011" },
+  { q:"He's making a statement. A funhouse image of our model of Kevin.", who:"Oscar", show:"The Office", ep:"The Incentive", s:8, e:2, aired:"September 29, 2011" },
+  { q:"Sometimes words you no need use, but need need for talk talk.", who:"Andy", show:"The Office", ep:"The Incentive", s:8, e:2, aired:"September 29, 2011" },
+  { q:"Kevin, are you saying see the world or Sea World?", who:"Jim", show:"The Office", ep:"The Incentive", s:8, e:2, aired:"September 29, 2011" },
+  { q:"He's always been like that.", who:"Angela", show:"The Office", ep:"The Incentive", s:8, e:2, aired:"September 29, 2011" },
+  { q:"I can't keep doing this forever.", who:"Kevin", show:"The Office", ep:"Stress Relief", s:5, e:14, aired:"February 1, 2009" },
+  { q:"Call it.", who:"Kevin", show:"The Office", ep:"Stress Relief", s:5, e:14, aired:"February 1, 2009" },
+  { q:"It's been 20 seconds.", who:"Rose", show:"The Office", ep:"Stress Relief", s:5, e:14, aired:"February 1, 2009" },
+  { q:"Darkness rules.", who:"Butt-Head", show:"Beavis and Butt-Head", artist:"Rollins Band", song:"Liar" },
+  { q:"Motley Crue fired this dude.", who:"Butt-Head", show:"Beavis and Butt-Head", artist:"Vince Neil", song:"Sister of Pain" },
+  { q:"Hey, it's that dude from Damn Yankees.", who:"Butt-Head", show:"Beavis and Butt-Head", artist:"Ted Nugent", song:"Heads Will Roll" },
+  { q:"This is that guy with all those last names.", who:"Butt-Head", show:"Beavis and Butt-Head", artist:"John Mellencamp", song:"Pop Singer" },
+  { q:"Whoa, it's the president of England.", who:"Butt-Head", show:"Beavis and Butt-Head", artist:"Spinal Tap", song:"The Majesty of Rock" },
+  { q:"If I wanted to see a video in school, I'd go to school and watch TV.", who:"Butt-Head", show:"Beavis and Butt-Head", artist:"Krokus", song:"School's Out" },
+  { q:"Juan Valdez and his trusty goat gather coffee beans every morning.", who:"Butt-Head", show:"Beavis and Butt-Head", artist:"Soundgarden", song:"Black Hole Sun" },
+  { q:"Hey Butt-Head, doesn't Slash wear a hat like that?", who:"Beavis", show:"Beavis and Butt-Head", artist:"Alice Cooper", song:"Welcome To My Nightmare" },
+  { q:"Hey look, she's running away from home and she's only 30!", who:"Butt-Head", show:"Beavis and Butt-Head", artist:"Pat Benatar", song:"Love Is A Battlefield" },
+  { q:"Glam rock just isn't what it used to be, Beavis.", who:"Butt-Head", show:"Beavis and Butt-Head", artist:"Enuff Z'Nuff", song:"Fly High Michelle" },
+  { q:"These guys are pretty cool -- even though they're 60.", who:"Butt-Head", show:"Beavis and Butt-Head", artist:"Aerosmith", song:"Livin' on the Edge" },
+  { q:"You wouldn't even know that they're cool.", who:"Beavis", show:"Beavis and Butt-Head", artist:"Helmet", song:"Unsung" },
+  { q:"Hey, Butt-Head, Ozzy bit off the head of a cow once.", who:"Beavis", show:"Beavis and Butt-Head", artist:"Black Sabbath", song:"Iron Man" },
+  { q:"Hey Beavis, do you know how to read?", who:"Butt-Head", show:"Beavis and Butt-Head", artist:"Guns n' Roses", song:"Garden of Eden" },
+  { q:"Even if Maiden did Unplugged, I bet they'd still have explosions.", who:"Butt-Head", show:"Beavis and Butt-Head", artist:"Iron Maiden", song:"From Here to Eternity" },
+  { q:"If you make out with a frog, you turn into Prince.", who:"Butt-Head", show:"Beavis and Butt-Head", artist:"Peter Gabriel", song:"Kiss That Frog" },
+  { q:"You have football players and old people and dogs and stuff in it.", who:"Butt-Head", show:"Beavis and Butt-Head", artist:"Van Halen", song:"Can't Stop Lovin' You" },
+  { q:"Where's Eddie? How can they fire Van Halen from Van Halen?", who:"Beavis", show:"Beavis and Butt-Head", artist:"Van Halen", song:"Can't Stop Lovin' You" },
+  { q:"If you say one more good thing about Bon Jovi, I'm gonna smack you!", who:"Butt-Head", show:"Beavis and Butt-Head", artist:"Bon Jovi", song:"Something for the Pain" },
+  { q:"I bet these guys practice their wussy little dance moves.", who:"Beavis", show:"Beavis and Butt-Head", artist:"Poison", song:"I Want Action" },
+  { q:"I'm not only the Hair Club president -- I'm also a member.", who:"Beavis", show:"Beavis and Butt-Head", artist:"David Lee Roth", song:"Just Like Paradise" },
+  { q:"Check it out: It's Krokus coming to kick their ass!", who:"Butt-Head", show:"Beavis and Butt-Head", artist:"Accept", song:"Balls To The Wall" },
+  { q:"Hey look, Beavis, it's your mom hanging out in bars again.", who:"Butt-Head", show:"Beavis and Butt-Head", artist:"Styx", song:"Too Much Time on My Hands" },
+  { q:"Didn't these guys play that wedding we went to?", who:"Beavis", show:"Beavis and Butt-Head", artist:"Styx", song:"Too Much Time on My Hands" },
+  { q:"Is this the Partridge Family?", who:"Butt-Head", show:"Beavis and Butt-Head", artist:"Journey", song:"Separate Ways" },
+  { q:"I thought people usually looked cool in leather jackets.", who:"Butt-Head", show:"Beavis and Butt-Head", artist:"Kix", song:"Cool Kids" },
+  { q:"He looks like that dude down the street always working on his car.", who:"Butt-Head", show:"Beavis and Butt-Head", artist:"Motorhead", song:"No Voices in the Sky" },
+  { q:"This guy looks like one of those salesmen at the mall.", who:"Butt-Head", show:"Beavis and Butt-Head", artist:"Eddie Money", song:"Shakin'" },
+  { q:"Excuse me, can I help you boys with something?", who:"Beavis", show:"Beavis and Butt-Head", artist:"Eddie Money", song:"Shakin'" },
+  { q:"Sit your ass down, Lars, and play the drums like you're supposed to.", who:"Butt-Head", show:"Beavis and Butt-Head", artist:"Metallica", song:"For Whom the Bell Tolls" },
+  { q:"These dudes are like, 'Look at me, I'm kicking!'", who:"Butt-Head", show:"Beavis and Butt-Head", artist:"Cinderella", song:"Somebody Save Me" },
+  { q:"Uh, what happened to Axl?", who:"Butt-Head", show:"Beavis and Butt-Head", artist:"Slash's Snakepit", song:"Beggars and Hangers On" },
+  { q:"This guy kind of looks like that dude on Sesame Street, The Count?", who:"Beavis", show:"Beavis and Butt-Head", artist:"King Diamond", song:"The Family Ghost" },
+  { q:"Right now, David is planning to kill Sammy Hagar.", who:"Butt-Head", show:"Beavis and Butt-Head", artist:"David Lee Roth", song:"Just a Gigolo" },
+  { q:"Right now, David wishes he had his old job back.", who:"Butt-Head", show:"Beavis and Butt-Head", artist:"David Lee Roth", song:"Just a Gigolo" },
+  { q:"These guys are pretty cool for a bunch of mimes.", who:"Butt-Head", show:"Beavis and Butt-Head", artist:"Kiss", song:"I Love It Loud" },
+  { q:"Dammit, Pantera, this beer is warm. Get me another one!", who:"Butt-Head", show:"Beavis and Butt-Head", artist:"Pantera", song:"This Love" },
+  { q:"Does this Pantera guy ever relax?", who:"Beavis", show:"Beavis and Butt-Head", artist:"Pantera", song:"This Love" },
+  { q:"Just another gang of wussies from England.", who:"Butt-Head", show:"Beavis and Butt-Head", artist:"Pink Floyd", song:"High Hopes" }
+];
+
+/* ---- soothing timing ---- */
+const FADE    = 1800;            // matches the CSS transition exactly
+const HOLD    = 10000;           // 10s per quote, start to start
+const VISIBLE = HOLD - FADE;     // time fully legible before fading out
+
+const stage = document.getElementById('stage');
+const elQ   = document.getElementById('quote');
+const elWho = document.getElementById('who');
+const elMet = document.getElementById('meta');
+
+/* shuffled bag: nothing repeats until all 52 have shown */
+let bag = [];
+function refill(){
+  bag = Q.map(function(_, i){ return i; });
+  for(var i = bag.length - 1; i > 0; i--){
+    var j = Math.floor(Math.random() * (i + 1));
+    var t = bag[i]; bag[i] = bag[j]; bag[j] = t;
+  }
+}
+refill();
+
+function paint(){
+  if(!bag.length) refill();
+  var q = Q[bag.pop()];
+  elQ.textContent   = '\u201C' + q.q + '\u201D';
+  elWho.textContent = q.who;
+  var meta = '<span class="show">' + q.show + '</span>';
+  if(q.ep){
+    /* episode-cited: season / episode / title / air date */
+    meta += '<br>Season ' + q.s + ' &nbsp;&middot;&nbsp; Episode ' + q.e +
+            ' &nbsp;&middot;&nbsp; \u201C' + q.ep + '\u201D' +
+            '<br>' + q.aired;
+  } else {
+    /* video-cited: the music video IS the citation for these segments */
+    meta += '<br><span class="artist">' + q.artist + '</span>' +
+            ' &nbsp;&middot;&nbsp; \u201C' + q.song + '\u201D' +
+            '<br>Music video commentary';
+  }
+  elMet.innerHTML = meta;
+}
+
+function show(){
+  paint();
+  requestAnimationFrame(function(){ stage.classList.add('in'); });
+  setTimeout(hide, VISIBLE);
+}
+
+function hide(){
+  stage.classList.remove('in');
+  setTimeout(show, FADE);
+}
+
+show();
+</script>
+</body>
+</html>
