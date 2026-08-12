@@ -1,0 +1,2182 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>dweeb 95 · dweeb.co</title>
+<meta name="description" content="dweeb 95 — a simulated mid-90s desktop. boot it, open dweebscape Navigator, surf the fake web.">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='-10 -10 20 20'%3E%3Cpolygon points='8,0 4,6.93 -4,6.93 -8,0 -4,-6.93 4,-6.93' fill='%23e6b352'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=VT323&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --chrome:#c0c0c0; --chrome-dk:#808080; --chrome-lt:#dfdfdf;
+    --title-a1:#000080; --title-a2:#1084d0; --title-i:#808080;
+    --desk:#008080; --honey:#e6b352;
+  }
+  *{ box-sizing:border-box; margin:0; padding:0; }
+  html,body{ height:100%; }
+  body{
+    background:#000; overflow:hidden;
+    font-family:Tahoma,"MS Sans Serif",Arial,sans-serif; font-size:11px;
+    -webkit-user-select:none; user-select:none;
+  }
+  /* the two-tone Win95 bevel, as box-shadows */
+  .bo{ box-shadow: inset -1px -1px 0 #0a0a0a, inset 1px 1px 0 #fff,
+                   inset -2px -2px 0 var(--chrome-dk), inset 2px 2px 0 var(--chrome-lt); }
+  .bi{ box-shadow: inset 1px 1px 0 #0a0a0a, inset -1px -1px 0 #fff,
+                   inset 2px 2px 0 var(--chrome-dk), inset -2px -2px 0 var(--chrome-lt); }
+  .bthin{ box-shadow: inset -1px -1px 0 var(--chrome-dk), inset 1px 1px 0 #fff; }
+  .bthin-in{ box-shadow: inset 1px 1px 0 var(--chrome-dk), inset -1px -1px 0 #fff; }
+
+  /* ---------- boot ---------- */
+  #boot{ position:fixed; inset:0; background:#000; z-index:9000;
+         display:flex; flex-direction:column; align-items:center; justify-content:center; gap:26px; }
+  #boot .logo{ font-family:VT323,monospace; font-size:64px; color:#fff; letter-spacing:2px;
+               display:flex; align-items:center; gap:18px; }
+  #boot .logo .hex{ width:44px; height:50px; }
+  #boot .logo .n95{ color:var(--honey); }
+  #boot .tag{ font-family:VT323,monospace; font-size:18px; color:#888; margin-top:-14px; }
+  #boot .barw{ width:min(420px,70vw); height:16px; border:1px solid #555; padding:2px; }
+  #boot .bar{ height:100%; width:0%; background:repeating-linear-gradient(90deg,#2a6cad 0 8px,#3f8fd4 8px 16px); }
+  #boot .txt{ font-family:VT323,monospace; font-size:17px; color:#0c0; min-height:22px; }
+
+  /* ---------- desktop ---------- */
+  #desktop{ position:fixed; inset:0 0 28px 0; background:var(--desk); display:none; overflow:hidden; }
+  #desktop.wp-hex{ background-color:var(--desk);
+    background-image:radial-gradient(circle at 50% 50%, rgba(0,0,0,.13) 1px, transparent 1px);
+    background-size:14px 14px; }
+  #desktop.wp-check{ background-color:#007070;
+    background-image:linear-gradient(45deg, rgba(0,0,0,.10) 25%, transparent 25%, transparent 75%, rgba(0,0,0,.10) 75%),
+                     linear-gradient(45deg, rgba(0,0,0,.10) 25%, transparent 25%, transparent 75%, rgba(0,0,0,.10) 75%);
+    background-position:0 0, 8px 8px; background-size:16px 16px; }
+  #desktop.wp-gray{ background:#5f7a7a; }
+
+  #icons{ position:absolute; top:8px; left:8px; display:flex; flex-direction:column; gap:14px; }
+  .dicon{ width:76px; display:flex; flex-direction:column; align-items:center; gap:4px; cursor:default; }
+  .dicon img{ width:32px; height:32px; image-rendering:pixelated; }
+  .dicon .lbl{ color:#fff; text-align:center; padding:1px 3px; line-height:1.25;
+               text-shadow:1px 1px 0 #000; }
+  .dicon.sel .lbl{ background:#000080; text-shadow:none; outline:1px dotted #fff; }
+
+  /* ---------- windows ---------- */
+  .win{ position:absolute; background:var(--chrome); display:flex; flex-direction:column;
+        min-width:180px; min-height:100px; }
+  .win .tbar{ height:20px; margin:3px; padding:0 2px 0 3px; display:flex; align-items:center; gap:4px;
+        background:linear-gradient(90deg,var(--title-a1),var(--title-a2)); color:#fff; font-weight:700;
+        letter-spacing:.2px; }
+  .win.inactive .tbar{ background:var(--title-i); color:#d0d0d0; }
+  .win .tbar img{ width:16px; height:16px; image-rendering:pixelated; }
+  .win .tbar .ttl{ flex:1; overflow:hidden; white-space:nowrap; text-overflow:ellipsis; cursor:default; }
+  .wbtn{ width:16px; height:14px; background:var(--chrome); display:flex; align-items:center;
+         justify-content:center; font-family:Tahoma; font-size:9px; font-weight:700; color:#000; }
+  .wbtn:active{ box-shadow: inset 1px 1px 0 #0a0a0a, inset -1px -1px 0 #fff; }
+  .win .body{ flex:1; display:flex; flex-direction:column; margin:0 3px 3px; overflow:hidden; }
+  .menubar{ display:flex; gap:1px; padding:1px 0 2px; }
+  .menubar .mi{ padding:2px 7px; }
+  .menubar .mi:hover, .menubar .mi.open{ background:#000080; color:#fff; }
+  .menu{ position:absolute; background:var(--chrome); padding:2px; z-index:5; min-width:150px; }
+  .menu .it{ padding:3px 18px 3px 24px; white-space:nowrap; position:relative; }
+  .menu .it:hover{ background:#000080; color:#fff; }
+  .menu .sep{ height:0; border-top:1px solid var(--chrome-dk); border-bottom:1px solid #fff; margin:3px 1px; }
+  .grip{ position:absolute; right:3px; bottom:3px; width:13px; height:13px; cursor:nwse-resize;
+         background:
+          linear-gradient(135deg, transparent 0 5px, #808080 5px 6.5px, #fff 6.5px 8px,
+            transparent 8px 9.5px, #808080 9.5px 11px, #fff 11px 12.5px, transparent 12.5px); }
+
+  /* ---------- taskbar ---------- */
+  #taskbar{ position:fixed; left:0; right:0; bottom:0; height:28px; background:var(--chrome);
+            display:flex; align-items:center; gap:3px; padding:2px 3px; z-index:8000;
+            box-shadow: inset 0 1px 0 #fff, inset 0 2px 0 var(--chrome-lt); }
+  #startbtn{ height:22px; display:flex; align-items:center; gap:4px; padding:0 6px; font-weight:700; }
+  #startbtn img{ width:16px; height:16px; image-rendering:pixelated; }
+  #startbtn.on{ box-shadow: inset 1px 1px 0 #0a0a0a, inset -1px -1px 0 #fff,
+                inset 2px 2px 0 var(--chrome-dk); }
+  #tasks{ flex:1; display:flex; gap:3px; overflow:hidden; }
+  .tbtn{ height:22px; min-width:60px; max-width:160px; flex:1 1 120px; display:flex; align-items:center;
+         gap:4px; padding:0 6px; overflow:hidden; white-space:nowrap; }
+  .tbtn img{ width:16px; height:16px; image-rendering:pixelated; }
+  .tbtn.active{ font-weight:700;
+     box-shadow: inset 1px 1px 0 #0a0a0a, inset -1px -1px 0 #fff, inset 2px 2px 0 var(--chrome-dk);
+     background:repeating-conic-gradient(#fff 0 25%, #c0c0c0 0 50%) 0 0/4px 4px; }
+  #tray{ height:22px; display:flex; align-items:center; gap:6px; padding:0 8px; }
+  #tray img{ width:14px; height:14px; image-rendering:pixelated; }
+
+  /* ---------- start menu ---------- */
+  #smenu{ position:fixed; left:2px; bottom:30px; background:var(--chrome); display:none; z-index:8500; }
+  #smenu .inner{ display:flex; }
+  #smenu .band{ width:24px; background:linear-gradient(#000080,#1084d0); color:#fff;
+    writing-mode:vertical-rl; transform:rotate(180deg); font-weight:700; font-size:15px;
+    letter-spacing:1px; padding:8px 0; display:flex; align-items:center; }
+  #smenu .band b{ color:var(--honey); }
+  #smenu .items{ padding:2px; min-width:170px; }
+  #smenu .it{ display:flex; align-items:center; gap:8px; padding:5px 16px 5px 6px; position:relative; }
+  #smenu .it img{ width:24px; height:24px; image-rendering:pixelated; }
+  #smenu .it:hover{ background:#000080; color:#fff; }
+  #smenu .it .arr{ position:absolute; right:5px; }
+  #smenu .sub{ position:absolute; left:100%; top:-3px; background:var(--chrome); padding:2px; display:none; }
+  #smenu .it:hover .sub{ display:block; }
+  #smenu .sub .it{ padding:4px 16px 4px 6px; }
+  #smenu .sub .it img{ width:16px; height:16px; }
+
+  /* ---------- app guts ---------- */
+  .navtools{ display:flex; align-items:center; gap:2px; padding:3px 2px; flex-wrap:wrap; }
+  .ntb{ display:flex; flex-direction:column; align-items:center; gap:1px; padding:3px 7px; min-width:44px; }
+  .ntb img{ width:20px; height:20px; image-rendering:pixelated; }
+  .ntb:hover{ box-shadow: inset -1px -1px 0 var(--chrome-dk), inset 1px 1px 0 #fff; }
+  .ntb:active{ box-shadow: inset 1px 1px 0 var(--chrome-dk), inset -1px -1px 0 #fff; }
+  .ntb.dis{ opacity:.4; pointer-events:none; }
+  .addr{ display:flex; align-items:center; gap:5px; padding:2px 4px 4px; }
+  .addr input{ flex:1; height:20px; font:11px Tahoma; padding:0 4px; border:0; background:#fff; }
+  .navframe{ flex:1; background:#fff; }
+  .navframe iframe{ width:100%; height:100%; border:0; }
+  .statusbar{ display:flex; gap:3px; padding:2px 1px 1px; }
+  .statusbar .s1{ flex:1; padding:2px 6px; }
+  .statusbar .prog{ width:110px; padding:2px; }
+  .statusbar .prog i{ display:block; height:100%; width:0%; background:#000080; }
+
+  .npad{ flex:1; font:13px "Courier New",monospace; background:#fff; border:0; resize:none;
+         padding:4px; -webkit-user-select:text; user-select:text; }
+  .calc{ display:flex; flex-direction:column; gap:6px; padding:8px; }
+  .calc .disp{ background:#fff; text-align:right; font:16px "Courier New"; padding:4px 6px; }
+  .calc .keys{ display:grid; grid-template-columns:repeat(5,1fr); gap:4px; }
+  .calc button{ font:12px Tahoma; padding:7px 0; background:var(--chrome); border:0; }
+  .calc button:active{ box-shadow: inset 1px 1px 0 #0a0a0a, inset -1px -1px 0 #fff; }
+
+  .paintbar{ display:flex; gap:3px; padding:3px; align-items:center; flex-wrap:wrap; }
+  .paintbar .pt{ padding:3px 8px; }
+  .paintbar .pt.on{ box-shadow: inset 1px 1px 0 #0a0a0a, inset -1px -1px 0 #fff; background:#fff; }
+  .swatch{ width:16px; height:16px; display:inline-block; }
+  .swatch.on{ outline:2px solid #000; }
+  .paintwrap{ flex:1; overflow:auto; background:#808080; padding:6px; }
+  .paintwrap canvas{ background:#fff; cursor:crosshair; image-rendering:pixelated; }
+
+  .mine{ display:flex; flex-direction:column; gap:6px; padding:8px; align-items:center; }
+  .mine .top{ display:flex; gap:10px; align-items:center; justify-content:space-between; width:100%; padding:4px 6px; }
+  .lcd{ font-family:VT323,monospace; font-size:22px; color:#f00; background:#000; padding:0 4px; min-width:46px; text-align:right; }
+  .face{ width:26px; height:26px; font-size:15px; display:flex; align-items:center; justify-content:center; }
+  .grid9{ display:grid; grid-template-columns:repeat(9,20px); }
+  .cell{ width:20px; height:20px; display:flex; align-items:center; justify-content:center;
+         font:700 12px Tahoma; background:var(--chrome); }
+  .cell.open{ box-shadow: inset 1px 0 0 var(--chrome-dk), inset 0 1px 0 var(--chrome-dk); background:#c8c8c8; }
+  .c1{color:#0000ff}.c2{color:#008000}.c3{color:#ff0000}.c4{color:#000080}
+  .c5{color:#800000}.c6{color:#008080}.c7{color:#000}.c8{color:#808080}
+  .cell.boom{ background:#f00; }
+
+  .amp{ width:255px; background:#20242c; color:#9ba3b0; font-family:VT323,monospace; padding:6px; }
+  .amp .trk{ background:#000; color:#00d000; padding:2px 4px; overflow:hidden; white-space:nowrap; }
+  .amp .trk span{ display:inline-block; padding-left:100%; animation:marq 9s linear infinite; }
+  @keyframes marq{ to{ transform:translateX(-100%); } }
+  .amp .row{ display:flex; gap:6px; align-items:center; margin-top:6px; }
+  .amp .time{ font-size:20px; color:#00d000; }
+  .amp .eq{ display:flex; gap:2px; align-items:flex-end; height:22px; flex:1; }
+  .amp .eq i{ width:6px; background:#2fa84f; animation:eqb .5s ease-in-out infinite alternate; }
+  .amp.paused .eq i{ animation-play-state:paused; height:3px !important; }
+  .amp.paused .trk span{ animation-play-state:paused; }
+  @keyframes eqb{ from{ height:15%; } to{ height:100%; } }
+  .amp button{ font-family:Tahoma; font-size:10px; padding:2px 8px; background:var(--chrome); border:0; }
+
+  .fileview{ flex:1; background:#fff; overflow:auto; padding:8px; display:flex; flex-wrap:wrap;
+             gap:14px; align-content:flex-start; }
+  .fitem{ width:70px; display:flex; flex-direction:column; align-items:center; gap:3px; text-align:center; }
+  .fitem img{ width:32px; height:32px; image-rendering:pixelated; }
+  .fitem:hover .fl{ background:#000080; color:#fff; }
+  .dlg{ padding:14px; display:flex; gap:12px; align-items:flex-start; }
+  .dlg img{ width:32px; height:32px; image-rendering:pixelated; }
+  .dlg .msg{ line-height:1.5; max-width:260px; -webkit-user-select:text; user-select:text; }
+  .dlgbtns{ display:flex; gap:8px; justify-content:center; padding:0 0 12px; }
+  .dlgbtns button{ min-width:70px; padding:4px 10px; background:var(--chrome); border:0; font:11px Tahoma; }
+
+  #shutdown{ position:fixed; inset:0; background:#000; z-index:9500; display:none;
+             align-items:center; justify-content:center; text-align:center;
+             font-family:VT323,monospace; color:#ffb000; font-size:26px; line-height:2; }
+  #shutdown small{ font-size:15px; color:#888; }
+
+  @media (prefers-reduced-motion: reduce){
+    .amp .eq i, .amp .trk span{ animation:none; }
+  }
+  @media (max-width:640px){
+    .win{ max-width:calc(100vw - 4px); }
+  }
+</style>
+</head>
+<body>
+
+<div id="boot">
+  <div class="logo">
+    <svg class="hex" viewBox="-10 -11 20 22"><polygon points="9,0 4.5,7.79 -4.5,7.79 -9,0 -4.5,-7.79 4.5,-7.79" fill="none" stroke="#e6b352" stroke-width="2"/></svg>
+    dweeb <span class="n95">95</span>
+  </div>
+  <div class="tag">a dweeb.co production</div>
+  <div class="barw"><div class="bar" id="bootbar"></div></div>
+  <div class="txt" id="boottxt">Starting dweeb 95...</div>
+</div>
+
+<div id="desktop">
+  <div id="icons"></div>
+</div>
+
+<div id="taskbar">
+  <div id="startbtn" class="bo"><img id="startlogo" alt=""><span>Start</span></div>
+  <div id="tasks"></div>
+  <div id="tray" class="bthin-in"><img id="trayspk" alt=""><span id="clock">12:00 PM</span></div>
+</div>
+
+<div id="smenu"><div class="inner">
+  <div class="band"><span><b>dweeb</b>95</span></div>
+  <div class="items" id="smenu-items"></div>
+</div></div>
+
+<div id="shutdown"><div>It is now safe to turn off your computer.<br>
+<small>(click anywhere to boot it back up)</small></div></div>
+
+<script>
+// ══════════════════════════════════
+// ENTER PAGE HTML (injected into iframe)
+// ══════════════════════════════════
+const ENTER_PAGE = `<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8"/>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;}
+body{
+  background:#000033;
+  background-image:repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(0,0,100,.04) 2px,rgba(0,0,100,.04) 4px);
+  font-family:Arial,sans-serif;
+  min-height:100%;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  padding:20px;
+  text-align:center;
+}
+.rb{width:100%;height:5px;background:linear-gradient(90deg,#f00,#f70,#ff0,#0f0,#00f,#80f,#f00);background-size:200%;animation:rb 2s linear infinite;position:fixed;top:0;left:0;}
+@keyframes rb{to{background-position:200% 0;}}
+.title{font-family:Impact,Arial Black,sans-serif;font-size:clamp(2rem,8vw,4.5rem);font-weight:900;animation:cc 1.5s linear infinite;text-shadow:3px 3px 0 #000;margin-bottom:6px;}
+@keyframes cc{0%{color:#f00;}16%{color:#f70;}32%{color:#ff0;}48%{color:#0f0;}64%{color:#0ff;}80%{color:#08f;}100%{color:#f00;}}
+.sub{font-family:'Courier New',monospace;color:#0ff;letter-spacing:.3em;font-size:clamp(.6rem,2vw,.9rem);text-transform:uppercase;text-shadow:0 0 8px #0ff;margin-bottom:16px;}
+.stars{font-size:16px;margin-bottom:12px;animation:spin 6s linear infinite;display:inline-block;}
+@keyframes spin{to{transform:rotate(360deg);}}
+.counter-box{background:#000080;border:3px outset #c0c0c0;padding:8px 20px;margin:10px auto;display:inline-block;}
+.counter-label{color:#ff0;font-size:11px;font-weight:bold;display:block;margin-bottom:2px;}
+.counter-num{font-family:'Courier New',monospace;font-size:26px;font-weight:bold;color:#0f0;text-shadow:0 0 6px #0f0;letter-spacing:4px;}
+.best-viewed{font-size:10px;color:#888;border:1px dashed #444;padding:3px 8px;margin:8px auto;display:inline-block;}
+.best-viewed b{color:#ff0;}
+.enter-btn{
+  font-family:Impact,Arial Black,sans-serif;font-size:1.3rem;font-weight:900;
+  letter-spacing:.1em;color:#000;
+  background:linear-gradient(180deg,#ff0 0%,#f60 50%,#ff0 100%);
+  border:4px outset #fc0;padding:14px 48px;cursor:pointer;
+  text-transform:uppercase;margin:16px auto;display:block;
+  animation:pulse 1s ease-in-out infinite;
+  box-shadow:0 0 20px #f60;
+}
+@keyframes pulse{0%,100%{box-shadow:0 0 20px #f60;}50%{box-shadow:0 0 40px #ff0;}}
+.enter-btn:hover{background:linear-gradient(180deg,#f60,#ff0,#f60);}
+.uc{display:flex;align-items:center;gap:8px;justify-content:center;margin-bottom:12px;animation:blink .8s infinite;}
+@keyframes blink{0%,49%{opacity:1;}50%,100%{opacity:.3;}}
+.uc-text{font-size:13px;font-weight:bold;color:#ff0;text-shadow:2px 2px 0 #630;letter-spacing:2px;}
+.badges{display:flex;gap:6px;flex-wrap:wrap;justify-content:center;margin-top:12px;}
+.badge{background:#c0c0c0;border:2px outset #fff;padding:2px 6px;font-size:9px;font-weight:bold;color:#000080;}
+.badge.b{background:#000080;color:#ff0;}
+.note{font-size:10px;color:#555;margin-top:10px;font-family:'Courier New',monospace;}
+.marquee-strip{width:100%;background:#000080;border-top:2px solid #ff0;border-bottom:2px solid #ff0;padding:4px 0;overflow:hidden;position:fixed;bottom:0;left:0;}
+.marquee-inner{display:inline-block;white-space:nowrap;animation:mq 16s linear infinite;font-size:12px;font-weight:bold;color:#ff0;letter-spacing:1px;}
+@keyframes mq{from{transform:translateX(100vw);}to{transform:translateX(-100%);}}
+</style>
+</head>
+<body>
+<div class="rb"></div>
+<div class="uc"><span>🚧</span><span class="uc-text">★ UNDER CONSTRUCTION ★</span><span>🚧</span></div>
+<div class="title">DWEEB.CO</div>
+<div class="sub">:: The Official Homepage ::</div>
+<div class="stars">★ ☆ ★ ☆ ★</div>
+<div class="counter-box">
+  <span class="counter-label">🌐 Visitor Number</span>
+  <span class="counter-num">847384</span>
+</div>
+<div class="best-viewed">Best viewed: <b>IE 4.0</b> · <b>800×600</b> · <b>Sound ON</b></div>
+<button class="enter-btn" onclick="window.parent.enterSite()">★ ENTER SITE ★</button>
+<div class="badges">
+  <div class="badge b">IE 4.0</div>
+  <div class="badge">Netscape OK</div>
+  <div class="badge b">HTML 3.2</div>
+  <div class="badge">Y2K Ready ✓</div>
+  <div class="badge b">AOL: DWEEB</div>
+  <div class="badge">Made w/ Notepad</div>
+</div>
+<div class="note">✍️ Please sign my guestbook before you leave!!</div>
+<div class="marquee-strip"><div class="marquee-inner">★★★ WELCOME TO DWEEB.CO — THE COOLEST SITE ON THE WWW ★★★ &nbsp;&nbsp; NEW: Da Office games!! &nbsp;&nbsp; ☆ SIGN MY GUESTBOOK ☆ &nbsp;&nbsp; FREE ANIMATED GIFS!! &nbsp;&nbsp; ★★★ WELCOME TO DWEEB.CO ★★★</div></div>
+</body>
+</html>`;
+
+// ══════════════════════════════════
+// SEARCH ENGINE HTML
+// ══════════════════════════════════
+const SEARCH_ENGINE = `<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8"/>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;}
+body{font-family:Arial,Helvetica,sans-serif;background:#fff;font-size:13px;color:#000;min-height:100%;}
+/* Top bar */
+.top-bar{background:linear-gradient(180deg,#1a56db,#0033aa);padding:4px 12px;display:flex;align-items:center;gap:10px;}
+.top-logo{font-family:Impact,'Arial Black',sans-serif;font-size:1.5rem;color:#fff;letter-spacing:1px;text-shadow:1px 1px 0 #000055;}
+.top-logo span{color:#ff0;}
+.top-nav{display:flex;gap:0;margin-left:auto;}
+.top-nav a{color:#cce;font-size:11px;padding:3px 8px;border-right:1px solid rgba(255,255,255,.2);text-decoration:none;}
+.top-nav a:hover{color:#fff;background:rgba(255,255,255,.1);}
+.top-nav a:last-child{border-right:none;}
+/* Main search area */
+.search-hero{text-align:center;padding:28px 20px 16px;border-bottom:1px solid #ccc;}
+.hero-logo{font-family:Impact,'Arial Black',sans-serif;font-size:clamp(2rem,7vw,3.5rem);font-weight:900;margin-bottom:6px;letter-spacing:1px;}
+.hero-logo .a{color:#1a56db;}.hero-logo .l{color:#c00;}.hero-logo .t{color:#fc0;}.hero-logo .a2{color:#1a56db;}.hero-logo .v{color:#0a0;}.hero-logo .i{color:#c00;}.hero-logo .s{color:#fc0;}.hero-logo .t{color:#1a56db;}.hero-logo .a3{color:#c00;}
+.hero-sub{font-size:11px;color:#666;margin-bottom:14px;letter-spacing:.5px;}
+.search-box-wrap{display:flex;justify-content:center;gap:6px;margin-bottom:12px;}
+.search-box{
+  width:min(440px,80vw);height:26px;
+  border:2px solid #1a56db;
+  font-family:Arial,sans-serif;font-size:13px;
+  padding:0 8px;outline:none;
+  background:#fff;color:#000;
+}
+.search-box:focus{border-color:#c00;box-shadow:0 0 0 1px #c0001a;}
+.srch-btn{
+  background:#c0c0c0;border:2px solid;border-color:#fff #808080 #808080 #fff;
+  padding:0 12px;font-size:12px;cursor:pointer;height:26px;font-family:Arial;
+}
+.srch-btn:active{border-color:#808080 #fff #fff #808080;}
+.search-tips{font-size:11px;color:#888;margin-top:6px;}
+.search-tips a{color:#1a56db;text-decoration:none;}
+.search-tips a:hover{text-decoration:underline;color:#c00;}
+/* Category directory */
+.dir-section{padding:14px 20px;}
+.dir-title{font-size:15px;font-weight:bold;color:#1a56db;margin-bottom:10px;border-bottom:2px solid #1a56db;padding-bottom:4px;}
+.dir-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:12px;}
+.dir-cat{background:#f8f8ff;border:1px solid #ccc;padding:8px 10px;}
+.dir-cat-title{font-weight:bold;color:#c00;font-size:13px;margin-bottom:5px;display:flex;align-items:center;gap:5px;}
+.dir-cat-title a{color:#c00;text-decoration:none;}
+.dir-cat-title a:hover{text-decoration:underline;}
+.dir-links{list-style:none;}
+.dir-links li{padding:2px 0;border-bottom:1px dotted #ddd;}
+.dir-links li a{color:#1a56db;text-decoration:none;font-size:12px;}
+.dir-links li a:hover{text-decoration:underline;color:#c00;}
+.dir-links li .count{color:#999;font-size:10px;margin-left:4px;}
+/* News ticker */
+.news-ticker{background:#fff8dc;border:1px solid #fc0;border-left:4px solid #fc0;padding:5px 10px;margin:0 20px 12px;font-size:12px;display:flex;gap:8px;align-items:center;}
+.news-label{background:#c00;color:#fff;font-size:10px;font-weight:bold;padding:1px 5px;white-space:nowrap;}
+.news-scroll{overflow:hidden;flex:1;}
+.news-inner{white-space:nowrap;animation:newsScroll 20s linear infinite;}
+@keyframes newsScroll{from{transform:translateX(100%);}to{transform:translateX(-100%);}}
+/* Search results (hidden by default) */
+.results-section{padding:10px 20px;display:none;}
+.results-header{font-size:12px;color:#666;margin-bottom:10px;padding-bottom:6px;border-bottom:1px solid #ccc;}
+.result-item{margin-bottom:14px;padding-bottom:14px;border-bottom:1px solid #eee;}
+.result-title a{color:#1a56db;font-size:14px;font-weight:bold;text-decoration:none;}
+.result-title a:hover{text-decoration:underline;color:#c00;}
+.result-url{color:#0a0;font-size:11px;margin:2px 0;}
+.result-desc{color:#444;font-size:12px;line-height:1.5;}
+.result-date{color:#999;font-size:10px;}
+/* Footer */
+.site-footer{background:#f0f0f0;border-top:1px solid #ccc;padding:10px 20px;font-size:11px;color:#666;text-align:center;margin-top:20px;}
+.site-footer a{color:#1a56db;text-decoration:none;margin:0 6px;}
+.site-footer a:hover{text-decoration:underline;}
+/* Sidebar ad */
+.sidebar-layout{display:flex;gap:0;}
+.sidebar-main{flex:1;}
+.sidebar{width:150px;min-width:150px;border-left:1px solid #ccc;padding:10px;background:#f8f8ff;}
+.sidebar-ad{border:2px solid #fc0;background:#fff8dc;padding:8px;text-align:center;margin-bottom:10px;font-size:11px;}
+.sidebar-ad .ad-title{color:#c00;font-weight:bold;font-size:12px;display:block;margin-bottom:3px;}
+.sidebar-ad .ad-btn{background:#fc0;border:2px outset #fff;padding:3px 8px;font-size:11px;cursor:pointer;color:#000;margin-top:4px;display:inline-block;font-weight:bold;}
+.sidebar-feature{font-size:12px;margin-bottom:10px;}
+.sidebar-feature b{color:#1a56db;display:block;margin-bottom:3px;font-size:11px;border-bottom:1px solid #ccc;padding-bottom:2px;}
+.sidebar-feature li{color:#444;padding:2px 0;font-size:11px;list-style:none;border-bottom:1px dotted #ddd;}
+.sidebar-feature li a{color:#1a56db;text-decoration:none;}
+.sidebar-feature li a:hover{text-decoration:underline;}
+.new-dot{color:#c00;font-weight:bold;font-size:9px;animation:blink .6s infinite;}
+@keyframes blink{0%,49%{opacity:1;}50%,100%{opacity:0;}}
+</style>
+</head>
+<body>
+<!-- Top navigation -->
+<div class="top-bar">
+  <span class="top-logo">dWeeb<span>Search</span></span>
+  <div class="top-nav">
+    <a href="#" onclick="window.parent.navigateTo('home')">🏠 dweeb.co</a>
+    <a href="#" onclick="window.parent.navigateTo('mail')">📧 Webmail</a>
+    <a href="#" onclick="window.parent.navigateTo('news')">📰 News</a>
+    <a href="#" onclick="window.parent.navigateTo('geocities')">🏘️ GeoCities</a>
+    <a href="#" onclick="window.parent.navigateTo('chat')">💬 Chat</a>
+    <a href="#" onclick="window.parent.navigateTo('90s-home')">🌐 My Site</a>
+  </div>
+</div>
+
+<!-- News ticker -->
+<div class="news-ticker">
+  <span class="news-label">⚡ NEWS</span>
+  <div class="news-scroll"><div class="news-inner">
+    NATO begins bombing Yugoslavia · Columbine remembered: nation mourns · New Star Wars movie out May 19th!! · Euro currency launches in 11 countries · 
+    Napster: free MP3s for everyone, totally legal probably · Y2K countdown: 198 days remaining · Clinton impeachment over · 
+    Backstreet Boys new album drops · Ask Jeeves adds 1 million new pages · GeoCities acquired by Yahoo for $3.57 billion
+  </div></div>
+</div>
+
+<div class="sidebar-layout">
+<div class="sidebar-main">
+
+<!-- Search hero -->
+<div class="search-hero">
+  <div class="hero-logo">
+    <span class="a">d</span><span class="l">W</span><span class="t">e</span><span class="a2">e</span><span class="v">b</span><span style="color:#888;">S</span><span style="color:#1a56db;">e</span><span style="color:#c00;">a</span><span style="color:#fc0;">r</span><span style="color:#0a0;">c</span><span style="color:#1a56db;">h</span>
+  </div>
+  <div class="hero-sub">The World's Coolest Search Engine Since 1997 · Over 50 Million Pages Indexed</div>
+  <div class="search-box-wrap">
+    <input class="search-box" id="q" type="text" placeholder="Search the World Wide Web..." onkeydown="if(event.key==='Enter')doSearch()"/>
+    <button class="srch-btn" onclick="doSearch()">Search!</button>
+    <button class="srch-btn" onclick="feelingLucky()">I'm Feeling Lucky</button>
+  </div>
+  <div class="search-tips">
+    💡 <b>Tips:</b>
+    Try: <a href="#" onclick="setSearch('geocities')">geocities</a> · 
+    <a href="#" onclick="setSearch('free mp3')">free mp3</a> · 
+    <a href="#" onclick="setSearch('winamp skins')">winamp skins</a> · 
+    <a href="#" onclick="setSearch('da office games')">da office games</a> · 
+    <a href="#" onclick="setSearch('animated gifs')">animated gifs</a> · 
+    <a href="#" onclick="setSearch('hotmail')">hotmail</a> · 
+    <a href="#" onclick="setSearch('y2k')">y2k</a> ·
+    <a href="#" onclick="setSearch('hamster dance')">hamster dance</a>
+  </div>
+</div>
+
+<!-- Results -->
+<div class="results-section" id="results-section">
+  <div class="results-header" id="results-header"></div>
+  <div id="results-list"></div>
+</div>
+
+<!-- Directory -->
+<div class="dir-section" id="dir-section">
+  <div class="dir-title">🗂️ Web Directory — Browse by Category</div>
+  <div class="dir-grid">
+    <div class="dir-cat">
+      <div class="dir-cat-title">🎮 <a href="#" onclick="setSearch('games')">Games &amp; Fun</a></div>
+      <ul class="dir-links">
+        <li><a href="#" onclick="window.parent.navigateTo('da-office')">Da Office Games</a> <span class="count">(4)</span> <span class="new-dot">NEW</span></li>
+        <li><a href="#" onclick="setSearch('shockwave games')">Shockwave Games</a> <span class="count">(892)</span></li>
+        <li><a href="#" onclick="setSearch('newgrounds')">Newgrounds</a> <span class="count">(2,341)</span></li>
+        <li><a href="#" onclick="setSearch('walkthrough cheats')">Cheats &amp; Walkthroughs</a> <span class="count">(5,210)</span></li>
+      </ul>
+    </div>
+    <div class="dir-cat">
+      <div class="dir-cat-title">💻 <a href="#" onclick="setSearch('web design')">Web Design</a></div>
+      <ul class="dir-links">
+        <li><a href="#" onclick="setSearch('free animated gifs')">Free Animated GIFs</a> <span class="count">(1,847)</span></li>
+        <li><a href="#" onclick="setSearch('html tutorial')">HTML Tutorials</a> <span class="count">(3,291)</span></li>
+        <li><a href="#" onclick="setSearch('free web hosting')">Free Hosting</a> <span class="count">(445)</span></li>
+        <li><a href="#" onclick="setSearch('javascript tricks')">JavaScript Tricks</a> <span class="count">(921)</span></li>
+      </ul>
+    </div>
+    <div class="dir-cat">
+      <div class="dir-cat-title">🎵 <a href="#" onclick="setSearch('mp3 music')">Music &amp; MP3</a></div>
+      <ul class="dir-links">
+        <li><a href="#" onclick="setSearch('napster mp3')">Napster</a> <span class="count">(12)</span> <span class="new-dot">HOT</span></li>
+        <li><a href="#" onclick="setSearch('winamp skins')">Winamp Skins</a> <span class="count">(6,740)</span></li>
+        <li><a href="#" onclick="setSearch('midi music free')">Free MIDI Files</a> <span class="count">(4,129)</span></li>
+        <li><a href="#" onclick="setSearch('music lyrics')">Lyrics Sites</a> <span class="count">(2,881)</span></li>
+      </ul>
+    </div>
+    <div class="dir-cat">
+      <div class="dir-cat-title">📧 <a href="#" onclick="window.parent.navigateTo('mail')">Email &amp; Chat</a></div>
+      <ul class="dir-links">
+        <li><a href="#" onclick="window.parent.navigateTo('mail')">Webmail (Hotmail)</a></li>
+        <li><a href="#" onclick="setSearch('icq download')">ICQ Download</a></li>
+        <li><a href="#" onclick="setSearch('aim instant messenger')">AIM</a></li>
+        <li><a href="#" onclick="window.parent.navigateTo('chat')">IRC Chat Rooms</a></li>
+      </ul>
+    </div>
+    <div class="dir-cat">
+      <div class="dir-cat-title">🏘️ <a href="#" onclick="window.parent.navigateTo('geocities')">GeoCities</a></div>
+      <ul class="dir-links">
+        <li><a href="#" onclick="window.parent.navigateTo('geocities')">Browse Neighborhoods</a></li>
+        <li><a href="#" onclick="setSearch('geocities personal page')">Personal Pages</a> <span class="count">(38M)</span></li>
+        <li><a href="#" onclick="setSearch('geocities fan site')">Fan Sites</a></li>
+        <li><a href="#" onclick="setSearch('sign guestbook')">Guestbooks</a></li>
+      </ul>
+    </div>
+    <div class="dir-cat">
+      <div class="dir-cat-title">📰 <a href="#" onclick="window.parent.navigateTo('news')">News &amp; Media</a></div>
+      <ul class="dir-links">
+        <li><a href="#" onclick="setSearch('y2k bug news')">Y2K Coverage</a> <span class="new-dot">HOT</span></li>
+        <li><a href="#" onclick="setSearch('star wars phantom menace')">Star Wars News</a></li>
+        <li><a href="#" onclick="setSearch('tech news slashdot')">Slashdot</a></li>
+        <li><a href="#" onclick="setSearch('cnn news')">CNN Online</a></li>
+      </ul>
+    </div>
+    <div class="dir-cat">
+      <div class="dir-cat-title">✍️ <a href="#" onclick="setSearch('fan fiction')">Fan Fiction</a></div>
+      <ul class="dir-links">
+        <li><a href="#" onclick="window.parent.navigateTo('fanfic')">dweeb.co Fan Fics</a> <span class="new-dot">NEW</span></li>
+        <li><a href="#" onclick="setSearch('x-files fanfic')">X-Files Stories</a></li>
+        <li><a href="#" onclick="setSearch('matrix fanfic')">Matrix Stories</a></li>
+        <li><a href="#" onclick="setSearch('quizilla quiz')">Quizilla Quizzes</a></li>
+      </ul>
+    </div>
+    <div class="dir-cat">
+      <div class="dir-cat-title">🛒 <a href="#" onclick="setSearch('online shopping')">Shopping</a></div>
+      <ul class="dir-links">
+        <li><a href="#" onclick="setSearch('amazon books')">Amazon.com</a> <span class="new-dot">NEW</span></li>
+        <li><a href="#" onclick="setSearch('ebay auction')">eBay Auctions</a></li>
+        <li><a href="#" onclick="setSearch('cdnow music')">CDNow Music</a></li>
+        <li><a href="#" onclick="setSearch('buy tamagotchi')">Tamagotchi Shop</a></li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+</div><!-- /sidebar-main -->
+
+<!-- Sidebar -->
+<div class="sidebar">
+  <div class="sidebar-ad">
+    <span class="ad-title">🔥 FREE Email!!</span>
+    Get your FREE @hotmail.com address TODAY!<br/>
+    <span onclick="window.parent.navigateTo('mail')" class="ad-btn">Sign Up FREE!</span>
+  </div>
+  <div class="sidebar-ad" style="border-color:#0066ff;background:#e8f0ff;">
+    <span class="ad-title" style="color:#0066ff;">💾 Napster</span>
+    Download ANY song FREE. Totally legal... probably.<br/>
+    <span class="ad-btn" style="background:#0066ff;color:#fff;">Download Now</span>
+  </div>
+  <div class="sidebar-feature">
+    <b>⭐ Cool Site of the Day</b>
+    <ul>
+      <li><a href="#" onclick="window.parent.navigateTo('hamster')">🐹 Hamster Dance</a></li>
+      <li><a href="#" onclick="window.parent.navigateTo('da-office')">🎮 Da Office</a> <span class="new-dot">NEW</span></li>
+      <li><a href="#" onclick="window.parent.navigateTo('geocities')">🏘️ GeoCities Tour</a></li>
+    </ul>
+  </div>
+  <div class="sidebar-feature">
+    <b>📡 dWeebSearch Stats</b>
+    <ul>
+      <li>Pages: <b>52,841,029</b></li>
+      <li>Searches today: <b>1,847,291</b></li>
+      <li>Online: <b>47,382</b></li>
+    </ul>
+  </div>
+  <div class="sidebar-feature">
+    <b>🔑 Secret Keywords</b>
+    <ul>
+      <li><a href="#" onclick="setSearch('hamster dance')">hamster dance</a></li>
+      <li><a href="#" onclick="setSearch('leet hax0r')">leet hax0r</a></li>
+      <li><a href="#" onclick="setSearch('xfiles truth')">xfiles truth</a></li>
+      <li><a href="#" onclick="setSearch('all your base')">all your base</a></li>
+    </ul>
+  </div>
+</div>
+</div><!-- /sidebar-layout -->
+
+<div class="site-footer">
+  <a href="#" onclick="window.parent.navigateTo('home')">Home</a>
+  <a href="#" onclick="window.parent.navigateTo('mail')">Webmail</a>
+  <a href="#" onclick="window.parent.navigateTo('geocities')">GeoCities</a>
+  <a href="#" onclick="window.parent.navigateTo('chat')">Chat</a>
+  <a href="#" onclick="window.parent.navigateTo('news')">News</a>
+  <a href="#" onclick="window.parent.navigateTo('help')">Help</a>
+  <br/><br/>
+  © 1999 dWeebSearch · A dweeb.co Property · 
+  <span style="color:#c00;">📡 Dial-up friendly · Optimized for 56k</span><br/>
+  <span style="color:#999;font-size:10px;">
+    💡 <b>Navigation tip:</b> Use the toolbar buttons above to explore the 90s internet · 
+    Try searching for: geocities · hotmail · hamster dance · napster · winamp · y2k · da office
+    <br/>More destinations being added all the time — check back soon!!
+  </span>
+</div>
+
+<script>
+const RESULTS = {
+  default:[
+    {title:"dweeb.co — The Official Homepage",url:"http://www.dweeb.co/",desc:"Welcome to dweeb.co!! Personal homepage with games, fan fiction, guestbook, and the coolest links on the net. Updated regularly! Best viewed IE 4.0.",date:"Jun 18, 1999"},
+    {title:"Da Office Games — dweeb.co",url:"http://www.dweeb.co/da-office/",desc:"Games disguised as office software!! SpreadPong (Excel), Type-O (Word), SlideWrecker (PowerPoint), Inbox Zero (Outlook). Play at work without getting caught!!",date:"Jun 18, 1999"},
+    {title:"GeoCities — Free Homepages for Everyone",url:"http://www.geocities.com/",desc:"Build your own FREE homepage on GeoCities!! Choose your neighborhood: Hollywood, Silicon Valley, SoHo, Heartland and more. Over 3 million personal pages!!",date:"Jun 15, 1999"},
+    {title:"Hotmail — Free Email for Life",url:"http://www.hotmail.com/",desc:"Get your free @hotmail.com email address! Check your email from any computer!! dweebsoft's free web-based email service.",date:"Jun 10, 1999"},
+  ],
+  'geocities':[
+    {title:"GeoCities — Your Free Home on the Web",url:"http://www.geocities.com/",desc:"The #1 free homepage community on the internet!! Over 38 million pages. Neighborhoods include: Hollywood, SoHo, Silicon Valley, Area 51, Heartland, and more!!",date:"Jun 15, 1999"},
+    {title:"GeoCities — Area 51 Neighborhood",url:"http://www.geocities.com/Area51/",desc:"The sci-fi and paranormal neighborhood!! UFOs, X-Files fan sites, conspiracy theories, and cool weird stuff. Enter if you dare!!",date:"May 2, 1999"},
+    {title:"How to Build Your GeoCities Page — Tutorial",url:"http://www.geocities.com/help/",desc:"Step by step guide to building your first webpage!! No experience needed. Learn HTML, how to add GIFs, hit counters, guestbooks and more!!",date:"Apr 20, 1999"},
+  ],
+  'free mp3':[
+    {title:"Napster — FREE MP3 Downloads",url:"http://www.napster.com/",desc:"Download ANY song for FREE using Napster peer-to-peer technology!! Totally legal... we think. Over 1 million songs available RIGHT NOW. Fast 56k downloads!!",date:"Jun 1, 1999"},
+    {title:"MP3.com — Legal Free Music",url:"http://www.mp3.com/",desc:"Legal free MP3 downloads from independent artists!! New bands every day. Also news, charts, and software reviews.",date:"May 28, 1999"},
+    {title:"Winamp — The World's Best MP3 Player",url:"http://www.winamp.com/",desc:"Download Winamp FREE!! The best MP3 player for Windows 95/98. Thousands of skins available. Visualizations!! Equalizer!! Now with Milkdrop!!",date:"Jun 5, 1999"},
+  ],
+  'winamp skins':[
+    {title:"Winamp Skin Heaven — 10,000+ FREE Skins",url:"http://www.wincustomize.com/",desc:"Download thousands of FREE Winamp skins!! Metal, wood, sci-fi, anime, Matrix, every band you love. Make your MP3 player look AWESOME!!",date:"Jun 12, 1999"},
+    {title:"My Winamp Skin Collection — GeoPage",url:"http://www.geocities.com/Area51/winamp_skins/",desc:"My personal collection of the BEST winamp skins I have found!! Updated weekly. Currently: 847 skins. Includes my own custom dweeb.co skin coming soon!!",date:"Jun 3, 1999"},
+  ],
+  'hamster dance':[
+    {title:"Hampton Hamster — The ORIGINAL Hamster Dance!!",url:"http://www.hampsterdance2.com/",desc:"THE HAMSTER DANCE!! Da da da da da daaaa!! The most visited page on the entire internet in 1999. WARNING: song will be stuck in your head FOREVER. You have been warned.",date:"Jun 17, 1999"},
+    {title:"Hamster Dance Fan Page — Dedicated to Hampton",url:"http://www.geocities.com/SunsetStrip/hamster_fan/",desc:"Fan page for the greatest website ever made. Includes history, MIDI download, hamster GIF collection, and a guestbook with 14,000 entries!!",date:"May 30, 1999"},
+  ],
+  'y2k':[
+    {title:"Y2K — The Bug That Will End Civilization (Maybe)",url:"http://www.y2k.gov/",desc:"Official US government Y2K information. 198 days until January 1 2000. Is your computer ready? Is YOUR BANK ready? Survival guide included.",date:"Jun 18, 1999"},
+    {title:"Y2K Survival Guide — Stock Up NOW",url:"http://www.y2ksurvival.com/",desc:"How to prepare for Y2K!! Stockpile food, water, candles. Print out your bank statements NOW. Keep cash on hand. This is NOT a drill. The mainframes WILL fail.",date:"Jun 10, 1999"},
+    {title:"Y2K is a HOAX — Don't Panic",url:"http://www.skeptic.com/y2k/",desc:"Calm down. The Y2K bug is way overblown. Your computer will not explode. Planes will not fall from the sky. The banks have known about this for 20 years.",date:"Jun 5, 1999"},
+  ],
+  'da office games':[
+    {title:"Da Office — Games That Look Like Work",url:"http://www.dweeb.co/da-office/",desc:"Four AMAZING games disguised as dweebsoft Office!! SpreadPong (Excel Pong — cells shatter!!), Type-O (Word typing game), SlideWrecker (PowerPoint Breakout), Inbox Zero (Outlook Space Invaders). PLAY NOW!!",date:"Jun 18, 1999"},
+  ],
+  'all your base':[
+    {title:"All Your Base Are Belong To Us — The Full Story",url:"http://www.allyourbase.com/",desc:"'What happen?' — the greatest video game translation in history. Zero Wing (Sega Mega Drive, 1992). In 2101, war was beginning. Somebody set up us the bomb. Make your time!! HA HA HA!!",date:"Jun 14, 1999"},
+  ],
+  'leet hax0r':[
+    {title:"1337 H4X0R — SkILLz P4G3",url:"http://www.geocities.com/Area51/1337/",desc:"W3LC0M3 70 7H3 1337357 P4G3 0N 7H3 1N73RN37!! H4X0R SKILLZ · PHREAKING · WAREZ · ANSI ART · IRC COMMANDS · D0N7 M355 W17H M3!!",date:"Mar 3, 1999"},
+  ],
+  'xfiles truth':[
+    {title:"The Truth Is Out There — X-Files Fan Conspiracy Page",url:"http://www.geocities.com/Area51/xfiles_truth/",desc:"THE REAL X-FILES CONSPIRACY EXPLAINED!! Black oil, alien colonization, the smoking man, the syndicate — it's ALL real. Mulder was right. Scully will eventually believe. The truth IS out there.",date:"Jun 1, 1999"},
+  ],
+  'hotmail':[
+    {title:"Hotmail — Free Web-Based Email",url:"http://www.hotmail.com/",desc:"Get your FREE Hotmail address today!! Sign up in 2 minutes. Check email from ANY computer. @hotmail.com is the most popular email domain on the internet with over 30 million users!!",date:"Jun 16, 1999"},
+  ],
+  'animated gifs':[
+    {title:"GIF World — 50,000+ Free Animated GIFs",url:"http://www.gifworld.com/",desc:"The BIGGEST collection of free animated GIFs on the internet!! Under construction signs, spinning globes, fire, butterflies, dancing babies, email envelopes and MUCH MORE!! Right-click to save!!",date:"Jun 14, 1999"},
+  ],
+  'star wars phantom menace':[
+    {title:"Star Wars: Episode I — The Phantom Menace",url:"http://www.starwars.com/",desc:"IT IS FINALLY HERE!! 16 years after Return of the Jedi, the NEW Star Wars movie opens May 19, 1999!! JAR JAR BINKS IS SO ANNOYING THO. Who is the best character? (Answer: Darth Maul obviously)",date:"May 19, 1999"},
+  ],
+};
+
+function setSearch(q){ document.getElementById('q').value=q; }
+function doSearch(){
+  const q = document.getElementById('q').value.trim().toLowerCase();
+  if(!q) return;
+  const dirSec = document.getElementById('dir-section');
+  const resSec = document.getElementById('results-section');
+  const resHeader = document.getElementById('results-header');
+  const resList = document.getElementById('results-list');
+  dirSec.style.display='none';
+  resSec.style.display='block';
+  const results = RESULTS[q] || RESULTS['default'];
+  const count = results.length + Math.floor(Math.random()*900+100);
+  resHeader.innerHTML = \`dWeebSearch found <b>\${count.toLocaleString()}</b> results for "<b>\${document.getElementById('q').value}</b>" · Search time: 0.23 seconds\`;
+  resList.innerHTML = results.map(r=>\`
+    <div class="result-item">
+      <div class="result-title"><a href="#" onclick="return false;">\${r.title}</a></div>
+      <div class="result-url">\${r.url}</div>
+      <div class="result-desc">\${r.desc}</div>
+      <div class="result-date">Last indexed: \${r.date} · Relevance: \${80+Math.floor(Math.random()*19)}%</div>
+    </div>
+  \`).join('');
+}
+function feelingLucky(){
+  const destinations = ['geocities','mail','hamster','chat','news','da-office','90s-home'];
+  window.parent.navigateTo(destinations[Math.floor(Math.random()*destinations.length)]);
+}
+<\/script>
+</body>
+</html>`;
+
+// ══════════════════════════════════
+// PAGE CONTENT LIBRARY
+// ══════════════════════════════════
+
+// Stub page builders — will be fleshed out in future updates
+function buildMailPage(){
+  return `<!DOCTYPE html><html><head><meta charset="UTF-8"/>
+  <style>*{margin:0;padding:0;box-sizing:border-box;}body{font-family:Arial,sans-serif;background:#c0c0c0;font-size:12px;}
+  .titlebar{background:linear-gradient(90deg,#000080,#1084d0);color:#fff;padding:3px 8px;font-weight:bold;display:flex;align-items:center;gap:6px;}
+  .toolbar{background:#c0c0c0;border-bottom:1px solid #808080;padding:4px 8px;display:flex;gap:6px;}
+  .toolbar button{background:#c0c0c0;border:1px solid;border-color:#fff #808080 #808080 #fff;padding:3px 10px;cursor:pointer;font-size:12px;}
+  .toolbar button:active{border-color:#808080 #fff #fff #808080;}
+  .layout{display:flex;height:calc(100vh - 80px);}
+  .folders{width:140px;background:#f0f0f0;border-right:1px solid #808080;padding:8px 0;}
+  .folder{padding:5px 12px;cursor:pointer;font-size:12px;display:flex;align-items:center;gap:6px;}
+  .folder:hover,.folder.active{background:#000080;color:#fff;}
+  .folder .badge{background:#c00;color:#fff;font-size:9px;padding:0 4px;border-radius:2px;}
+  .email-list{flex:1;background:#fff;overflow:auto;}
+  .email-header{background:#c0c0c0;border-bottom:1px solid #808080;display:grid;grid-template-columns:20px 1fr 1fr 80px;padding:3px 8px;font-weight:bold;font-size:11px;}
+  .email-row{display:grid;grid-template-columns:20px 1fr 1fr 80px;padding:5px 8px;border-bottom:1px solid #f0f0f0;cursor:pointer;font-size:12px;}
+  .email-row:hover{background:#dce6f0;}
+  .email-row.unread{font-weight:bold;background:#f0f4ff;}
+  .email-row.unread:hover{background:#dce6f0;}
+  .dot{color:#000080;font-size:8px;}
+  </style></head><body>
+  <div class="titlebar">📧 dWeebMail — dweeb@hotmail.com — Inbox (12 unread)</div>
+  <div class="toolbar">
+    <button onclick="alert('New Message window would open here!!')">📝 New</button>
+    <button>↩️ Reply</button>
+    <button>🗑️ Delete</button>
+    <button>📁 Move</button>
+    <button onclick="alert('Getting mail...\\n\\nConnecting to mail.dweeb.co...\\nChecking for new messages...\\n\\n3 new messages received!\\n\\n- Your Tamagotchi needs attention (automated)\\n- RE: RE: RE: RE: Can everyone STOP replying all!!\\n- You may have already won $1,000,000!!')">📡 Get Mail</button>
+  </div>
+  <div class="layout">
+    <div class="folders">
+      <div class="folder active">📥 Inbox <span class="badge">12</span></div>
+      <div class="folder">📤 Sent</div>
+      <div class="folder">📝 Drafts <span class="badge">3</span></div>
+      <div class="folder">🗑️ Deleted</div>
+      <div class="folder">🚫 Junk <span class="badge">847</span></div>
+      <div class="folder">⭐ Saved</div>
+    </div>
+    <div class="email-list">
+      <div class="email-header"><span></span><span>From</span><span>Subject</span><span>Date</span></div>
+      <div class="email-row unread" onclick="alert('From: noreply@tamagotchi.com\\nSubject: ⚠️ Your Tamagotchi is HUNGRY!!\\n\\nDear Owner,\\n\\nYour Tamagotchi (Mimitchi, age 12) has not been fed in 4 hours. Please feed it immediately or it will get sick.\\n\\nAlso it made a mess. Please clean it up.\\n\\n— Tamagotchi Headquarters')"><span class="dot">●</span><span>Tamagotchi HQ</span><span>⚠️ Your Tamagotchi is HUNGRY!!</span><span>Jun 18</span></div>
+      <div class="email-row unread" onclick="alert('From: stargirl99@hotmail.com\\nSubject: RE: RE: RE: RE: RE: Fw: Fw: This is SO funny\\n\\nomg did you see this forward?? it is SO TRUE about being a 90s kid lol. You HAVE to send this to 10 people or something bad will happen (jk... or am I??)\\n\\np.s. have you heard the new Backstreet Boys song?? AJ looks SO GOOD in the video just saying\\n\\np.p.s. add me on ICQ: 84729103\\n\\n~*~StArGiRl~*~')"><span class="dot">●</span><span>~*~StArGiRl~*~</span><span>RE: RE: RE: RE: RE: Fw: This is SO funny</span><span>Jun 18</span></div>
+      <div class="email-row unread" onclick="alert('From: ceo@microsoft.com\\nSubject: YOU HAVE BEEN SELECTED\\n\\nDear Internet User,\\n\\ndweebsoft and AOL are doing a test of the internet. For every email you forward, Bill Gates will donate $1 to charity AND you will receive $100 via post.\\n\\nThis is REAL. My secretary verified it.\\n\\nForward to everyone you know IMMEDIATELY.\\n\\n— Bill Gates, CEO dweebsoft\\n\\n[Note from dWeeb: DO NOT FORWARD THIS. IT IS FAKE. BILL GATES IS NOT GIVING YOU MONEY.]')"><span class="dot">●</span><span>bill.gates@microsoft.com</span><span>YOU HAVE BEEN SELECTED — READ NOW</span><span>Jun 17</span></div>
+      <div class="email-row" onclick="alert('From: icq-notification@icq.com\\nSubject: xXDarkAngelXx wants to add you\\n\\nxXDarkAngelXx (UIN: 29481047) has added you to their contact list.\\n\\nDo you wish to add them back?\\n\\n[YES - launch ICQ] [NO - ignore]')"><span></span><span>ICQ Notification</span><span>xXDarkAngelXx wants to add you to ICQ</span><span>Jun 17</span></div>
+      <div class="email-row" onclick="alert('From: webring-admin@webring.org\\nSubject: Welcome to the Dweeb Web Ring!\\n\\nYour site has been approved for the Dweeb Web Ring!!\\n\\nYour site ID is: #2847\\nYour neighbors are:\\n  - Prev: CoolDude2000\\'s Homepage\\n  - Next: xXDarkAngelXx\\'s Domain\\n\\nPlease add the webring HTML to your page within 7 days or you will be removed.\\n\\nRock on!! 🤘')"><span></span><span>WebRing Admin</span><span>Welcome to the Dweeb Web Ring!!</span><span>Jun 16</span></div>
+      <div class="email-row unread" onclick="alert('From: noreply@netscape.com\\nSubject: Download Netscape Navigator 4.6 NOW\\n\\nNetscape Navigator 4.6 is now available!!\\n\\nNew features:\\n- Better frames support\\n- Improved JavaScript\\n- Netscape Communicator included\\n- Still not as good as IE 4 but we\\'re trying\\n\\nDownload: 18.4 MB (estimated download time at 56k: 47 minutes)')"><span class="dot">●</span><span>Netscape</span><span>📥 Download Netscape 4.6 — IMPORTANT UPDATE</span><span>Jun 15</span></div>
+      <div class="email-row" onclick="alert('SYSTEM ALERT: VIRUS WARNING!\\n\\nYou have received an email titled \\'Good Times\\'.\\nDO NOT OPEN IT.\\nDO NOT READ IT.\\nIT WILL FORMAT YOUR HARD DRIVE.\\nFORWARD THIS WARNING TO EVERYONE YOU KNOW IMMEDIATELY.\\n\\n[Note: The Good Times virus warning is itself a hoax. There is no virus. The warning IS the hoax. Stop forwarding it.  — dWeeb]')"><span></span><span>System Alert</span><span>⚠️ VIRUS WARNING — Good Times — READ THIS</span><span>Jun 14</span></div>
+    </div>
+  </div>
+  </body></html>`;
+}
+
+function buildGeocitiesPage(){
+  return `<!DOCTYPE html><html><head><meta charset="UTF-8"/>
+  <style>*{margin:0;padding:0;box-sizing:border-box;}body{font-family:Arial,sans-serif;background:#fff;font-size:12px;}
+  .gc-header{background:linear-gradient(135deg,#9400d3,#4b0082,#0000ff,#008000,#ffff00,#ff7f00,#ff0000);padding:16px;text-align:center;}
+  .gc-logo{font-family:Impact,'Arial Black',sans-serif;font-size:2rem;color:#fff;text-shadow:2px 2px 0 #000;letter-spacing:2px;}
+  .gc-sub{color:#ffe;font-size:13px;margin-top:4px;}
+  .gc-navbar{background:#000080;display:flex;flex-wrap:wrap;justify-content:center;padding:4px;gap:2px;}
+  .gc-navbar a{color:#fff;font-size:11px;padding:3px 8px;text-decoration:none;border:1px solid rgba(255,255,255,.3);}
+  .gc-navbar a:hover{background:#fff;color:#000080;}
+  .gc-main{padding:16px;}
+  .gc-intro{background:#f0f8ff;border:1px solid #000080;padding:12px;margin-bottom:16px;font-size:12px;line-height:1.7;}
+  .gc-intro h2{color:#000080;font-size:16px;margin-bottom:8px;}
+  .neighborhoods{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:10px;margin-bottom:16px;}
+  .neighborhood{background:#f8f8ff;border:2px solid;padding:10px;cursor:pointer;transition:.15s;}
+  .neighborhood:hover{background:#e8e8ff;}
+  .n-icon{font-size:2rem;display:block;margin-bottom:4px;}
+  .n-name{font-weight:bold;color:#000080;font-size:13px;display:block;margin-bottom:3px;}
+  .n-desc{font-size:11px;color:#444;line-height:1.5;}
+  .n-count{font-size:10px;color:#888;margin-top:4px;}
+  .gc-footer{background:#000080;color:#aaaaff;padding:8px;text-align:center;font-size:11px;margin-top:16px;}
+  </style></head><body>
+  <div class="gc-header">
+    <div class="gc-logo">🏘️ dWeebCities</div>
+    <div class="gc-sub">Build Your FREE Homepage on the Web · Join 38 Million Neighbors!!</div>
+  </div>
+  <div class="gc-navbar">
+    <a href="#" onclick="alert('Creating your free homepage!!\\n\\nStep 1: Choose a neighborhood\\nStep 2: Pick your address\\nStep 3: Build your page with our easy wizard!!\\n\\n(Feature coming soon to dweeb.co)')">🏗️ Build a Page</a>
+    <a href="#">🗺️ Neighborhoods</a>
+    <a href="#" onclick="window.parent.navigateTo('search')">🔍 Search Pages</a>
+    <a href="#">⭐ Cool Pages</a>
+    <a href="#" onclick="window.parent.navigateTo('help')">❓ Help</a>
+  </div>
+  <div class="gc-main">
+    <div class="gc-intro">
+      <h2>Welcome to dWeebCities — Your Home on the Web!!</h2>
+      dWeebCities is the #1 free web hosting community on the internet!! Choose a neighborhood that matches your interests, pick your address, and start building your page TODAY!! 
+      No experience needed — our Page Wizard makes it easy!! <b>Over 38 million pages and counting!!</b>
+      <br/><br/>Already have a page? <a href="#" onclick="window.parent.navigateTo('90s-home')">Visit dweeb.co's own dWeebCities page →</a>
+    </div>
+    <div class="neighborhoods">
+      <div class="neighborhood" style="border-color:#ff6600;" onclick="window.parent.navigateTo('90s-home')">
+        <span class="n-icon">🎭</span>
+        <span class="n-name">SunsetStrip</span>
+        <span class="n-desc">Music, entertainment, celebrities, fan sites, pop culture!!</span>
+        <span class="n-count">4,821,029 pages</span>
+      </div>
+      <div class="neighborhood" style="border-color:#0000ff;" onclick="alert('Silicon Valley Neighborhood\\n\\nTech sites, programming tutorials, hardware reviews, Slashdot mirror sites, Linux evangelism, and people arguing about Netscape vs IE.\\n\\n2,391,847 pages')">
+        <span class="n-icon">💻</span>
+        <span class="n-name">SiliconValley</span>
+        <span class="n-desc">Tech, programming, computers, the future of the internet!!</span>
+        <span class="n-count">2,391,847 pages</span>
+      </div>
+      <div class="neighborhood" style="border-color:#9400d3;" onclick="window.parent.navigateTo('90s-home')">
+        <span class="n-icon">🛸</span>
+        <span class="n-name">Area51</span>
+        <span class="n-desc">Sci-fi, X-Files, UFOs, conspiracy, the paranormal!!</span>
+        <span class="n-count">1,847,203 pages</span>
+      </div>
+      <div class="neighborhood" style="border-color:#008000;" onclick="alert('Heartland Neighborhood\\n\\nFamily pages, recipes, community, hometown USA. The nicest neighborhood in dWeebCities. Also the most Comic Sans.')">
+        <span class="n-icon">🌻</span>
+        <span class="n-name">Heartland</span>
+        <span class="n-desc">Family pages, recipes, community, and American life!!</span>
+        <span class="n-count">5,102,847 pages</span>
+      </div>
+      <div class="neighborhood" style="border-color:#ff0000;" onclick="alert('Athens Neighborhood\\n\\nEducation, philosophy, science, and serious intellectual stuff. Actually surprisingly good.')">
+        <span class="n-icon">🏛️</span>
+        <span class="n-name">Athens</span>
+        <span class="n-desc">Education, science, philosophy, and serious stuff!!</span>
+        <span class="n-count">891,204 pages</span>
+      </div>
+      <div class="neighborhood" style="border-color:#ff99cc;" onclick="window.parent.navigateTo('90s-about')">
+        <span class="n-icon">🎀</span>
+        <span class="n-name">CollegeClub</span>
+        <span class="n-desc">College students, dorm life, bands, parties, and rants!!</span>
+        <span class="n-count">3,294,021 pages</span>
+      </div>
+    </div>
+    <div style="background:#fffde8;border:2px solid #fc0;padding:12px;font-size:12px;margin-bottom:12px;">
+      <b>🌟 Featured Pages Today:</b><br/>
+      <a href="#" onclick="window.parent.navigateTo('90s-home')">dweeb.co — games, fan fiction, the coolest site on the net!!</a> (Area51 · SunsetStrip)<br/>
+      <a href="#" onclick="window.parent.navigateTo('90s-about')">~*~StArGiRl~*~ — my life, my music, my TY Beanie Baby collection</a> (CollegeClub)<br/>
+      <a href="#" onclick="window.parent.navigateTo('90s-fanfic')">xXDarkAngelXx's X-Files Shrine — all the truth, all the time</a> (Area51)
+    </div>
+  </div>
+  <div class="gc-footer">© 1999 dWeebCities · A dweeb.co Property · 38,291,847 pages hosted and counting!!</div>
+  </body></html>`;
+}
+
+function buildChatPage(){
+  const chatLines = [
+    {user:'xXDarkAngelXx', msg:'anyone here??'},
+    {user:'CoolDude2000', msg:'yo'},
+    {user:'~*~StArGiRl~*~', msg:'HIIII everyone!!!! 💜'},
+    {user:'PokeManiac_J', msg:'has anyone seen the phantom menace yet?'},
+    {user:'CoolDude2000', msg:'YES jar jar is so annoying omg'},
+    {user:'xXDarkAngelXx', msg:'darth maul was cool tho'},
+    {user:'~*~StArGiRl~*~', msg:'I cried during the end'},
+    {user:'TechWizard42', msg:'no spoilers!! some people haven\'t seen it'},
+    {user:'CoolDude2000', msg:'lol it\'s been out for a month'},
+    {user:'PokeManiac_J', msg:'anyone playing pokemon?? i just got charizard'},
+    {user:'~*~StArGiRl~*~', msg:'omg yes!! i have 148 so far need 2 more 😭'},
+    {user:'dWeEbMaStEr99', msg:'hey everyone!! check out da office games on dweeb.co'},
+    {user:'CoolDude2000', msg:'spreadpong is SO addictive'},
+    {user:'xXDarkAngelXx', msg:'played it for 2 hours at work lol'},
+    {user:'TechWizard42', msg:'y2k is going to be fine btw, you\'re all overreacting'},
+    {user:'~*~StArGiRl~*~', msg:'my dad bought like 40 cans of soup just in case lol'},
+  ];
+  const chatHTML = "<div class=\"chat-line\"><span class=\"chat-user\">&lt;xXDarkAngelXx&gt;</span> <span class=\"chat-msg\">anyone here??</span></div><div class=\"chat-line\"><span class=\"chat-user\">&lt;CoolDude2000&gt;</span> <span class=\"chat-msg\">yo</span></div><div class=\"chat-line\"><span class=\"chat-user\">&lt;~*~StArGiRl~*~&gt;</span> <span class=\"chat-msg\">HIIII everyone!!!! 💜</span></div><div class=\"chat-line\"><span class=\"chat-user\">&lt;PokeManiac_J&gt;</span> <span class=\"chat-msg\">has anyone seen the phantom menace yet?</span></div><div class=\"chat-line\"><span class=\"chat-user\">&lt;CoolDude2000&gt;</span> <span class=\"chat-msg\">YES jar jar is so annoying omg</span></div><div class=\"chat-line\"><span class=\"chat-user\">&lt;xXDarkAngelXx&gt;</span> <span class=\"chat-msg\">darth maul was cool tho</span></div><div class=\"chat-line\"><span class=\"chat-user\">&lt;~*~StArGiRl~*~&gt;</span> <span class=\"chat-msg\">I cried during the end</span></div><div class=\"chat-line\"><span class=\"chat-user\">&lt;TechWizard42&gt;</span> <span class=\"chat-msg\">no spoilers!! some people haven't seen it</span></div><div class=\"chat-line\"><span class=\"chat-user\">&lt;CoolDude2000&gt;</span> <span class=\"chat-msg\">lol it's been out for a month</span></div><div class=\"chat-line\"><span class=\"chat-user\">&lt;PokeManiac_J&gt;</span> <span class=\"chat-msg\">anyone playing pokemon?? i just got charizard</span></div><div class=\"chat-line\"><span class=\"chat-user\">&lt;~*~StArGiRl~*~&gt;</span> <span class=\"chat-msg\">omg yes!! i have 148 so far need 2 more 😭</span></div><div class=\"chat-line\"><span class=\"chat-user\">&lt;dWeEbMaStEr99&gt;</span> <span class=\"chat-msg\">hey everyone!! check out da office games on dweeb.co</span></div><div class=\"chat-line\"><span class=\"chat-user\">&lt;CoolDude2000&gt;</span> <span class=\"chat-msg\">spreadpong is SO addictive</span></div><div class=\"chat-line\"><span class=\"chat-user\">&lt;xXDarkAngelXx&gt;</span> <span class=\"chat-msg\">played it for 2 hours at work lol</span></div><div class=\"chat-line\"><span class=\"chat-user\">&lt;TechWizard42&gt;</span> <span class=\"chat-msg\">y2k is going to be fine btw, you're all overreacting</span></div><div class=\"chat-line\"><span class=\"chat-user\">&lt;~*~StArGiRl~*~&gt;</span> <span class=\"chat-msg\">my dad bought like 40 cans of soup just in case lol</span></div>";
+  return `<!DOCTYPE html><html><head><meta charset="UTF-8"/>
+  <style>*{margin:0;padding:0;box-sizing:border-box;}body{background:#000033;color:#00ff00;font-family:'Courier New',monospace;font-size:12px;height:100vh;display:flex;flex-direction:column;}
+  .chat-header{background:#000080;color:#fff;padding:4px 10px;font-weight:bold;border-bottom:2px solid #ffff00;display:flex;align-items:center;gap:10px;}
+  .chat-logo{font-size:1.1rem;letter-spacing:1px;}
+  .chat-info{font-size:10px;color:#aaaaff;margin-left:auto;}
+  .chat-layout{flex:1;display:flex;overflow:hidden;}
+  .user-list{width:120px;border-right:1px solid #004400;padding:8px 6px;background:#001a00;overflow-y:auto;}
+  .user-list-title{color:#ffff00;font-size:10px;font-weight:bold;margin-bottom:6px;border-bottom:1px solid #004400;padding-bottom:3px;}
+  .user-item{color:#00ff00;font-size:11px;padding:2px 0;cursor:pointer;}
+  .user-item:hover{color:#ffff00;}
+  .user-item::before{content:'● ';font-size:8px;color:#00aa00;}
+  .chat-main{flex:1;display:flex;flex-direction:column;}
+  .chat-log{flex:1;padding:8px;overflow-y:auto;background:#000022;}
+  .chat-line{padding:1px 0;line-height:1.5;}
+  .chat-user{color:#ffff00;font-weight:bold;}
+  .chat-msg{color:#00dd00;}
+  .chat-system{color:#888;font-style:italic;}
+  .chat-input-row{display:flex;gap:4px;padding:6px;background:#001a00;border-top:1px solid #004400;}
+  .chat-nick{color:#ffff00;font-size:12px;padding:3px 6px;white-space:nowrap;}
+  .chat-input{flex:1;background:#000;border:1px solid #00aa00;color:#00ff00;font-family:'Courier New',monospace;font-size:12px;padding:3px 6px;outline:none;}
+  .chat-send{background:#002200;border:1px solid #00aa00;color:#00ff00;padding:3px 10px;cursor:pointer;font-family:'Courier New',monospace;font-size:12px;}
+  .chat-send:hover{background:#00aa00;color:#000;}
+  .topic{background:#001a00;border-bottom:1px solid #004400;padding:4px 8px;font-size:10px;color:#aaa;}
+  .topic b{color:#ffff00;}
+  </style></head><body>
+  <div class="chat-header">
+    <span class="chat-logo">💬 dWeeb IRC — #general</span>
+    <span class="chat-info">16 users · Server: irc.dweeb.co · Ping: 47ms</span>
+  </div>
+  <div class="topic"><b>Topic:</b> Welcome to #general on dWeeb IRC!! | Rules: be cool, no flooding, no warez links in main channel | Y2K = 198 days | NEW: Da Office games at dweeb.co!!</div>
+  <div class="chat-layout">
+    <div class="user-list">
+      <div class="user-list-title">USERS (16)</div>
+      <div class="user-item" style="color:#ff9900;">@dWeEbMaStEr99</div>
+      <div class="user-item">xXDarkAngelXx</div>
+      <div class="user-item">~*~StArGiRl~*~</div>
+      <div class="user-item">CoolDude2000</div>
+      <div class="user-item">PokeManiac_J</div>
+      <div class="user-item">TechWizard42</div>
+      <div class="user-item">MidnightRaverGirl</div>
+      <div class="user-item">sk8erboy_99</div>
+      <div class="user-item">BuffyFan4Ever</div>
+      <div class="user-item">NetNerd_97</div>
+      <div class="user-item" style="color:#888;">Guest_7429</div>
+      <div class="user-item" style="color:#888;">Guest_1103</div>
+    </div>
+    <div class="chat-main">
+      <div class="chat-log" id="chat-log">
+        <div class="chat-line chat-system">*** Now talking in #general</div>
+        <div class="chat-line chat-system">*** Topic set by dWeEbMaStEr99</div>
+        ${chatHTML}
+        <div class="chat-line chat-system">*** You have joined #general</div>
+      </div>
+      <div class="chat-input-row">
+        <span class="chat-nick">&lt;You&gt;</span>
+        <input class="chat-input" id="chat-input" placeholder="Type here and press Enter..." onkeydown="if(event.key==='Enter')sendChat()"/>
+        <button class="chat-send" onclick="sendChat()">Send</button>
+      </div>
+    </div>
+  </div>
+  <script>
+  function sendChat(){
+    const input=document.getElementById('chat-input');
+    const log=document.getElementById('chat-log');
+    const msg=input.value.trim();
+    if(!msg)return;
+    const line=document.createElement('div');
+    line.className='chat-line';
+    line.innerHTML='<span class="chat-user">&lt;You&gt;</span> <span class="chat-msg">'+msg+'</span>';
+    log.appendChild(line);
+    input.value='';
+    log.scrollTop=log.scrollHeight;
+    // Random reply
+    setTimeout(()=>{
+      const replies=[
+        {u:'CoolDude2000',m:'lol nice one'},
+        {u:'~*~StArGiRl~*~',m:'omg yes!! 💜'},
+        {u:'xXDarkAngelXx',m:'agreed'},
+        {u:'TechWizard42',m:'technically speaking, '+msg.toLowerCase().slice(0,20)+'...'},
+        {u:'PokeManiac_J',m:'haha'},
+        {u:'dWeEbMaStEr99',m:'hey welcome to the chat!! don\\'t forget to check out dweeb.co'},
+      ];
+      const r=replies[Math.floor(Math.random()*replies.length)];
+      const rl=document.createElement('div');
+      rl.className='chat-line';
+      rl.innerHTML='<span class="chat-user">&lt;'+r.u+'&gt;</span> <span class="chat-msg">'+r.m+'</span>';
+      log.appendChild(rl);
+      log.scrollTop=log.scrollHeight;
+    },800+Math.random()*1500);
+  }
+  <\/script>
+  </body></html>`;
+}
+
+function buildNewsPage(){
+  return `<!DOCTYPE html><html><head><meta charset="UTF-8"/>
+  <style>*{margin:0;padding:0;box-sizing:border-box;}body{font-family:Arial,Helvetica,sans-serif;background:#fff;font-size:12px;}
+  .news-header{background:#c00;color:#fff;padding:8px 14px;display:flex;align-items:baseline;gap:10px;}
+  .news-logo{font-family:Impact,'Arial Black',sans-serif;font-size:1.6rem;letter-spacing:1px;}
+  .news-date{font-size:11px;opacity:.8;}
+  .ticker{background:#000;color:#ff0;padding:4px 0;overflow:hidden;font-size:11px;font-weight:bold;}
+  .ticker-inner{white-space:nowrap;animation:tick 25s linear infinite;display:inline-block;}
+  @keyframes tick{from{transform:translateX(100%);}to{transform:translateX(-100%);}}
+  .news-main{display:grid;grid-template-columns:2fr 1fr;gap:0;padding:14px;gap:14px;}
+  .headline{border-bottom:3px solid #c00;padding-bottom:10px;margin-bottom:12px;}
+  .headline h1{font-size:1.5rem;line-height:1.2;color:#000;margin-bottom:6px;}
+  .headline .byline{font-size:11px;color:#888;margin-bottom:8px;}
+  .headline p{font-size:13px;line-height:1.7;color:#333;}
+  .story{border-bottom:1px solid #ccc;padding-bottom:10px;margin-bottom:10px;}
+  .story h3{font-size:13px;color:#000080;cursor:pointer;margin-bottom:3px;}
+  .story h3:hover{text-decoration:underline;}
+  .story p{font-size:11px;color:#555;line-height:1.5;}
+  .story .meta{font-size:10px;color:#aaa;margin-top:3px;}
+  .sidebar-box{background:#f8f8ff;border:1px solid #ccc;padding:10px;margin-bottom:12px;}
+  .sidebar-box h3{color:#c00;font-size:12px;font-weight:bold;border-bottom:1px solid #ccc;margin-bottom:8px;padding-bottom:4px;}
+  .sb-item{font-size:11px;padding:3px 0;border-bottom:1px dotted #ddd;color:#000080;cursor:pointer;}
+  .sb-item:hover{text-decoration:underline;}
+  </style></head><body>
+  <div class="news-header">
+    <span class="news-logo">📰 dWeeb News</span>
+    <span class="news-date">Thursday, June 18, 1999 · Your source for the day's news</span>
+  </div>
+  <div class="ticker"><div class="ticker-inner">
+    ⚡ BREAKING: NATO bombing of Yugoslavia enters 3rd month · Star Wars Ep. 1 crosses $200M · 
+    Napster under legal scrutiny from RIAA · Y2K: 197 days remaining · 
+    Backstreet Boys "Millennium" album #1 for 6th week · New Google.com search engine gaining users rapidly
+  </div></div>
+  <div class="news-main">
+    <div>
+      <div class="headline">
+        <h1>Y2K: Government Says "Don't Panic" — Experts Say "Panic a Little"</h1>
+        <div class="byline">By Staff Reporter · June 18, 1999 · TECHNOLOGY</div>
+        <p>With only 197 days until January 1, 2000, debate continues over whether the Y2K bug will cause minor inconveniences or a complete collapse of modern civilization. Government officials assured the public Thursday that critical systems would be ready. Meanwhile, survivalists continue purchasing canned goods, generators, and gold coins at record rates. "I'm not panicking," said one Duluth, MN resident who declined to give his name, "I'm just... prepared." He had purchased 847 cans of soup.</p>
+      </div>
+      <div class="story" onclick="alert('Star Wars: The Phantom Menace opened May 19th to record-breaking crowds.\\n\\nControversy continues over the character of Jar Jar Binks, who many fans describe as \\\"literally the worst thing in any movie ever made.\\\"\\n\\nDarth Maul, who appears for approximately 8 minutes total, is universally agreed to be the best part.\\n\\nGeorge Lucas has stated there will be two more prequels.')">
+        <h3>Star Wars Episode I Crosses $200 Million — Jar Jar Controversy Continues</h3>
+        <p>George Lucas's long-awaited return to the galaxy far, far away has proven divisive. The film itself: fine. Jar Jar Binks: not fine.</p>
+        <div class="meta">Entertainment · Jun 17, 1999</div>
+      </div>
+      <div class="story" onclick="alert('Napster, the peer-to-peer MP3 sharing service launched earlier this year, is facing legal pressure from the Recording Industry Association of America.\\n\\nNapster founder Sean Fanning says: \\\"We\\'re just connecting people.\\\"\\n\\nRIAA says: \\\"You are destroying music.\\\"\\n\\nInternet users say: \\\"FREE MUSIC!!!!!!\\\"\\n\\nExperts predict Napster will be shut down within 2 years.')">
+        <h3>RIAA Targets Napster: "Free Music Service" Faces Legal Challenge</h3>
+        <p>The music industry is not happy about everyone downloading their entire catalog for free. More at 11.</p>
+        <div class="meta">Technology · Jun 16, 1999</div>
+      </div>
+      <div class="story" onclick="alert('GeoCities, the free web hosting service home to 38 million personal pages, has been acquired by Yahoo! Inc. for approximately $3.57 billion in stock.\\n\\nGeoCities users are mostly upset because Yahoo said they might change the Terms of Service.\\n\\nAn estimated 12 million personal homepages contain a \\\"Best Viewed in IE 4.0\\\" notice that is now technically incorrect.')">
+        <h3>Yahoo Acquires GeoCities for $3.57 Billion — 38 Million Homepages Now Under Yahoo</h3>
+        <p>Yahoo's acquisition of the web's largest free hosting community raises questions about what happens to all those tiled backgrounds and hit counters.</p>
+        <div class="meta">Business · Jun 15, 1999</div>
+      </div>
+      <div class="story" onclick="alert('A small search engine called Google, founded by Stanford PhD students Larry Page and Sergey Brin, has been quietly gaining users since its launch last year.\\n\\nThe site features an unusually sparse homepage with just a search box — no news, no weather, no horoscopes. Industry analysts are skeptical.\\n\\n\\\"Nobody wants a search engine with no content,\\\" said one Yahoo executive. \\\"Where are the banner ads? Where is the portal? This makes no sense.\\\"\\n\\nGoogle currently indexes 60 million pages.')">
+        <h3>Small Search Engine "Google" Gaining Traction — Could Challenge AltaVista</h3>
+        <p>A minimalist new search engine with unusually accurate results is attracting attention. Industry skeptics question the business model.</p>
+        <div class="meta">Technology · Jun 14, 1999</div>
+      </div>
+    </div>
+    <div>
+      <div class="sidebar-box">
+        <h3>🔥 Most Read Today</h3>
+        <div class="sb-item" onclick="alert('Y2K survival tip #1: Print your bank statements NOW.\\nY2K survival tip #2: Keep cash at home.\\nY2K survival tip #3: Stock 2 weeks of food.\\nY2K survival tip #4: Have candles.\\nY2K survival tip #5: Don\\'t panic.\\n\\n(Tip #5 is the hardest one.)')">Y2K: 10 Things To Do RIGHT NOW</div>
+        <div class="sb-item" onclick="alert('Jar Jar Binks Annoyingness Rating: 11/10\\nDarth Maul Screen Time: 8 minutes\\nMidichlorians: Still not a good explanation\\nPod racing scene: Actually pretty cool\\nOverall verdict: Fine. It\\'s fine. It\\'s just fine.')">Star Wars: Full Review & Spoilers</div>
+        <div class="sb-item" onclick="alert('Free MP3 sites ranked:\\n1. Napster (best, probably illegal)\\n2. MP3.com (legal, smaller selection)\\n3. random geocities pages with an mp3 folder')">Best Sites for Free MP3s in 1999</div>
+        <div class="sb-item" onclick="alert('Backstreet Boys Millennium Track Listing:\\n1. Larger Than Life\\n2. I Want It That Way\\n3. Show Me the Meaning of Being Lonely\\n4. It\\'s Gotta Be You\\n...etc\\n\\nBest track: I Want It That Way (obviously)')">Backstreet Boys "Millennium": Full Track Listing</div>
+      </div>
+      <div class="sidebar-box">
+        <h3>📡 Tech Headlines</h3>
+        <div class="sb-item" onclick="window.parent.navigateTo('da-office')">🎮 New: Da Office Games at dweeb.co</div>
+        <div class="sb-item" onclick="alert('dweebscape Navigator 5 features:\\n- Better CSS support (finally)\\n- Faster JavaScript\\n- Built-in FTP\\n- Still crashes occasionally\\n\\nNetscape Navigator users: \\\"whatever\\\"')">IE 5 Released — Netscape Responds</div>
+        <div class="sb-item" onclick="alert('AOL now has 17 million subscribers.\\n\\n17 million people are going online and hearing \\\"You\\'ve Got Mail\\\"\\n\\nThis is somehow worth $163 billion according to Wall Street.')">AOL Reaches 17 Million Subscribers</div>
+        <div class="sb-item" onclick="alert('The Palm Pilot III is now available.\\n\\nFeatures: Calendar, Contacts, Memos, To-Do List.\\n\\nSyncs with your computer via a little cradle thing.\\n\\nBattery life: 2 weeks.\\n\\nCost: $299.\\n\\nReview: \\\"The future of personal computing.\\\"')">Palm Pilot III: The Future of Computing?</div>
+      </div>
+      <div class="sidebar-box">
+        <h3>🌡️ Y2K Countdown</h3>
+        <div style="text-align:center;padding:8px;">
+          <div style="font-size:2rem;font-weight:bold;color:#c00;">197</div>
+          <div style="font-size:11px;color:#666;">days until Jan 1, 2000</div>
+          <div style="font-size:10px;color:#888;margin-top:4px;">Are you prepared?</div>
+        </div>
+      </div>
+    </div>
+  </div>
+  </body></html>`;
+}
+
+function buildHamsterPage(){
+  return `<!DOCTYPE html><html><head><meta charset="UTF-8"/>
+  <style>
+  *{margin:0;padding:0;box-sizing:border-box;}
+  body{background:#ffff00;overflow:hidden;height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;font-family:Impact,'Arial Black',sans-serif;}
+  .title{font-size:clamp(1.5rem,7vw,4rem);color:#ff0000;text-shadow:4px 4px 0 #000;text-align:center;animation:bounce .3s ease-in-out infinite alternate;}
+  @keyframes bounce{from{transform:translateY(0);}to{transform:translateY(-8px);}}
+  .hamsters{display:flex;flex-wrap:wrap;justify-content:center;gap:4px;max-width:600px;margin:16px auto;}
+  .h{font-size:clamp(1.2rem,4vw,2.5rem);animation:spin var(--d) linear infinite;}
+  @keyframes spin{to{transform:rotate(360deg);}}
+  .counter{font-size:1rem;color:#000080;margin-top:10px;text-align:center;}
+  .note{font-size:clamp(.6rem,2vw,.8rem);color:#666;margin-top:8px;font-family:Arial;text-align:center;max-width:400px;}
+  .bg-text{position:fixed;font-size:clamp(.5rem,1.5vw,.8rem);color:rgba(0,0,0,.08);white-space:nowrap;font-family:Arial;}
+  .dancing-row{display:flex;justify-content:center;gap:8px;animation:sway 0.5s ease-in-out infinite alternate;}
+  @keyframes sway{from{transform:rotate(-5deg);}to{transform:rotate(5deg);}}
+  </style></head><body>
+  <div style="position:fixed;inset:0;display:flex;flex-wrap:wrap;align-content:flex-start;overflow:hidden;z-index:0;opacity:.15;">
+    🐹🐹🐹🐹🐹🐹🐹🐹🐹🐹🐹🐹🐹🐹🐹🐹🐹🐹🐹🐹🐹🐹🐹🐹🐹🐹🐹🐹🐹🐹🐹🐹🐹🐹🐹🐹🐹🐹🐹🐹🐹🐹🐹🐹🐹🐹🐹🐹🐹🐹🐹🐹🐹🐹🐹🐹🐹🐹🐹🐹🐹🐹🐹🐹🐹🐹🐹🐹🐹🐹🐹🐹🐹🐹🐹🐹🐹🐹🐹🐹🐹🐹🐹🐹🐹🐹🐹🐹🐹🐹🐹🐹🐹🐹🐹🐹🐹🐹🐹🐹🐹🐹🐹🐹🐹🐹🐹🐹🐹🐹🐹🐹🐹🐹🐹🐹🐹🐹🐹🐹🐹🐹🐹🐹🐹🐹🐹🐹🐹🐹🐹🐹🐹🐹🐹🐹🐹🐹🐹🐹🐹🐹🐹🐹🐹🐹🐹🐹🐹🐹🐹🐹🐹🐹🐹🐹🐹🐹🐹🐹🐹🐹🐹🐹🐹🐹🐹🐹🐹🐹🐹🐹🐹🐹🐹🐹🐹🐹🐹🐹🐹🐹🐹🐹🐹🐹🐹🐹🐹🐹🐹🐹🐹🐹🐹🐹🐹🐹🐹🐹
+  </div>
+  <div style="position:relative;z-index:1;text-align:center;padding:20px;">
+    <div class="title">🐹 THE HAMSTER DANCE!! 🐹</div>
+    <div style="font-family:Arial;font-size:clamp(.7rem,2vw,.9rem);color:#000080;margin:8px 0;letter-spacing:2px;">♪ DA DA DA DA DA DA DA DA DAAAA ♪</div>
+    <div class="dancing-row">
+      <span style="font-size:clamp(1.5rem,5vw,3rem);animation:h0 0.3s ease-in-out infinite alternate;display:inline-block;">🐹</span><span style="font-size:clamp(1.5rem,5vw,3rem);animation:h1 0.35s ease-in-out infinite alternate;display:inline-block;">🐹</span><span style="font-size:clamp(1.5rem,5vw,3rem);animation:h2 0.4s ease-in-out infinite alternate;display:inline-block;">🐹</span><span style="font-size:clamp(1.5rem,5vw,3rem);animation:h3 0.45s ease-in-out infinite alternate;display:inline-block;">🐹</span><span style="font-size:clamp(1.5rem,5vw,3rem);animation:h4 0.5s ease-in-out infinite alternate;display:inline-block;">🐹</span><span style="font-size:clamp(1.5rem,5vw,3rem);animation:h5 0.55s ease-in-out infinite alternate;display:inline-block;">🐹</span><span style="font-size:clamp(1.5rem,5vw,3rem);animation:h6 0.6s ease-in-out infinite alternate;display:inline-block;">🐹</span><span style="font-size:clamp(1.5rem,5vw,3rem);animation:h7 0.65s ease-in-out infinite alternate;display:inline-block;">🐹</span>
+    </div>
+    <style>@keyframes h0{from{transform:translateY(0) rotate(-10deg);}to{transform:translateY(-8px) rotate(10deg);}}@keyframes h1{from{transform:translateY(0) rotate(-7deg);}to{transform:translateY(-10px) rotate(7deg);}}@keyframes h2{from{transform:translateY(0) rotate(-4deg);}to{transform:translateY(-12px) rotate(4deg);}}@keyframes h3{from{transform:translateY(0) rotate(-1deg);}to{transform:translateY(-14px) rotate(1deg);}}@keyframes h4{from{transform:translateY(0) rotate(2deg);}to{transform:translateY(-16px) rotate(-2deg);}}@keyframes h5{from{transform:translateY(0) rotate(5deg);}to{transform:translateY(-18px) rotate(-5deg);}}@keyframes h6{from{transform:translateY(0) rotate(8deg);}to{transform:translateY(-20px) rotate(-8deg);}}@keyframes h7{from{transform:translateY(0) rotate(11deg);}to{transform:translateY(-22px) rotate(-11deg);}}</style>
+    <div class="dancing-row" style="margin-top:8px;animation-direction:alternate-reverse;">
+      <span style="font-size:clamp(1rem,3vw,2rem);animation:h0 0.25s ease-in-out infinite alternate-reverse;display:inline-block;">🐹</span><span style="font-size:clamp(1rem,3vw,2rem);animation:h1 0.29s ease-in-out infinite alternate-reverse;display:inline-block;">🐹</span><span style="font-size:clamp(1rem,3vw,2rem);animation:h2 0.33s ease-in-out infinite alternate-reverse;display:inline-block;">🐹</span><span style="font-size:clamp(1rem,3vw,2rem);animation:h3 0.37s ease-in-out infinite alternate-reverse;display:inline-block;">🐹</span><span style="font-size:clamp(1rem,3vw,2rem);animation:h4 0.41s ease-in-out infinite alternate-reverse;display:inline-block;">🐹</span><span style="font-size:clamp(1rem,3vw,2rem);animation:h5 0.45s ease-in-out infinite alternate-reverse;display:inline-block;">🐹</span><span style="font-size:clamp(1rem,3vw,2rem);animation:h6 0.49s ease-in-out infinite alternate-reverse;display:inline-block;">🐹</span><span style="font-size:clamp(1rem,3vw,2rem);animation:h7 0.53s ease-in-out infinite alternate-reverse;display:inline-block;">🐹</span>
+    </div>
+    <div class="counter" style="margin-top:16px;">This page has been visited <b id="hcount">1,284,729</b> times!!</div>
+    <div class="note">The original Hamster Dance was created in 1998 by a Canadian art student as a tribute to her pet hamster Hampton. It became one of the first viral internet phenomenons. You're welcome (or we're sorry).</div>
+    <div style="margin-top:12px;font-size:clamp(.6rem,2vw,.8rem);font-family:Arial;color:#666;">
+      ⬅️ <a href="#" onclick="window.parent.navigateTo('search')" style="color:#000080;">Back to dWeebSearch</a> &nbsp;|&nbsp;
+      <a href="#" onclick="window.parent.navigateTo('geocities')" style="color:#000080;">dWeebCities</a> &nbsp;|&nbsp;
+      <a href="#" onclick="window.parent.navigateTo('home')" style="color:#000080;">dweeb.co</a>
+    </div>
+  </div>
+  <script>
+  let c=1284729;
+  setInterval(()=>{c++;document.getElementById('hcount').textContent=c.toLocaleString();},2000);
+  <\/script>
+  </body></html>`;
+}
+
+function buildHelpPage(){
+  return `<!DOCTYPE html><html><head><meta charset="UTF-8"/>
+  <style>*{margin:0;padding:0;box-sizing:border-box;}body{font-family:Arial,Helvetica,sans-serif;background:#fff;font-size:12px;padding:0;}
+  .help-header{background:linear-gradient(90deg,#000080,#1084d0);color:#fff;padding:10px 16px;font-family:Impact,Arial Black;font-size:1.3rem;letter-spacing:1px;}
+  .help-body{display:grid;grid-template-columns:160px 1fr;height:calc(100vh - 44px);}
+  .help-nav{background:#f0f0f0;border-right:1px solid #c0c0c0;padding:8px 0;overflow-y:auto;}
+  .help-nav-item{padding:5px 12px;font-size:12px;cursor:pointer;border-bottom:1px solid #ddd;}
+  .help-nav-item:hover,.help-nav-item.active{background:#000080;color:#fff;}
+  .help-content{padding:16px;overflow-y:auto;}
+  .help-content h2{color:#000080;font-size:15px;border-bottom:2px solid #000080;padding-bottom:4px;margin-bottom:12px;}
+  .help-content h3{color:#c00;font-size:13px;margin:12px 0 6px;}
+  .help-content p{line-height:1.7;color:#333;margin-bottom:8px;}
+  .help-content ul{margin-left:18px;margin-bottom:8px;}
+  .help-content li{line-height:1.8;color:#333;}
+  .tip-box{background:#fffde8;border:1px solid #fc0;border-left:4px solid #fc0;padding:8px 12px;margin:8px 0;font-size:11px;}
+  .tip-box b{color:#c00;}
+  .key{background:#c0c0c0;border:1px solid;border-color:#fff #808080 #808080 #fff;padding:1px 5px;font-family:monospace;font-size:11px;}
+  a{color:#000080;} a:hover{color:#c00;}
+  </style></head><body>
+  <div class="help-header">❓ dWeeb.co Help Center — How to Navigate the 90s Internet</div>
+  <div class="help-body">
+    <div class="help-nav">
+      <div class="help-nav-item active" onclick="showHelp('nav')">Getting Around</div>
+      <div class="help-nav-item" onclick="showHelp('search')">Using dWeebSearch</div>
+      <div class="help-nav-item" onclick="showHelp('sections')">Site Sections</div>
+      <div class="help-nav-item" onclick="showHelp('keywords')">Secret Keywords</div>
+      <div class="help-nav-item" onclick="showHelp('ie')">IE4 Controls</div>
+      <div class="help-nav-item" onclick="showHelp('tips')">Pro Tips</div>
+      <div class="help-nav-item" onclick="showHelp('about')">About dweeb.co</div>
+    </div>
+    <div class="help-content" id="help-content">
+      <h2>Welcome to dWeeb.co Help</h2>
+      <p>You are currently browsing a simulated 1990s internet experience, all running inside a fake Windows 95 desktop with a fake dweebscape Navigator 4 browser. Here's how to get around:</p>
+      <h3>🖱️ Basic Navigation</h3>
+      <ul>
+        <li>Use the <b>Back button</b> (◀) in the IE toolbar to go back</li>
+        <li>Use the <b>Home button</b> (🏠) to return to the search engine</li>
+        <li>Type addresses in the <b>address bar</b> and click Go</li>
+        <li>Click links on any page to navigate</li>
+        <li>Use the toolbar buttons: Search, Favorites, Mail</li>
+        <li>The <b>Start menu</b> (⊞ Start) has more options</li>
+      </ul>
+      <div class="tip-box"><b>💡 Tip:</b> Double-click desktop icons to open programs! Try "My Computer" and "Recycle Bin" for hidden easter eggs.</div>
+      <h3>🔍 Where to Go</h3>
+      <ul>
+        <li><b>Search:</b> dWeebSearch is the home page — search for anything!</li>
+        <li><b>Email:</b> Click the Mail button or search "hotmail"</li>
+        <li><b>GeoCities:</b> Browse neighborhoods, visit personal pages</li>
+        <li><b>Chat:</b> Join the IRC chat room</li>
+        <li><b>News:</b> Today's headlines from 1999</li>
+        <li><b>Da Office:</b> The games section</li>
+      </ul>
+      <h3>🔑 Try These Searches</h3>
+      <p>The search engine has special results for these terms. Try them all:</p>
+      <p><b>geocities · free mp3 · winamp skins · hamster dance · y2k · da office games · all your base · leet hax0r · xfiles truth · hotmail · animated gifs · star wars phantom menace</b></p>
+    </div>
+  </div>
+  <script>
+  const helpPages = {
+    nav: \`<h2>Getting Around the 90s Internet</h2>
+      <h3>🖱️ The IE4 Browser Controls</h3>
+      <p>The toolbar at the top of the browser window works just like real dweebscape Navigator 4 from 1999:</p>
+      <ul>
+        <li><b>◀ Back</b> — Go to the previous page</li>
+        <li><b>✕ Stop</b> — Stop loading (pages loaded slowly on 56k!)</li>
+        <li><b>🔄 Refresh</b> — Reload the current page</li>
+        <li><b>🏠 Home</b> — Return to dWeebSearch home page</li>
+        <li><b>🔍 Search</b> — Open the search engine</li>
+        <li><b>⭐ Favorites</b> — Your bookmarked sites</li>
+        <li><b>📧 Mail</b> — Open dWeebMail (Hotmail clone)</li>
+      </ul>
+      <h3>📬 Address Bar</h3>
+      <p>Type a URL in the address bar and click Go or press Enter. Try:<br/>
+      <b>search.dweeb.co · mail.dweeb.co · geocities.dweeb.co · chat.dweeb.co</b></p>
+      <div class="tip-box"><b>💡 Tip:</b> The 90s internet is always growing — new pages and destinations are added all the time. Come back and explore!</div>\`,
+    search: \`<h2>Using dWeebSearch</h2>
+      <p>dWeebSearch is your gateway to the 90s internet. It works like AltaVista — the most popular search engine of 1997-1999.</p>
+      <h3>🔍 How to Search</h3>
+      <p>Type any keyword in the search box and click Search! or press Enter. The search engine has custom results for many terms.</p>
+      <h3>🔑 Keywords with Special Results</h3>
+      <ul>
+        <li><b>geocities</b> — GeoCities free homepage service</li>
+        <li><b>free mp3</b> — Napster, MP3.com and more</li>
+        <li><b>winamp skins</b> — Skin download sites</li>
+        <li><b>hamster dance</b> — THE hamster dance</li>
+        <li><b>y2k</b> — Y2K news and survival guides</li>
+        <li><b>da office games</b> — Direct link to the games</li>
+        <li><b>all your base</b> — Classic internet meme</li>
+        <li><b>leet hax0r</b> — 1337 speak GeoCities page</li>
+        <li><b>xfiles truth</b> — The truth is out there</li>
+        <li><b>hotmail</b> — Free email</li>
+        <li><b>animated gifs</b> — Free GIF libraries</li>
+        <li><b>star wars phantom menace</b> — Episode 1 coverage</li>
+      </ul>
+      <h3>😎 I'm Feeling Lucky</h3>
+      <p>Click "I'm Feeling Lucky" to go to a random destination in the 90s internet!!</p>\`,
+    sections: \`<h2>What's on dweeb.co</h2>
+      <h3>🎮 Da Office</h3>
+      <p>Four games disguised as dweebsoft Office software. SpreadPong (Excel), Type-O (Word), SlideWrecker (PowerPoint), Inbox Zero (Outlook). Access via the toolbar Search button → "da office games" or the Da Office link.</p>
+      <h3>🌐 The 90s Internet</h3>
+      <p>You're in it!! A fully simulated 1990s internet experience with multiple destinations to explore:</p>
+      <ul>
+        <li><b>dWeebSearch</b> — Search engine home page</li>
+        <li><b>dWeebMail</b> — Hotmail-style email inbox</li>
+        <li><b>dWeebCities</b> — GeoCities neighborhood browser</li>
+        <li><b>dWeeb IRC</b> — Chat with other 90s internet users</li>
+        <li><b>dWeeb News</b> — Headlines from June 1999</li>
+        <li><b>Hamster Dance</b> — The classic</li>
+        <li><b>dweeb.co personal site</b> — The original site</li>
+      </ul>
+      <div class="tip-box"><b>💡 More coming soon!</b> This 90s internet is always expanding. Future additions: Napster clone, Winamp player, more GeoCities pages, ICQ simulator, and much more!!</div>\`,
+    keywords: \`<h2>🔑 Secret Keywords & Easter Eggs</h2>
+      <p>The 90s internet has hidden easter eggs and special pages triggered by certain search terms. Some are obvious, some are hidden. Here are a few hints:</p>
+      <h3>Confirmed Keywords</h3>
+      <ul>
+        <li><b>hamster dance</b> → 🐹 opens the Hamster Dance page</li>
+        <li><b>all your base</b> → classic meme page</li>
+        <li><b>leet hax0r</b> → 1337 speak geocities page</li>
+        <li><b>xfiles truth</b> → X-Files conspiracy page</li>
+      </ul>
+      <h3>Desktop Easter Eggs</h3>
+      <ul>
+        <li>Double-click <b>My Computer</b> on the desktop</li>
+        <li>Double-click <b>Recycle Bin</b></li>
+        <li>Double-click <b>Network Neighborhood</b></li>
+        <li>Double-click <b>Winamp</b> icon</li>
+        <li>Click <b>Shut Down</b> in the Start menu</li>
+      </ul>
+      <div class="tip-box"><b>💡 Hint:</b> There are more keywords and easter eggs not listed here. Explore!!</div>\`,
+    ie: \`<h2>dweebscape Navigator 4 Controls</h2>
+      <p>The fake IE4 window behaves like the real thing. Here's what each control does:</p>
+      <h3>Title Bar</h3>
+      <ul>
+        <li><b>_</b> — Minimize (hides the window, click taskbar to restore)</li>
+        <li><b>□</b> — Maximize / restore window size</li>
+        <li><b>✕</b> — Close the browser (desktop reappears)</li>
+      </ul>
+      <h3>Toolbar Buttons</h3>
+      <ul>
+        <li><b>◀ Back</b> — Previous page</li>
+        <li><b>✕ Stop</b> — Stop loading</li>
+        <li><b>🔄 Refresh</b> — Reload page</li>
+        <li><b>🏠 Home</b> — Home page (dWeebSearch)</li>
+        <li><b>🔍 Search</b> — Search page</li>
+        <li><b>⭐ Favorites</b> — Bookmarks</li>
+        <li><b>📧 Mail</b> — Email client</li>
+      </ul>
+      <h3>Taskbar</h3>
+      <p>The taskbar at the bottom shows the time and open windows. Click the IE button to focus the browser. The Start menu has Programs, Settings, and Shut Down.</p>\`,
+    tips: \`<h2>💡 Pro Tips for the 90s Internet</h2>
+      <ul>
+        <li>The <b>"I'm Feeling Lucky"</b> button on dWeebSearch takes you somewhere random</li>
+        <li>The <b>guestbook</b> actually works — sign it, your entry appears immediately</li>
+        <li>The <b>chat room</b> responds to your messages</li>
+        <li>The <b>email inbox</b> — click emails to read them</li>
+        <li>Check the <b>news page</b> for clickable story summaries</li>
+        <li>The <b>Hamster Dance</b> hit counter goes up in real time</li>
+        <li>The <b>poll</b> on the home page actually records votes</li>
+        <li>The <b>guestbook form</b> validates and adds entries</li>
+        <li><b>Double-click desktop icons</b> for easter eggs</li>
+        <li>More destinations are being added — <b>come back often!!</b></li>
+      </ul>
+      <div class="tip-box"><b>💡 Note for dweeb.co owners:</b> This help file will grow as new sections are added to the 90s internet. Think of it as a living document — as new pages get built, new entries go here.</div>\`,
+    about: \`<h2>About dweeb.co & This Project</h2>
+      <p>dweeb.co is a personal website built for fun. The "90s Internet" section is a growing simulated experience of what browsing the web felt like in 1997-1999:</p>
+      <ul>
+        <li>Windows 95 boot sequence</li>
+        <li>Working IE4 browser chrome</li>
+        <li>A fake search engine (dWeebSearch)</li>
+        <li>Hotmail-style email inbox</li>
+        <li>GeoCities neighborhood browser</li>
+        <li>IRC chat room</li>
+        <li>1999 news page</li>
+        <li>The Hamster Dance</li>
+        <li>Personal site (dweeb.co Geocities page)</li>
+      </ul>
+      <h3>🗺️ Sections of dweeb.co</h3>
+      <ul>
+        <li><b>The 90s Internet</b> — you are here</li>
+        <li><b>Da Office</b> — games disguised as Office software</li>
+        <li><b>More coming soon</b></li>
+      </ul>
+      <p>Built entirely in HTML, CSS, and vanilla JavaScript. No frameworks, no server, no database. Just the way the web used to be.</p>\`
+  };
+  function showHelp(id){
+    document.getElementById('help-content').innerHTML = helpPages[id] || helpPages.nav;
+    document.querySelectorAll('.help-nav-item').forEach((el,i)=>{
+      el.classList.toggle('active', el.getAttribute('onclick').includes("'"+id+"'"));
+    });
+  }
+  <\/script>
+  </body></html>`;
+}
+
+/* ════════════════════════════════════════════════
+   dweeb 95 shell — window manager, apps, browser
+   ════════════════════════════════════════════════ */
+
+/* ---------- pixel icons ---------- */
+const PAL = { k:"#000", w:"#fff", g:"#808080", G:"#c0c0c0", d:"#dfdfdf",
+  b:"#000080", B:"#1084d0", c:"#008080", y:"#e6b352", Y:"#ffdf9e", r:"#c00000",
+  e:"#008000", o:"#ff8000", p:"#ffc0c0", t:"#00a0a0", ".":null };
+const ICONS = {
+computer:[ "................","..kkkkkkkkkkk...","..kddddddddgk...","..kdBBBBBBBgk...",
+"..kdBBBbBBBgk...","..kdBBBBBBBgk...","..kdBBBBBBBgk...","..kdgggggggk....",
+"..kkkkkkkkkkk...","......kk........","....kkkkkk......","..kGGGGGGGGk....",
+"..kGGkGkGGGk....","..kkkkkkkkkkk...","................","................"],
+web:[ "................","....kkkkkkk.....","..kkyyyyyyykk...",".kyyYYyyyYyyk...",
+".kyYyyyByyyYk...","kyyyyBBBByyyyk..","kyYyBBkBBByYyk..","kyyyBBBBBByyyk..",
+"kyyyyBBBByyyyk..",".kyYyyByyyYyk...",".kyyyyyyyyyyk...","..kkyyyyyykk....",
+"....kkkkkkk.....","................","................","................"],
+note:[ "................","..kkkkkkkkkk....","..kwwwwwwwwkk...","..kwkkkkkwwwk...",
+"..kwwwwwwwwwk...","..kwkkkkkkwwk...","..kwwwwwwwwwk...","..kwkkkkkwwwk...",
+"..kwwwwwwwwwk...","..kwkkkkkkwwk...","..kwwwwwwwwwk...","..kwwwwwwwwwk...",
+"..kkkkkkkkkkk...","................","................","................"],
+paint:[ "................","......kk........",".....kYyk.......","....kYyyok......",
+"...kYyyook......","..kYyyook.......","..kyyook........",".kkyok..........",
+".kwwk...........",".kwwk...........","..kk............","..rrbbeeyyoo....",
+"..rrbbeeyyoo....","................","................","................"],
+calc:[ "................","..kkkkkkkkkk....","..kGGGGGGGGk....","..kGwwwwwwGk....",
+"..kGkkkkkkGk....","..kGGGGGGGGk....","..kGbbGbbGGk....","..kGGGGGGGGk....",
+"..kGbbGbbGGk....","..kGGGGGGGGk....","..kGbbGrrGGk....","..kGGGGGGGGk....",
+"..kkkkkkkkkk....","................","................","................"],
+mine:[ "................","......k.k.......","....k.kkk.k.....","....kkkkkkk.....",
+"..k.kkkwkkk.k...","....kkwkkkk.....","..kkkkkkkkkkk...","....kkkkkkk.....",
+"..k.kkkkkkk.k...","....kkkkkkk.....","....k.kkk.k.....","......k.k.......",
+"................","................","................","................"],
+bin:[ "................","....kkkkkk......","..kkGGGGGGkk....","..kGGGGGGGGk....",
+"..kkkkkkkkkk....","...kGwGwGwk.....","...kGwGwGwk.....","...kGwGwGwk.....",
+"...kGwGwGwk.....","...kGwGwGwk.....","...kGwGwGwk.....","...kkkkkkkk.....",
+"................","................","................","................"],
+amp:[ "................","..kkkkkkkkkkk...","..kbbbbbbbbbk...","..kbeeeeeeebk...",
+"..kbbbbbbbbbk...","..kkkkkkkkkkk...","..kGGGGGGGGGk...","..kGeGeGeGeGk...",
+"..kGeGeGeGeGk...","..kGeGeGeGeGk...","..kGGGGGGGGGk...","..kkkkkkkkkkk...",
+"................","................","................","................"],
+folder:[ "................","................","..kkkkk.........","..kyyyk.........",
+".kyyyyykkkkkkk..",".kyYYYYYYYYYyk..",".kyYYYYYYYYYyk..",".kyYYYYYYYYYyk..",
+".kyYYYYYYYYYyk..",".kyYYYYYYYYYyk..",".kyyyyyyyyyyyk..",".kkkkkkkkkkkkk..",
+"................","................","................","................"],
+doc:[ "................","...kkkkkkkk.....","...kwwwwwwkk....","...kwwwwwwwk....",
+"...kwkkkkwwk....","...kwwwwwwwk....","...kwkkkkkwk....","...kwwwwwwwk....",
+"...kwkkkkwwk....","...kwwwwwwwk....","...kwwwwwwwk....","...kkkkkkkkk....",
+"................","................","................","................"],
+gear:[ "................","......kk........","...kk.kk.kk.....","...kkkkkkkk.....",
+"....kGGGGk......","..kkGGkkGGkk....","..kkGkkkkGkk....","....GkkkkG......",
+"..kkGkkkkGkk....","..kkGGkkGGkk....","....kGGGGk......","...kkkkkkkk.....",
+"...kk.kk.kk.....","......kk........","................","................"],
+shut:[ "................","................","....krrrrk......","...krrrrrrk.....",
+"..krr.kk.rrk....","..kr..kk..rk....","..kr..kk..rk....","..kr..kk..rk....",
+"..krr....rrk....","...krrrrrrk.....","....krrrrk......","................",
+"................","................","................","................"],
+spk:[ "................","................","......k.........",".....kk.........",
+"..kkkwk..k......","..kwwwk.k.k.....","..kwwwk.k.k.....","..kkkwk..k......",
+".....kk.........","......k.........","................","................",
+"................","................","................","................"],
+net:[ "................","..kkkk..........","..kBBk..........","..kkkk....kkkk..",
+"....k.....kBBk..","....k.....kkkk..","....kkkkkkk.....","........k.......",
+"..kkkk..k.......","..kBBk..kkkk....","..kkkk.....k....","...........k....",
+".......kkkkk....","................","................","................"],
+};
+const iconCache = {};
+function icon(name, px){
+  const key = name+"@"+px;
+  if(iconCache[key]) return iconCache[key];
+  const rows = ICONS[name], c = document.createElement("canvas");
+  c.width = c.height = 16;
+  const g = c.getContext("2d");
+  rows.forEach((row,y)=>{ [...row].forEach((ch,x)=>{
+    const col = PAL[ch]; if(col){ g.fillStyle=col; g.fillRect(x,y,1,1); } }); });
+  const out = document.createElement("canvas");
+  out.width = out.height = px;
+  const og = out.getContext("2d");
+  og.imageSmoothingEnabled = false;
+  og.drawImage(c,0,0,px,px);
+  return iconCache[key] = out.toDataURL();
+}
+
+/* ---------- window manager ---------- */
+const desk = document.getElementById("desktop");
+const tasks = document.getElementById("tasks");
+const WINS = new Map();
+let Z = 10, cascade = 0;
+
+function createWindow(cfg){
+  if(WINS.has(cfg.id)){ focusWin(cfg.id); return WINS.get(cfg.id); }
+  const w = document.createElement("div");
+  w.className = "win bo"; w.dataset.id = cfg.id;
+  const dw = Math.min(cfg.w||420, innerWidth-8);
+  const dh = Math.min(cfg.h||300, innerHeight-40);
+  const px = cfg.x!=null ? cfg.x : 30 + (cascade%6)*26;
+  const py = cfg.y!=null ? cfg.y : 24 + (cascade%6)*24;
+  cascade++;
+  Object.assign(w.style,{ left:px+"px", top:py+"px", width:dw+"px", height:dh+"px", zIndex:++Z });
+  w.innerHTML =
+    '<div class="tbar"><img src="'+icon(cfg.icon,16)+'" alt=""><span class="ttl"></span>'+
+    '<div style="display:flex;gap:2px">'+
+    '<div class="wbtn bthin" data-a="min">_</div>'+
+    (cfg.fixed?'':'<div class="wbtn bthin" data-a="max">□</div>')+
+    '<div class="wbtn bthin" data-a="x">✕</div></div></div>'+
+    '<div class="body"></div>'+
+    (cfg.fixed?'':'<div class="grip"></div>');
+  w.querySelector(".ttl").textContent = cfg.title;
+  desk.appendChild(w);
+  const body = w.querySelector(".body");
+
+  const tb = document.createElement("div");
+  tb.className = "tbtn bo";
+  tb.innerHTML = '<img src="'+icon(cfg.icon,16)+'" alt=""><span></span>';
+  tb.querySelector("span").textContent = cfg.title;
+  tasks.appendChild(tb);
+
+  const rec = { el:w, tb, cfg, min:false, max:false, prev:null };
+  WINS.set(cfg.id, rec);
+
+  tb.addEventListener("click", ()=>{
+    if(rec.min){ rec.min=false; w.style.display="flex"; focusWin(cfg.id); }
+    else if(w.style.zIndex==String(Z)) minimizeWin(cfg.id);
+    else focusWin(cfg.id);
+  });
+  w.addEventListener("pointerdown", ()=>focusWin(cfg.id));
+  w.querySelectorAll(".wbtn").forEach(b=>b.addEventListener("click", e=>{
+    e.stopPropagation();
+    const a = b.dataset.a;
+    if(a==="min") minimizeWin(cfg.id);
+    if(a==="max") maximizeWin(cfg.id);
+    if(a==="x") closeWin(cfg.id);
+  }));
+
+  /* drag */
+  const tbar = w.querySelector(".tbar");
+  tbar.addEventListener("pointerdown", e=>{
+    if(e.target.closest(".wbtn") || rec.max) return;
+    const sx=e.clientX-w.offsetLeft, sy=e.clientY-w.offsetTop;
+    const mv = ev=>{
+      w.style.left = Math.max(-dw+60, Math.min(innerWidth-40, ev.clientX-sx))+"px";
+      w.style.top  = Math.max(0, Math.min(innerHeight-58, ev.clientY-sy))+"px";
+    };
+    const up = ()=>{ removeEventListener("pointermove",mv); removeEventListener("pointerup",up); };
+    addEventListener("pointermove",mv); addEventListener("pointerup",up);
+  });
+  tbar.addEventListener("dblclick", e=>{ if(!e.target.closest(".wbtn") && !cfg.fixed) maximizeWin(cfg.id); });
+
+  /* resize */
+  const grip = w.querySelector(".grip");
+  if(grip) grip.addEventListener("pointerdown", e=>{
+    e.stopPropagation();
+    const sw=w.offsetWidth-e.clientX, sh=w.offsetHeight-e.clientY;
+    const mv = ev=>{
+      w.style.width  = Math.max(200, ev.clientX+sw)+"px";
+      w.style.height = Math.max(120, ev.clientY+sh)+"px";
+    };
+    const up = ()=>{ removeEventListener("pointermove",mv); removeEventListener("pointerup",up); };
+    addEventListener("pointermove",mv); addEventListener("pointerup",up);
+  });
+
+  focusWin(cfg.id);
+  if(cfg.mount) cfg.mount(body, rec);
+  return rec;
+}
+function focusWin(id){
+  const r = WINS.get(id); if(!r) return;
+  r.el.style.zIndex = ++Z;
+  WINS.forEach(o=>{ o.el.classList.add("inactive"); o.tb.classList.remove("active"); });
+  r.el.classList.remove("inactive"); r.tb.classList.add("active");
+}
+function minimizeWin(id){ const r=WINS.get(id); if(!r) return;
+  r.min=true; r.el.style.display="none"; r.tb.classList.remove("active"); }
+function maximizeWin(id){ const r=WINS.get(id); if(!r) return;
+  if(r.max){ Object.assign(r.el.style, r.prev); r.max=false; }
+  else{ r.prev={left:r.el.style.left,top:r.el.style.top,width:r.el.style.width,height:r.el.style.height};
+    Object.assign(r.el.style,{left:"0px",top:"0px",width:"100%",height:(innerHeight-28)+"px"});
+    r.max=true; }
+}
+function closeWin(id){ const r=WINS.get(id); if(!r) return;
+  r.el.remove(); r.tb.remove(); WINS.delete(id); }
+function setWinTitle(id, t){ const r=WINS.get(id); if(!r) return;
+  r.el.querySelector(".ttl").textContent = t; r.tb.querySelector("span").textContent = t; }
+
+/* small dialog helper */
+let dlgN = 0;
+function dialog(title, msg, iconName){
+  const id = "dlg"+(dlgN++);
+  createWindow({ id, title, icon:iconName||"doc", w:330, h:150, fixed:true,
+    x:innerWidth/2-165+((dlgN%4)*12), y:innerHeight/3+((dlgN%4)*12),
+    mount:(b)=>{
+      b.innerHTML = '<div class="dlg"><img src="'+icon(iconName||"doc",32)+'" alt=""><div class="msg">'+msg+
+        '</div></div><div class="dlgbtns"><button>OK</button></div>';
+      b.querySelector("button").onclick = ()=>closeWin(id);
+    }});
+}
+
+/* ════════════════ dweebscape Navigator ════════════════ */
+const BRAND = "dweebscape Navigator";
+const BOOKMARKS = [
+  { key:"home",      label:"dweeb.co — home page" },
+  { key:"search",    label:"dWeebSearch" },
+  { key:"mail",      label:"dWeebMail" },
+  { key:"geocities", label:"dWeebCities — free homepages" },
+  { key:"chat",      label:"dWeeb Chat (IRC style)" },
+  { key:"news",      label:"dWeeb News" },
+  { key:"hamster",   label:"THE HAMSTER DANCE!!" },
+  { key:"da-office", label:"Da Office Arcade" },
+  { key:"fanfic",    label:"dweeb.co Fan Fiction" },
+  { key:"guestbook", label:"Sign the Guestbook" },
+  { key:"90s-about", label:"~*~StArGiRl~*~ (a dWeebCities homepage)" },
+  { key:"help",      label:"dWeeb Help Center" },
+];
+
+/* ---- the four pages that used to point at missing files, now inline ---- */
+const HOME_96 = `<!DOCTYPE html><html><head><meta charset="UTF-8">
+<style>body{background:#fff;font-family:"Times New Roman",serif;font-size:14px;margin:0}
+a{color:#0000ee}td{vertical-align:top}.hdr{background:#000080;color:#fff;padding:10px 14px}
+.hdr h1{margin:0;font-size:26px;letter-spacing:1px}.hdr small{color:#e6b352}
+.cons{background:#ffff00;color:#000;font-weight:bold;text-align:center;padding:3px;
+border-top:3px dashed #000;border-bottom:3px dashed #000}
+.box{border:2px outset #c0c0c0;background:#f4f4f4;padding:8px;margin:8px}
+.ctr{background:#000;color:#0f0;font-family:"Courier New";padding:1px 6px;letter-spacing:2px}
+marquee{background:#000080;color:#fff;padding:2px 0}</style></head><body>
+<div class="hdr"><h1>dweeb.co</h1><small>the internet's finest waste of your phone line — est. 1996</small></div>
+<marquee>Welcome to dweeb.co!! You are visitor number [see below] &nbsp;*&nbsp; This site is best viewed at 800x600 in dweebscape Navigator 3.0 &nbsp;*&nbsp; Sign the guestbook or the hamster gets it</marquee>
+<div class="cons">&#9888; THIS SITE IS UNDER CONSTRUCTION &#9888; (it will never not be)</div>
+<table width="100%"><tr><td width="55%">
+<div class="box"><b>What is dweeb.co?</b><br><br>
+A random bunch of pages that don't do anything more than visualize one guy's life
+through his eyes. He works on 3-4 of them at once. None of them are finished. That
+is the point.</div>
+<div class="box"><b>HOT LINKS</b><br><br>
+&#9642; <a href="#" onclick="window.parent.navigateTo('search')">dWeebSearch</a> — find things (results may vary)<br>
+&#9642; <a href="#" onclick="window.parent.navigateTo('da-office')">Da Office Arcade</a> — <b>NEW!</b> three games about looking busy<br>
+&#9642; <a href="#" onclick="window.parent.navigateTo('hamster')">The Hamster Dance</a> — you know what this is<br>
+&#9642; <a href="#" onclick="window.parent.navigateTo('geocities')">dWeebCities</a> — free homepages for free people<br>
+&#9642; <a href="#" onclick="window.parent.navigateTo('fanfic')">Fan Fiction</a> — about this website. yes really<br>
+&#9642; <a href="#" onclick="window.parent.navigateTo('guestbook')">The Guestbook</a> — leave proof you existed</div>
+</td><td>
+<div class="box" align="center">You are visitor number<br><br>
+<span class="ctr" id="ctr">004617</span><br><br><small>(counter may be aspirational)</small></div>
+<div class="box" align="center"><b>~ WEB RING ~</b><br><br>
+[ <a href="#" onclick="window.parent.navigateTo('geocities')">&lt;&lt; prev</a> |
+<a href="#" onclick="window.parent.navigateTo('search')">random</a> |
+<a href="#" onclick="window.parent.navigateTo('hamster')">next &gt;&gt;</a> ]<br><br>
+<small>Proud member of the Ring of Sites<br>That Are Also In This Ring</small></div>
+<div class="box"><b>NEWS</b><br><br>&#9642; Site launched.<br>&#9642; Nothing else has happened.<br>
+&#9642; <a href="#" onclick="window.parent.navigateTo('news')">Full coverage &raquo;</a></div>
+</td></tr></table>
+<center><small>&copy; 1996 dweeb.co &middot; hand-typed in Notepad &middot; hosted on a computer that is also the phone</small><br><br></center>
+<script>var n=4617+Math.floor(Math.random()*380);document.getElementById('ctr').textContent=String(n).padStart(6,'0');
+setInterval(function(){n++;document.getElementById('ctr').textContent=String(n).padStart(6,'0');},9000);<\/script>
+</body></html>`;
+
+const DAOFFICE_PAGE = `<!DOCTYPE html><html><head><meta charset="UTF-8">
+<style>body{background:#000;color:#0f0;font-family:"Courier New",monospace;font-size:13px;margin:0;padding:14px}
+a{color:#e6b352}h1{color:#fff;font-size:20px}.cab{border:1px solid #0f0;padding:10px;margin:10px 0}
+.k{color:#888}</style></head><body>
+<h1>&#9608;&#9608; DA OFFICE ARCADE &#9608;&#9608;</h1>
+<p class="k">// three coin-op machines about pretending to work. no coins required. no work either.</p>
+<div class="cab"><b>SLIDE-WRECKER</b><br>The presentation is due. The presentation is doomed. You are the doom.</div>
+<div class="cab"><b>SPREADPONG</b><br>Pong, but every bounce is a cell reference. =A1(#REF!)</div>
+<div class="cab"><b>TYPE-O</b><br>A typing game where accuracy is a suggestion.</div>
+<p><a href="/office/" target="_blank">&gt;&gt;&gt; INSERT COIN (opens the arcade in a new window — a REAL one, from the future)</a></p>
+<p class="k">SYSTEM REQUIREMENTS: 486DX2, 8MB RAM, Shockwave&trade;, a manager who does not walk past your desk.</p>
+</body></html>`;
+
+const FANFIC_PAGE = `<!DOCTYPE html><html><head><meta charset="UTF-8">
+<style>body{background:#fff0f5;font-family:"Times New Roman",serif;font-size:14px;margin:0;padding:14px}
+h1{color:#800080}a{color:#0000ee}.fic{border:1px dashed #800080;background:#fff;padding:10px;margin:10px 0}
+.meta{color:#888;font-size:11px}blockquote{font-style:italic}</style></head><body>
+<h1>&#10047; dweeb.co Fan Fiction Archive &#10047;</h1>
+<p>Stories written BY the internet ABOUT this website. We did not ask for these. We will not remove them.</p>
+<div class="fic"><b>"The Gorilla Who Loved The Modem"</b> <span class="meta">by xXdweebfan96Xx &middot; rated: G &middot; 412 words</span>
+<blockquote>The gorilla adjusted his backwards snapback and stared at the modem. "Sing to me," he whispered.
+And the modem sang: SCREEEE-krrrrKSSHHH. It was the most beautiful thing he had ever heard.
+It was also the only thing he had ever heard, because the dial-up drowned out everything else.</blockquote>
+<a href="#" onclick="alert('Chapter 2 is still uploading. It has been uploading since March.')">Read chapter 2 &raquo;</a></div>
+<div class="fic"><b>"Under Construction (A Love Story)"</b> <span class="meta">by anonymous &middot; unfinished &middot; forever</span>
+<blockquote>She was a GIF of a man digging. He was a page that would never be done. Together they were... under construction.</blockquote></div>
+<div class="fic"><b>"guestbook entry #48 (extended universe)"</b> <span class="meta">by the guy who wrote guestbook entry #48</span>
+<blockquote>What if my guestbook entry... had a backstory? &nbsp;<a href="#" onclick="window.parent.navigateTo('guestbook')">[read the original]</a></blockquote></div>
+<p><a href="#" onclick="window.parent.navigateTo('home')">&laquo; back to dweeb.co</a></p>
+</body></html>`;
+
+const GUESTBOOK_PAGE = `<!DOCTYPE html><html><head><meta charset="UTF-8">
+<style>body{background:#c0c0c0;font-family:Arial,sans-serif;font-size:12px;margin:0;padding:12px}
+h1{font-size:18px}.e{background:#fff;border:2px inset #fff;padding:8px;margin:8px 0}
+.who{color:#000080;font-weight:bold}.when{color:#888;font-size:10px}
+input,textarea{font:12px Arial;border:2px inset #fff;padding:3px;width:100%}
+button{font:12px Arial;padding:3px 14px}</style></head><body>
+<h1>&#9997; The dweeb.co Guestbook</h1>
+<p>Leave a mark. The internet is forever (this page resets when you close it, but spiritually: forever).</p>
+<div id="list">
+<div class="e"><span class="who">CoolDude2000</span> <span class="when">08/14/96 11:03 PM</span><br>first</div>
+<div class="e"><span class="who">janet from the computer lab</span> <span class="when">09/02/96 4:15 PM</span><br>you are using the school's phone line for THIS?</div>
+<div class="e"><span class="who">entry #48 guy</span> <span class="when">10/30/96 2:41 AM</span><br>i have so much more to say. see my fan fiction.</div>
+</div>
+<div class="e"><b>Sign it:</b><br><br>
+Name:<br><input id="gn" maxlength="30"><br><br>
+Message:<br><textarea id="gm" rows="3" maxlength="200"></textarea><br><br>
+<button onclick="addE()">Sign Guestbook</button></div>
+<script>function addE(){var n=document.getElementById('gn').value||'anonymous coward';
+var m=document.getElementById('gm').value||'(said nothing)';
+var d=document.createElement('div');d.className='e';
+var w=document.createElement('span');w.className='who';w.textContent=n;
+var t=document.createElement('span');t.className='when';t.textContent=' just now';
+d.appendChild(w);d.appendChild(t);d.appendChild(document.createElement('br'));
+d.appendChild(document.createTextNode(m));
+document.getElementById('list').appendChild(d);
+document.getElementById('gn').value='';document.getElementById('gm').value='';}<\/script>
+</body></html>`;
+
+const STARGIRL_PAGE = `<!DOCTYPE html><html><head><meta charset="UTF-8">
+<style>body{background:#000 url() ;background-color:#000;color:#ff99cc;font-family:"Comic Sans MS",cursive,Arial;font-size:13px;margin:0;padding:14px;text-align:center}
+a{color:#00ffff}h1{color:#fff;text-shadow:2px 2px #ff00ff}.box{border:3px ridge #ff99cc;padding:10px;margin:12px auto;max-width:420px;background:#1a001a}
+.blink{animation:bl 1s steps(2,start) infinite}@keyframes bl{to{visibility:hidden}}
+.tiny{font-size:10px;color:#996699}</style></head><body>
+<h1>~*~StArGiRl~*~</h1>
+<div class="blink">&#9733; WELCOME 2 MY CORNER OF THE WEB &#9733;</div>
+<div class="box"><b>about me!!</b><br><br>my life, my music, my TY Beanie Baby collection.<br>
+i am 14 and this is my page. my brother says nobody will visit. COUNTER SAYS OTHERWISE (see bottom)</div>
+<div class="box"><b>&#9835; now playing: mysong.mid &#9835;</b><br>
+<span class="tiny">(you cannot hear it. the midi is between us and God)</span></div>
+<div class="box"><b>MY BEANIES (top 5)</b><br><br>1. Patti the Platypus<br>2. Legs the Frog<br>
+3. Squealer the Pig<br>4. Pinchers the Lobster<br>5. (trade pending, do not ask)</div>
+<div class="box"><b>LINKS 2 MY FRIENDS</b><br><br>
+<a href="#" onclick="window.parent.navigateTo('90s-fanfic')">xXDarkAngelXx's shrine</a><br>
+<a href="#" onclick="window.parent.navigateTo('geocities')">&laquo; back to dWeebCities</a><br>
+<a href="#" onclick="window.parent.navigateTo('guestbook')">SIGN MY GUESTBOOK (it is the site guestbook. we share)</a></div>
+<div class="tiny">you are visitor #000019. hi mom.</div>
+</body></html>`;
+
+const PAGES = {
+  "home":      { url:"http://www.dweeb.co/",              title:"dweeb.co",                              html: HOME_96 },
+  "90s-home":  { url:"http://www.dweeb.co/",              title:"dweeb.co",                              html: HOME_96 },
+  "search":    { url:"http://search.dweeb.co/",           title:"dWeebSearch - The Web's Best Search Engine", html: SEARCH_ENGINE },
+  "mail":      { url:"http://mail.dweeb.co/",             title:"dWeebMail - Your Free Email - Inbox",   html: buildMailPage() },
+  "geocities": { url:"http://www.dweebcities.dweeb.co/",  title:"dWeebCities - Free Homepages",          html: buildGeocitiesPage() },
+  "chat":      { url:"http://chat.dweeb.co/",             title:"dWeeb Chat - IRC Style",                html: buildChatPage() },
+  "news":      { url:"http://news.dweeb.co/",             title:"dWeeb News - Today's Headlines",        html: buildNewsPage() },
+  "hamster":   { url:"http://www.hampsterdance.dweeb.co/",title:"THE HAMSTER DANCE!!",                   html: buildHamsterPage() },
+  "da-office": { url:"http://www.dweeb.co/da-office/",    title:"Da Office Arcade",                      html: DAOFFICE_PAGE },
+  "fanfic":    { url:"http://www.dweeb.co/fanfic/",       title:"Fan Fiction - dweeb.co",                html: FANFIC_PAGE },
+  "90s-fanfic":{ url:"http://www.dweeb.co/fanfic/",       title:"Fan Fiction - dweeb.co",                html: FANFIC_PAGE },
+  "90s-about": { url:"http://www.dweebcities.dweeb.co/collegeclub/stargirl/", title:"~*~StArGiRl~*~", html: STARGIRL_PAGE },
+  "guestbook": { url:"http://www.dweeb.co/guestbook/",    title:"The dweeb.co Guestbook",                html: GUESTBOOK_PAGE },
+  "help":      { url:"http://help.dweeb.co/",             title:"dWeeb Help Center",                     html: buildHelpPage() },
+};
+
+let navBack = [], navFwd = [], navCur = null;
+
+function openNavigator(pageKey){
+  const existed = WINS.has("nav");
+  createWindow({ id:"nav", title:BRAND, icon:"web",
+    w:Math.min(760, innerWidth-20), h:Math.min(540, innerHeight-60),
+    mount:(b)=>{
+      b.innerHTML =
+      '<div class="menubar"><span class="mi" data-m="file">File</span>'+
+      '<span class="mi" data-m="bmk">Bookmarks</span>'+
+      '<span class="mi" data-m="hlp">Help</span></div>'+
+      '<div class="navtools bthin" style="padding-top:4px">'+
+        '<div class="ntb" id="nv-back"><img src="'+icon("web",16)+'" style="display:none"><span>&#9664; Back</span></div>'+
+        '<div class="ntb" id="nv-fwd"><span>Forward &#9654;</span></div>'+
+        '<div class="ntb" id="nv-stop"><span>&#10006; Stop</span></div>'+
+        '<div class="ntb" id="nv-rel"><span>&#8635; Reload</span></div>'+
+        '<div class="ntb" id="nv-home"><span>&#8962; Home</span></div>'+
+        '<div class="ntb" id="nv-bmk"><span>&#9733; Bookmarks</span></div>'+
+      '</div>'+
+      '<div class="addr"><span>Location:</span><input id="nv-addr" class="bthin-in" value="http://www.dweeb.co/">'+
+      '<button class="bo" style="border:0;background:var(--chrome);font:11px Tahoma;padding:2px 10px" id="nv-go">Go</button></div>'+
+      '<div class="navframe bthin-in"><iframe id="nv-frame" title="the web, simulated"></iframe></div>'+
+      '<div class="statusbar"><div class="s1 bthin-in" id="nv-status">Done</div>'+
+      '<div class="prog bthin-in"><i id="nv-prog"></i></div>'+
+      '<div class="s1 bthin-in" style="flex:0 0 70px;text-align:center">Online</div></div>';
+
+      b.querySelector("#nv-back").onclick = ()=>{ if(navBack.length){ navFwd.push(navCur); loadSite(navBack.pop(), false); } };
+      b.querySelector("#nv-fwd").onclick  = ()=>{ if(navFwd.length){ navBack.push(navCur); loadSite(navFwd.pop(), false); } };
+      b.querySelector("#nv-stop").onclick = ()=>{ document.getElementById("nv-prog").style.width="0%";
+        document.getElementById("nv-status").textContent="Stopped."; };
+      b.querySelector("#nv-rel").onclick  = ()=>{ if(navCur) loadSite(navCur, false); };
+      b.querySelector("#nv-home").onclick = ()=>loadSite("home", true);
+      b.querySelector("#nv-go").onclick   = navGo;
+      b.querySelector("#nv-addr").addEventListener("keydown", e=>{ if(e.key==="Enter") navGo(); });
+      b.querySelector("#nv-bmk").onclick  = e=>{ e.stopPropagation(); openMenu(e.currentTarget, bookmarkMenu()); };
+      b.querySelector('[data-m="bmk"]').onclick = e=>{ e.stopPropagation(); openMenu(e.currentTarget, bookmarkMenu()); };
+      b.querySelector('[data-m="file"]').onclick = e=>{ e.stopPropagation(); openMenu(e.currentTarget, [
+        ["Open Home Page", ()=>loadSite("home", true)],
+        ["-"],
+        ["Close", ()=>closeWin("nav")],
+      ]); };
+      b.querySelector('[data-m="hlp"]').onclick = e=>{ e.stopPropagation(); openMenu(e.currentTarget, [
+        ["dWeeb Help Center", ()=>loadSite("help", true)],
+        ["About "+BRAND, ()=>dialog("About", BRAND+" 3.0<br><br>The web the way it never quite was.<br>&copy; 1996 dweebsoft. All llamas reserved.", "web")],
+      ]); };
+    }});
+  if(!existed) loadSite(pageKey || "enter", false);
+  else if(pageKey) loadSite(pageKey, true);
+  focusWin("nav");
+}
+
+function bookmarkMenu(){
+  return BOOKMARKS.map(b=>[b.label, ()=>loadSite(b.key, true)]);
+}
+
+let progTimer = null;
+function loadSite(key, push){
+  if(!WINS.has("nav")) return;
+  const isEnter = key === "enter";
+  const page = isEnter ? { url:"http://www.dweeb.co/", title:"welcome" } : PAGES[key];
+  if(!page) key = "search";
+  const p = isEnter ? page : PAGES[key];
+
+  if(push && navCur && navCur !== key){ navBack.push(navCur); navFwd = []; }
+  navCur = key;
+
+  const addr = document.getElementById("nv-addr");
+  const status = document.getElementById("nv-status");
+  const prog = document.getElementById("nv-prog");
+  const frame = document.getElementById("nv-frame");
+  addr.value = p.url;
+  setWinTitle("nav", p.title + " - " + BRAND);
+  status.textContent = "Connecting to " + p.url.replace("http://","").split("/")[0] + "...";
+  prog.style.width = "0%";
+  clearInterval(progTimer);
+  let pr = 0;
+  progTimer = setInterval(()=>{ pr += Math.random()*16+6;
+    prog.style.width = Math.min(90,pr)+"%"; if(pr>=90) clearInterval(progTimer); }, 80);
+
+  setTimeout(()=>{
+    frame.srcdoc = isEnter ? ENTER_PAGE : PAGES[key].html;
+    clearInterval(progTimer);
+    prog.style.width = "100%";
+    status.textContent = "Done";
+    setTimeout(()=>{ prog.style.width = "0%"; }, 600);
+    updateNavBtns();
+  }, 350 + Math.random()*450);
+}
+function updateNavBtns(){
+  const bk = document.getElementById("nv-back"), fw = document.getElementById("nv-fwd");
+  if(bk) bk.classList.toggle("dis", !navBack.length);
+  if(fw) fw.classList.toggle("dis", !navFwd.length);
+}
+function navGo(){
+  const val = (document.getElementById("nv-addr").value||"").toLowerCase();
+  const hit = ["search","mail","geocities","chat","news","hamster","da-office","fanfic",
+               "guestbook","help"].find(k=>val.includes(k))
+    || (val.includes("office") ? "da-office" : null)
+    || (val.includes("irc") ? "chat" : null)
+    || (val.includes("hotmail") ? "mail" : null)
+    || ((val.includes("dweeb.co")||val.includes("home")) ? "home" : "search");
+  loadSite(hit, true);
+}
+/* the ported sites call these on window.parent */
+window.navigateTo = key => { openNavigator(); loadSite(PAGES[key] ? key : "search", true); };
+window.enterSite  = ()  => { maximizeWin("nav"); loadSite("search", true); };
+
+/* ---------- generic dropdown menus ---------- */
+let openMenuEl = null;
+function openMenu(anchor, items){
+  closeMenus();
+  const m = document.createElement("div");
+  m.className = "menu bo";
+  items.forEach(([label, fn])=>{
+    if(label==="-"){ const s=document.createElement("div"); s.className="sep"; m.appendChild(s); return; }
+    const it = document.createElement("div"); it.className="it"; it.textContent=label;
+    it.onclick = ()=>{ closeMenus(); fn(); };
+    m.appendChild(it);
+  });
+  document.body.appendChild(m);
+  const r = anchor.getBoundingClientRect();
+  m.style.left = Math.min(r.left, innerWidth - m.offsetWidth - 4)+"px";
+  m.style.top = (r.bottom+2)+"px";
+  m.style.zIndex = ++Z + 500;
+  openMenuEl = m;
+}
+function closeMenus(){ if(openMenuEl){ openMenuEl.remove(); openMenuEl = null; } }
+document.addEventListener("pointerdown", e=>{ if(openMenuEl && !openMenuEl.contains(e.target)) closeMenus(); });
+
+/* ════════════════ apps ════════════════ */
+function openNotepad(text, name){
+  const id = "note" + (name ? "-"+name.replace(/\W/g,"") : "");
+  createWindow({ id, title:(name||"untitled")+" - dweebPad", icon:"note", w:440, h:330,
+    mount:(b)=>{
+      b.innerHTML = '<div class="menubar"><span class="mi" data-m="f">File</span>'+
+        '<span class="mi" data-m="e">Edit</span><span class="mi" data-m="h">Help</span></div>'+
+        '<textarea class="npad bthin-in" spellcheck="false"></textarea>';
+      const ta = b.querySelector("textarea");
+      ta.value = text || "";
+      b.querySelector('[data-m="f"]').onclick = e=>{ e.stopPropagation(); openMenu(e.currentTarget, [
+        ["New", ()=>{ ta.value=""; }],
+        ["Save", ()=>dialog("Save", "Saved to C:\\My Documents\\"+(name||"untitled")+".txt<br><br>(Not really. It is 1996 and also a web page. Copy it somewhere real if you love it.)","note")],
+        ["-"],
+        ["Exit", ()=>closeWin(id)],
+      ]); };
+      b.querySelector('[data-m="e"]').onclick = e=>{ e.stopPropagation(); openMenu(e.currentTarget, [
+        ["Time/Date", ()=>{ ta.value += "\n" + new Date().toLocaleString(); }],
+        ["Select All", ()=>{ ta.focus(); ta.select(); }],
+      ]); };
+      b.querySelector('[data-m="h"]').onclick = e=>{ e.stopPropagation(); openMenu(e.currentTarget, [
+        ["About dweebPad", ()=>dialog("About dweebPad","It is Notepad. You know Notepad.<br>This one just has a worse name.","note")],
+      ]); };
+    }});
+}
+
+function openCalc(){
+  createWindow({ id:"calc", title:"dweebCalc", icon:"calc", w:230, h:270, fixed:true,
+    mount:(b)=>{
+      b.innerHTML = '<div class="calc"><div class="disp bthin-in" id="cd">0</div><div class="keys"></div></div>';
+      const disp = b.querySelector("#cd"), keys = b.querySelector(".keys");
+      let acc=null, op=null, fresh=true;
+      const show = v => disp.textContent = String(v).slice(0,14);
+      const apply = ()=>{ const cur=parseFloat(disp.textContent);
+        if(op===null||acc===null) return cur;
+        if(op==="+") return acc+cur; if(op==="-") return acc-cur;
+        if(op==="*") return acc*cur; if(op==="/") return cur===0 ? "Cannot divide" : acc/cur;
+        return cur; };
+      [["C","CE","sqrt","/","*"],["7","8","9","-","+"],["4","5","6","1","2"],["3","0",".","+/-","="]]
+      .flat().forEach(k=>{
+        const btn=document.createElement("button"); btn.className="bo"; btn.textContent=k;
+        btn.onclick=()=>{
+          if(k>="0"&&k<="9"){ show(fresh?k:disp.textContent+k); fresh=false; }
+          else if(k==="."){ if(!disp.textContent.includes(".")) { show(disp.textContent+"."); fresh=false; } }
+          else if(k==="C"){ acc=null; op=null; show(0); fresh=true; }
+          else if(k==="CE"){ show(0); fresh=true; }
+          else if(k==="+/-"){ show(-parseFloat(disp.textContent)||0); }
+          else if(k==="sqrt"){ const n=parseFloat(disp.textContent);
+            show(n<0?"imaginary, dude":Math.sqrt(n)); fresh=true; }
+          else if(k==="="){ show(apply()); acc=null; op=null; fresh=true; }
+          else { acc=apply(); op=k; show(acc); fresh=true; }
+        };
+        keys.appendChild(btn);
+      });
+    }});
+}
+
+function openPaint(){
+  createWindow({ id:"paint", title:"dweebPaint", icon:"paint", w:520, h:420,
+    mount:(b)=>{
+      b.innerHTML = '<div class="paintbar bthin">'+
+        '<span class="pt bo on" data-t="pen">Pencil</span>'+
+        '<span class="pt bo" data-t="spray">Spray</span>'+
+        '<span class="pt bo" data-t="erase">Eraser</span>'+
+        '<span class="pt bo" data-t="clear">Clear</span>'+
+        '<span style="width:10px"></span><span id="sw"></span></div>'+
+        '<div class="paintwrap bthin-in"><canvas width="640" height="420"></canvas></div>';
+      const canvas = b.querySelector("canvas"), g = canvas.getContext("2d");
+      g.fillStyle="#fff"; g.fillRect(0,0,640,420);
+      let tool="pen", color="#000000", down=false;
+      const cols=["#000000","#808080","#c00000","#ff8000","#e6b352","#008000","#008080","#0000c0","#800080","#ffffff"];
+      const swd = b.querySelector("#sw");
+      cols.forEach((c,i)=>{ const s=document.createElement("span");
+        s.className="swatch bthin"+(i===0?" on":""); s.style.background=c;
+        s.onclick=()=>{ color=c; swd.querySelectorAll(".swatch").forEach(x=>x.classList.remove("on")); s.classList.add("on"); };
+        swd.appendChild(s); });
+      b.querySelectorAll(".pt").forEach(p=>p.onclick=()=>{
+        if(p.dataset.t==="clear"){ g.fillStyle="#fff"; g.fillRect(0,0,640,420); return; }
+        tool=p.dataset.t;
+        b.querySelectorAll(".pt").forEach(x=>x.classList.remove("on")); p.classList.add("on");
+      });
+      const pos = e=>{ const r=canvas.getBoundingClientRect();
+        return [ (e.clientX-r.left)*(640/r.width), (e.clientY-r.top)*(420/r.height) ]; };
+      const dot = (x,y)=>{
+        if(tool==="pen"){ g.fillStyle=color; g.fillRect(x-1.5,y-1.5,3,3); }
+        else if(tool==="erase"){ g.fillStyle="#fff"; g.fillRect(x-7,y-7,14,14); }
+        else if(tool==="spray"){ g.fillStyle=color;
+          for(let i=0;i<14;i++){ const a=Math.random()*6.28, r=Math.random()*11;
+            g.fillRect(x+Math.cos(a)*r, y+Math.sin(a)*r, 1.4,1.4); } }
+      };
+      canvas.addEventListener("pointerdown", e=>{ down=true; dot(...pos(e)); });
+      addEventListener("pointermove", e=>{ if(down) dot(...pos(e)); });
+      addEventListener("pointerup", ()=>down=false);
+    }});
+}
+
+function openSweeper(){
+  createWindow({ id:"mine", title:"dweebSweeper", icon:"mine", w:216, h:296, fixed:true,
+    mount:(b)=>{
+      b.innerHTML = '<div class="mine"><div class="top bthin-in">'+
+        '<span class="lcd" id="mc">010</span><span class="face bo" id="mf">&#9786;</span>'+
+        '<span class="lcd" id="mt">000</span></div>'+
+        '<div style="align-self:center;margin:2px 0"><span class="pt bo" id="flagmode" style="padding:2px 8px">Flag: off</span></div>'+
+        '<div class="grid9 bthin-in" id="mg"></div></div>';
+      const N=9, MINES=10;
+      let cells, mines, opened, flags, dead, won, t0, timer, flagMode=false;
+      const mc=b.querySelector("#mc"), mt=b.querySelector("#mt"),
+            mf=b.querySelector("#mf"), mg=b.querySelector("#mg");
+      b.querySelector("#flagmode").onclick=e=>{
+        flagMode=!flagMode; e.target.textContent="Flag: "+(flagMode?"ON":"off"); };
+      mf.onclick=init;
+      function idx(x,y){ return y*N+x; }
+      function neighbors(i){ const x=i%N, y=(i/N)|0, out=[];
+        for(let dy=-1;dy<=1;dy++)for(let dx=-1;dx<=1;dx++){
+          if(!dx&&!dy) continue; const nx=x+dx, ny=y+dy;
+          if(nx>=0&&nx<N&&ny>=0&&ny<N) out.push(idx(nx,ny)); }
+        return out; }
+      function init(){
+        cells=[]; mines=new Set(); opened=new Set(); flags=new Set();
+        dead=false; won=false; t0=null; clearInterval(timer);
+        mt.textContent="000"; mf.innerHTML="&#9786;";
+        while(mines.size<MINES) mines.add((Math.random()*N*N)|0);
+        mg.innerHTML="";
+        for(let i=0;i<N*N;i++){
+          const c=document.createElement("div"); c.className="cell bo"; c.dataset.i=i;
+          c.addEventListener("click", ()=> flagMode ? flag(i) : open(i));
+          c.addEventListener("contextmenu", e=>{ e.preventDefault(); flag(i); });
+          mg.appendChild(c); cells.push(c);
+        }
+        drawCount();
+      }
+      function drawCount(){ mc.textContent=String(Math.max(0,MINES-flags.size)).padStart(3,"0"); }
+      function startClock(){ if(t0) return; t0=Date.now();
+        timer=setInterval(()=>{ mt.textContent=String(Math.min(999,((Date.now()-t0)/1000)|0)).padStart(3,"0"); },250); }
+      function flag(i){ if(dead||won||opened.has(i)) return; startClock();
+        flags.has(i)?flags.delete(i):flags.add(i);
+        cells[i].textContent=flags.has(i)?"⚑":""; cells[i].style.color="#c00000"; drawCount(); }
+      function open(i){
+        if(dead||won||flags.has(i)||opened.has(i)) return; startClock();
+        if(mines.has(i)){ boom(i); return; }
+        const q=[i];
+        while(q.length){ const c=q.pop(); if(opened.has(c)||flags.has(c)) continue;
+          opened.add(c); const el=cells[c]; el.classList.remove("bo"); el.classList.add("open");
+          const n=neighbors(c).filter(x=>mines.has(x)).length;
+          if(n){ el.textContent=n; el.classList.add("c"+n); }
+          else neighbors(c).forEach(x=>{ if(!opened.has(x)) q.push(x); }); }
+        if(opened.size===N*N-MINES){ won=true; clearInterval(timer); mf.textContent="B)";
+          dialog("dweebSweeper","You swept every dweeb. "+mt.textContent+" seconds.","mine"); }
+      }
+      function boom(i){ dead=true; clearInterval(timer); mf.textContent="X(";
+        mines.forEach(m=>{ cells[m].classList.remove("bo"); cells[m].classList.add("open");
+          cells[m].textContent="✱"; });
+        cells[i].classList.add("boom"); }
+      init();
+    }});
+}
+
+const AMP_TRACKS = [
+  "a MIDI of a song you almost remember",
+  "untitled.mod",
+  "hamster_dance_extended_69min.mid",
+  "dialup_symphony_in_56k_minor.wav",
+  "track05_final_FINAL_v2.mid",
+];
+function openAmp(){
+  createWindow({ id:"amp", title:"dwAMP", icon:"amp", w:280, h:150, fixed:true,
+    mount:(b)=>{
+      b.innerHTML = '<div class="amp bthin-in"><div class="trk"><span id="amp-t"></span></div>'+
+        '<div class="row"><span class="time" id="amp-c">0:00</span><div class="eq" id="amp-eq"></div></div>'+
+        '<div class="row"><button class="bo" id="a-prev">|&#9664;</button>'+
+        '<button class="bo" id="a-play">&#9654;</button>'+
+        '<button class="bo" id="a-stop">&#9632;</button>'+
+        '<button class="bo" id="a-next">&#9654;|</button>'+
+        '<span style="flex:1;text-align:right;font-size:12px">(audio not included — imagine harder)</span></div></div>';
+      const eq=b.querySelector("#amp-eq");
+      for(let i=0;i<14;i++){ const bar=document.createElement("i");
+        bar.style.animationDelay=(i*0.09)+"s"; bar.style.animationDuration=(0.35+Math.random()*0.5)+"s";
+        eq.appendChild(bar); }
+      let ti=0, sec=0, playing=true, tick;
+      const wrap=b.querySelector(".amp");
+      const draw=()=>{ b.querySelector("#amp-t").textContent =
+        (ti+1)+". "+AMP_TRACKS[ti]+" *** dwAMP: it really whips something's something *** ";
+        b.querySelector("#amp-c").textContent = ((sec/60)|0)+":"+String(sec%60).padStart(2,"0"); };
+      const run=()=>{ clearInterval(tick); tick=setInterval(()=>{ if(playing){ sec++; draw(); } },1000); };
+      b.querySelector("#a-play").onclick=()=>{ playing=!playing; wrap.classList.toggle("paused",!playing); };
+      b.querySelector("#a-stop").onclick=()=>{ playing=false; sec=0; wrap.classList.add("paused"); draw(); };
+      b.querySelector("#a-prev").onclick=()=>{ ti=(ti+AMP_TRACKS.length-1)%AMP_TRACKS.length; sec=0; draw(); };
+      b.querySelector("#a-next").onclick=()=>{ ti=(ti+1)%AMP_TRACKS.length; sec=0; draw(); };
+      draw(); run();
+    }});
+}
+
+/* My Computer: two-level fake explorer */
+const FS = {
+  "C:\\": [ ["folder","My Documents"], ["folder","Windows"], ["folder","Games"], ["doc","README.TXT"] ],
+  "C:\\My Documents": [ ["doc","my_diary_DO_NOT_READ.txt"], ["doc","ideas.txt"] ],
+  "C:\\Windows": [ ["doc","win.ini"], ["doc","system.ini"], ["doc","llama.dll"] ],
+  "C:\\Games": [ ["mine","dweebSweeper.lnk"] ],
+};
+const FILETEXT = {
+  "README.TXT": "WELCOME TO YOUR NEW COMPUTER\n\n1. Do not delete llama.dll. Nobody knows what it does.\n2. The internet is in the other icon.\n3. This computer is a website. Try not to think about it.",
+  "my_diary_DO_NOT_READ.txt": "dear diary,\n\nyou were in the recycle bin. someone RESTORED you. the disrespect.\n\nanyway. today i multi-tasked 4 things and finished 0. personal best.",
+  "ideas.txt": "SITE IDEAS (do not steal)\n- page of tv quotes but every quote is VERIFIED. like with sources\n- a game where you just run. one button.\n- honeycomb but it is also a menu??\n- windows 95 but it is a website (too ambitious, skip)",
+  "win.ini": "[windows]\nload=\nrun=\nvibes=immaculate",
+  "system.ini": "[boot]\nshell=dweeb95\n[386Enh]\ndevice=llama.dll",
+  "llama.dll": "01001100 01001100 01000001 01001101 01000001\n\n(you were warned not to open this)",
+};
+function openMyComputer(){
+  createWindow({ id:"mycomp", title:"My Computer", icon:"computer", w:420, h:320,
+    mount:(b)=>{
+      b.innerHTML = '<div class="menubar"><span class="mi" id="fc-up">&#8679; Up</span>'+
+        '<span style="flex:1"></span><span class="mi" id="fc-path" style="pointer-events:none"></span></div>'+
+        '<div class="fileview bthin-in" id="fc-view"></div>';
+      let path = null;  /* null = drive list */
+      const view = b.querySelector("#fc-view"), pl = b.querySelector("#fc-path");
+      b.querySelector("#fc-up").onclick = ()=>{ 
+        if(path===null) return;
+        path = path==="C:\\" ? null : "C:\\";
+        drawFC(); };
+      function item(ic, label, fn){
+        const d=document.createElement("div"); d.className="fitem";
+        d.innerHTML='<img src="'+icon(ic,32)+'" alt=""><span class="fl"></span>';
+        d.querySelector(".fl").textContent=label;
+        let last=0;
+        d.addEventListener("click",()=>{ const n=Date.now(); if(n-last<500){ last=0; fn(); } else last=n; });
+        view.appendChild(d);
+      }
+      function drawFC(){
+        view.innerHTML="";
+        if(path===null){
+          pl.textContent="My Computer";
+          item("computer","(C:) the only drive", ()=>{ path="C:\\"; drawFC(); });
+          item("folder","(D:) CD-ROM", ()=>dialog("D:\\","The tray opens. It is empty.<br>It has always been empty.","folder"));
+          return;
+        }
+        pl.textContent=path;
+        (FS[path]||[]).forEach(([ic,name])=>{
+          item(ic, name, ()=>{
+            const full = path.replace(/\\$/,"")+"\\"+name;
+            if(ic==="folder"){ path=full; drawFC(); }
+            else if(name==="dweebSweeper.lnk") openSweeper();
+            else openNotepad(FILETEXT[name]||"(empty)", name);
+          });
+        });
+      }
+      drawFC();
+    }});
+}
+
+function openRecycle(){
+  createWindow({ id:"bin", title:"Recycle Bin", icon:"bin", w:380, h:280,
+    mount:(b)=>{
+      b.innerHTML = '<div class="menubar"><span class="mi" id="rb-empty">Empty Recycle Bin</span></div>'+
+        '<div class="fileview bthin-in" id="rb-view"></div>';
+      const view=b.querySelector("#rb-view");
+      const items=[
+        ["doc","netscape_installer.exe", "You deleted this the day dweebscape shipped. Loyalty."],
+        ["doc","my_diary_DO_NOT_READ.txt", "Restore it? It lives in C:\\My Documents now. It knows what you did."],
+        ["doc","aol_free_trial_disc.exe", "700 free hours. The disc is also a coaster."],
+      ];
+      items.forEach(([ic,name,msg])=>{
+        const d=document.createElement("div"); d.className="fitem";
+        d.innerHTML='<img src="'+icon(ic,32)+'" alt=""><span class="fl"></span>';
+        d.querySelector(".fl").textContent=name;
+        let last=0; d.addEventListener("click",()=>{ const n=Date.now();
+          if(n-last<500) dialog(name,msg,"bin"); last=n; });
+        view.appendChild(d);
+      });
+      b.querySelector("#rb-empty").onclick=()=>{
+        view.innerHTML='<div style="color:#888;padding:20px">(empty. you monster.)</div>'; };
+    }});
+}
+
+function openDisplayProps(){
+  createWindow({ id:"disp", title:"Display Properties", icon:"gear", w:300, h:210, fixed:true,
+    mount:(b)=>{
+      b.innerHTML = '<div class="dlg" style="flex-direction:column;gap:10px">'+
+        '<div><b>Wallpaper</b> — pick a vibe:</div>'+
+        '<div style="display:flex;gap:8px">'+
+        '<button class="bo" data-w="">Teal Classic</button>'+
+        '<button class="bo" data-w="wp-hex">Comb Dots</button>'+
+        '<button class="bo" data-w="wp-check">Checkers</button>'+
+        '<button class="bo" data-w="wp-gray">Server Room</button></div>'+
+        '<div style="color:#666">Changes apply instantly. This is the most functional Settings panel of 1996.</div></div>'+
+        '<div class="dlgbtns"><button id="dp-ok">OK</button></div>';
+      b.querySelectorAll("[data-w]").forEach(x=>x.onclick=()=>{
+        desk.className = x.dataset.w; });
+      b.querySelector("#dp-ok").onclick=()=>closeWin("disp");
+      b.querySelectorAll("button").forEach(x=>{ x.style.cssText+="border:0;background:var(--chrome);font:11px Tahoma;padding:4px 8px"; });
+    }});
+}
+
+function openRun(){
+  createWindow({ id:"run", title:"Run", icon:"doc", w:330, h:150, fixed:true,
+    mount:(b)=>{
+      b.innerHTML='<div class="dlg"><img src="'+icon("doc",32)+'" alt=""><div class="msg">'+
+        'Type the name of a program or fake website:<br><br>'+
+        '<input id="run-in" class="bthin-in" style="width:100%;font:11px Tahoma;padding:3px;border:0;background:#fff"></div></div>'+
+        '<div class="dlgbtns"><button id="run-ok">OK</button><button id="run-x">Cancel</button></div>';
+      const inp=b.querySelector("#run-in");
+      const go=()=>{
+        const v=inp.value.toLowerCase().trim(); closeWin("run");
+        if(!v) return;
+        if(v.includes("note")) openNotepad();
+        else if(v.includes("paint")) openPaint();
+        else if(v.includes("calc")) openCalc();
+        else if(v.includes("sweep")||v.includes("mine")) openSweeper();
+        else if(v.includes("amp")||v.includes("music")) openAmp();
+        else if(v.includes("format c")) dialog("Nice try","No.","shut");
+        else if(PAGES[v] || v.includes("dweeb")||v.includes("http")||v.includes("www")) window.navigateTo(PAGES[v]?v:"home");
+        else dialog("Error","Cannot find \""+inp.value.replace(/[<>&"]/g,"")+"\".<br>This computer contains four programs and a dream.","doc");
+      };
+      inp.addEventListener("keydown",e=>{ if(e.key==="Enter") go(); });
+      b.querySelector("#run-ok").onclick=go;
+      b.querySelector("#run-x").onclick=()=>closeWin("run");
+      setTimeout(()=>inp.focus(),50);
+    }});
+}
+
+/* ════════════════ desktop, start menu, boot ════════════════ */
+const DESKTOP_ICONS = [
+  ["computer","My Computer", openMyComputer],
+  ["bin","Recycle Bin", openRecycle],
+  ["net","Network Neighborhood", ()=>dialog("Network Neighborhood",
+     "Scanning network...<br><br>No other computers found.<br>(Is the phone line plugged into the modem?)","net")],
+  ["web","dweebscape Navigator", ()=>openNavigator()],
+  ["amp","dwAMP", openAmp],
+  ["mine","dweebSweeper", openSweeper],
+];
+function buildDesktop(){
+  const box = document.getElementById("icons");
+  DESKTOP_ICONS.forEach(([ic,label,fn])=>{
+    const d=document.createElement("div"); d.className="dicon";
+    d.innerHTML='<img src="'+icon(ic,32)+'" alt=""><span class="lbl"></span>';
+    d.querySelector(".lbl").textContent=label;
+    let last=0;
+    d.addEventListener("click",()=>{
+      document.querySelectorAll(".dicon").forEach(x=>x.classList.remove("sel"));
+      d.classList.add("sel");
+      const n=Date.now(); if(n-last<500) fn(); last=n;
+    });
+    box.appendChild(d);
+  });
+  desk.addEventListener("click", e=>{ if(e.target===desk)
+    document.querySelectorAll(".dicon").forEach(x=>x.classList.remove("sel")); });
+}
+
+function buildStartMenu(){
+  const items = document.getElementById("smenu-items");
+  const mk = (ic,label,fn,sub)=>{
+    const d=document.createElement("div"); d.className="it";
+    d.innerHTML='<img src="'+icon(ic,24)+'" alt=""><span></span>'+(sub?'<span class="arr">&#9656;</span>':'');
+    d.querySelector("span").textContent=label;
+    if(fn) d.addEventListener("click",()=>{ toggleStart(false); fn(); });
+    if(sub){
+      const s=document.createElement("div"); s.className="sub bo";
+      sub.forEach(([sic,sl,sfn])=>{
+        const si=document.createElement("div"); si.className="it";
+        si.innerHTML='<img src="'+icon(sic,16)+'" alt=""><span></span>';
+        si.querySelector("span").textContent=sl;
+        si.addEventListener("click",e=>{ e.stopPropagation(); toggleStart(false); sfn(); });
+        s.appendChild(si);
+      });
+      d.appendChild(s);
+    }
+    items.appendChild(d);
+  };
+  mk("folder","Programs", null, [
+    ["web","dweebscape Navigator", ()=>openNavigator()],
+    ["note","dweebPad", ()=>openNotepad()],
+    ["paint","dweebPaint", openPaint],
+    ["calc","dweebCalc", openCalc],
+    ["mine","dweebSweeper", openSweeper],
+    ["amp","dwAMP", openAmp],
+  ]);
+  mk("folder","Documents", null, [
+    ["doc","my_diary_DO_NOT_READ.txt", ()=>openNotepad(FILETEXT["my_diary_DO_NOT_READ.txt"],"my_diary_DO_NOT_READ.txt")],
+    ["doc","ideas.txt", ()=>openNotepad(FILETEXT["ideas.txt"],"ideas.txt")],
+  ]);
+  mk("gear","Settings", openDisplayProps);
+  mk("doc","Find", ()=>dialog("Find: All Files","Found 1 item:<br><br>&nbsp;&nbsp;you.<br><br>Hello.","doc"));
+  mk("web","Help", ()=>window.navigateTo("help"));
+  const sep=document.createElement("div"); sep.className="sep"; sep.style.cssText="height:0;border-top:1px solid #808080;border-bottom:1px solid #fff;margin:3px 1px"; items.appendChild(sep);
+  mk("doc","Run...", openRun);
+  const sep2=sep.cloneNode(); items.appendChild(sep2);
+  mk("shut","Shut Down...", doShutdown);
+}
+function toggleStart(force){
+  const m=document.getElementById("smenu"), b=document.getElementById("startbtn");
+  const show = force!==undefined ? force : m.style.display!=="block";
+  m.style.display = show ? "block" : "none";
+  b.classList.toggle("on", show);
+}
+document.getElementById("startbtn").addEventListener("click", e=>{ e.stopPropagation(); toggleStart(); });
+document.addEventListener("pointerdown", e=>{
+  if(!e.target.closest("#smenu") && !e.target.closest("#startbtn")) toggleStart(false);
+});
+
+function doShutdown(){
+  const s=document.getElementById("shutdown");
+  s.style.display="flex";
+  s.onclick=()=>location.reload();
+}
+
+/* boot */
+const BOOTMSGS = [
+  "Starting dweeb 95","Loading HIMEM.SYS","Loading EMM386.EXE","Initializing disk cache",
+  "Verifying DMI Pool Data","Detecting Plug and Play devices","Untangling the phone cord",
+  "Negotiating with the modem","Loading dweebscape Navigator 3.0","Warming up the CRT",
+  "Checking for mail (there is no mail)","Ready",
+];
+let bootI=0;
+function bootTick(){
+  const bar=document.getElementById("bootbar"), txt=document.getElementById("boottxt");
+  if(bootI>=BOOTMSGS.length){ setTimeout(startDesktop,400); return; }
+  txt.textContent=BOOTMSGS[bootI]+"...";
+  bar.style.width=Math.min(100,(bootI/BOOTMSGS.length)*100)+"%";
+  bootI++;
+  setTimeout(bootTick, bootI===BOOTMSGS.length?600:(140+Math.random()*200));
+}
+function startDesktop(){
+  document.getElementById("boot").style.display="none";
+  desk.style.display="block";
+  document.getElementById("startlogo").src=icon("web",16);
+  document.getElementById("trayspk").src=icon("spk",14);
+  buildDesktop();
+  buildStartMenu();
+  updateClock(); setInterval(updateClock,1000);
+  openNavigator("enter");
+}
+function updateClock(){
+  document.getElementById("clock").textContent =
+    new Date().toLocaleTimeString("en-US",{hour:"numeric",minute:"2-digit",hour12:true});
+}
+setTimeout(bootTick, 700);
+</script>
+</body>
+</html>
