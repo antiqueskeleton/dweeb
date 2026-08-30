@@ -1,0 +1,534 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no, viewport-fit=cover">
+<title>beeline · dweeb.co</title>
+<meta name="description" content="beeline — a one-button dash across the high steel. a dweeb.co serial.">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20'%3E%3Crect x='2' y='8' width='16' height='5' fill='%23d13b27' stroke='%231a1512'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Alfa+Slab+One&family=Special+Elite&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper:#f2e8d5; --paper-dk:#e4d7bd; --ink:#1a1512;
+    --red:#d13b27; --red-dk:#a02c1e; --blue:#2b5aa7; --sky:#bfd6d4;
+    --sans:"Alfa Slab One",serif; --type:"Special Elite","Courier New",monospace;
+  }
+  *{ box-sizing:border-box; margin:0; }
+  html,body{ height:100%; }
+  body{ background:var(--paper); overflow:hidden; touch-action:none;
+        font-family:var(--type); color:var(--ink);
+        -webkit-user-select:none; user-select:none; }
+  canvas{ position:fixed; inset:0; width:100%; height:100%; display:block; }
+
+  .halftone{ background-image:radial-gradient(circle, rgba(26,21,18,.14) 1px, transparent 1.4px);
+             background-size:5px 5px; }
+  .layer{ position:fixed; inset:0; z-index:2; display:flex; flex-direction:column;
+          align-items:center; justify-content:center; text-align:center;
+          pointer-events:none; transition:opacity .25s ease; }
+  .layer.hidden{ opacity:0; visibility:hidden; }
+
+  .masthead{ background:var(--red); color:var(--paper); font-family:var(--sans);
+    font-size:64px; letter-spacing:2px; padding:6px 34px 12px;
+    transform:rotate(-2deg); border:3px solid var(--ink);
+    box-shadow:5px 5px 0 var(--ink); text-shadow:2px 2px 0 var(--red-dk); }
+  .strapline{ font-family:var(--type); font-size:13px; letter-spacing:.16em;
+    margin-top:20px; border-top:2px solid var(--ink); border-bottom:2px solid var(--ink);
+    padding:5px 14px; background:var(--paper); }
+  .issue{ font-size:11px; letter-spacing:.2em; margin-top:10px; color:#6b5f4e; }
+  .hint{ font-family:var(--type); font-size:13px; margin-top:34px; color:var(--red);
+         animation:hintpulse 2.2s ease-in-out infinite; letter-spacing:.1em; }
+  @keyframes hintpulse{ 50%{ opacity:.4; } }
+
+  #panel{ background:var(--paper); border:3px solid var(--ink); box-shadow:6px 6px 0 var(--ink);
+          width:min(340px, calc(100% - 48px)); text-align:left; font-family:var(--type); }
+  #panel .head{ font-family:var(--sans); font-size:22px; background:var(--ink); color:var(--paper);
+                padding:8px 12px; letter-spacing:1px; }
+  #panel .body{ padding:14px 14px 16px; font-size:13px; }
+  #panel .why{ font-style:italic; color:#5c5142; line-height:1.55; margin-bottom:10px; }
+  #panel .row{ display:flex; justify-content:space-between; border-bottom:1px dotted #a89a80;
+               padding:4px 0; letter-spacing:.05em; }
+  #panel .again{ margin-top:14px; text-align:center; font-family:var(--sans); font-size:15px;
+                 color:var(--paper); background:var(--red); border:2px solid var(--ink);
+                 padding:8px 0; letter-spacing:1px; box-shadow:3px 3px 0 var(--ink); }
+
+  #hud{ position:fixed; top:16px; left:0; right:0; z-index:2; pointer-events:none;
+        display:flex; justify-content:center; transition:opacity .25s ease; }
+  #hud.hidden{ opacity:0; visibility:hidden; }
+  #hud .d{ font-family:var(--type); font-size:15px; letter-spacing:.12em;
+           background:var(--paper); border:2px solid var(--ink); box-shadow:3px 3px 0 var(--ink);
+           padding:4px 14px; }
+  #best{ position:fixed; top:20px; right:22px; z-index:2; pointer-events:none;
+         font-family:var(--type); font-size:11px; letter-spacing:.14em; color:#6b5f4e; }
+  #site{ position:fixed; top:18px; left:22px; z-index:2; pointer-events:auto;
+         font-family:var(--type); font-size:12px; letter-spacing:.08em;
+         color:var(--ink); text-decoration:none; border-bottom:2px solid var(--red); }
+  #site:hover, #site:focus-visible{ color:var(--red); outline:none; }
+
+  @media (max-width:640px){ .masthead{ font-size:42px; } }
+  @media (prefers-reduced-motion: reduce){ .hint{ animation:none; } }
+</style>
+</head>
+<body>
+
+<canvas id="cv"></canvas>
+
+<a id="site" href="/">dweeb.co</a>
+<div id="hud" class="hidden"><div class="d">DIST. <span id="dist">0</span> FT.</div></div>
+<div id="best"></div>
+
+<div id="title" class="layer">
+  <div class="masthead">BEELINE</div>
+  <div class="strapline">THRILLING TALES FROM THE HIGH STEEL</div>
+  <div class="issue">A DWEEB.CO SERIAL &nbsp;&middot;&nbsp; No. 1 &nbsp;&middot;&nbsp; FIVE CENTS</div>
+  <div class="hint">TAP TO RUN &middot; HOLD TO LEAP HIGHER</div>
+</div>
+
+<div id="dead" class="layer hidden">
+  <div id="panel">
+    <div class="head">END OF THE STRIP?</div>
+    <div class="body halftone">
+      <div class="why" id="p-why"></div>
+      <div class="row"><span>DISTANCE</span><span id="p-d">–</span></div>
+      <div class="row"><span>RECORD</span><span id="p-best">–</span></div>
+      <div class="row"><span>FINAL SPEED</span><span id="p-v">–</span></div>
+      <div class="row"><span>SCALE</span><span>32 PX = 1 FT</span></div>
+      <div class="row"><span>DATE</span><span id="p-rev"></span></div>
+      <div class="again">TAP TO CONTINUE THE SERIAL</div>
+    </div>
+  </div>
+</div>
+
+<div id="paused" class="layer hidden">
+  <div class="strapline">INTERMISSION</div>
+  <div class="hint">TAP TO RESUME</div>
+</div>
+
+<script>
+"use strict";
+/* ================= tunables ================= */
+const G        = 2500;   // gravity px/s^2
+const G_HOLD   = 0.55;   // gravity multiplier while holding on the way up
+const JUMP     = -760;   // jump velocity
+const V0       = 330;    // starting run speed px/s
+const VMAX     = 900;
+const ACCEL    = 13;     // px/s per second
+const UNIT     = 32;     // px per foot
+const COYOTE   = 0.08;   // s of grace after running off an edge
+const BUFFER   = 0.09;   // s of early-press jump buffer
+const MAXDROP  = 280;    // max fall to the next roof
+const GAP_USE  = 0.90;   // of guaranteed-clearable distance a gap may use
+const reduceMotion = matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+/* max airtime for a full-hold jump, found numerically once */
+function airFor(rise){            // airtime of a full-hold jump that must land `rise` px higher
+  let y=0, vy=JUMP, t=0; const dt=1/240;
+  while(t<3){ vy += G*((vy<0)?G_HOLD:1)*dt; y += vy*dt; t += dt;
+    if(y>=-rise && vy>0 && t>0.05) break; }
+  return t;
+}
+const AIR  = airFor(0);
+const APEX = JUMP*JUMP/(2*G*G_HOLD);   // max rise height
+const MAXRISE = APEX*0.68;             // allowed roof step-up
+/* airtime lookup for rises 0..MAXRISE, so generation is O(1) */
+const AIR_T = []; for(let i=0;i<=8;i++) AIR_T.push(airFor(MAXRISE*i/8));
+const airLookup = rise => AIR_T[Math.min(8, Math.max(0, Math.ceil(rise/MAXRISE*8)))];
+
+/* ================= canvas ================= */
+const cv = document.getElementById("cv");
+const cx = cv.getContext("2d");
+let W=0, H=0, DPR=1;
+function sizeCanvas(){
+  DPR = Math.min(2, devicePixelRatio||1);
+  W = innerWidth; H = innerHeight;
+  cv.width = W*DPR; cv.height = H*DPR;
+  cx.setTransform(DPR,0,0,DPR,0,0);
+}
+sizeCanvas();
+addEventListener("resize", sizeCanvas);
+
+
+/* ================= world ================= */
+let state, segs, burrsHit, runner, camX, camY, v, dist, best=0, shake, parts, holding, lastPress, lastGround, deadWhy, tPrev;
+
+function reset(){
+  segs = [];
+  segs.push({ x:-300, w:1500, top:0, burrs:[] });
+  runner = { wx:0, y:0, vy:0, ground:true, rot:0, sq:0 };
+  camX=0; camY=0; v=V0; dist=0; shake=0; parts=[]; words.length=0;
+  holding=false; lastPress=-9; lastGround=0; deadWhy="";
+  genAhead();
+}
+
+function lastSeg(){ return segs[segs.length-1]; }
+
+function genAhead(){
+  while(lastSeg().x + lastSeg().w < camX + W*2.2){
+    const prev = lastSeg();
+    /* choose the height change FIRST — a rise costs airtime */
+    let delta = Math.random()<0.45
+      ? -(20+Math.random()*(MAXRISE-20))          // step up (screen y is down)
+      :  (30+Math.random()*(MAXDROP-30));         // step down
+    let top = Math.max(-260, Math.min(320, prev.top + delta));
+    const rise = Math.max(0, prev.top - top);     // actual rise after clamping
+    /* size the gap so it clears even at worst post-burr speed */
+    const vWorst = Math.max(300, v*0.6);
+    const maxGap = vWorst * airLookup(rise) * GAP_USE;
+    const gap = 80 + Math.random()*Math.max(40, maxGap-80);
+    const w = 320 + Math.random()*520 + v*0.15;
+    const seg = { x: prev.x+prev.w+gap, w, top, burrs:[] };
+    if(w>340 && Math.random() < Math.min(0.5, v/1500)){
+      seg.burrs.push({ x: 110 + Math.random()*(w-240), broken:false });
+    }
+    segs.push(seg);
+  }
+  while(segs.length>2 && segs[0].x + segs[0].w < camX - 200) segs.shift();
+}
+
+function segAt(wx){
+  for(const s of segs) if(wx >= s.x && wx <= s.x+s.w) return s;
+  return null;
+}
+
+/* ================= input ================= */
+function press(){
+  if(state==="title"){ start(); return; }
+  if(state==="dead"){ if(performance.now()-deadAt>350){ start(); } return; }
+  if(state==="paused"){ setState("run"); return; }
+  holding = true; lastPress = tNow;
+}
+function release(){
+  holding = false;
+  if(state==="run" && runner.vy<0) runner.vy *= 0.5;
+}
+addEventListener("keydown", e=>{
+  if(e.repeat) return;
+  if(e.code==="Space"||e.code==="ArrowUp"||e.code==="KeyW"){ e.preventDefault(); press(); }
+});
+addEventListener("keyup", e=>{
+  if(e.code==="Space"||e.code==="ArrowUp"||e.code==="KeyW") release();
+});
+addEventListener("pointerdown", e=>{ e.preventDefault(); press(); }, {passive:false});
+addEventListener("pointerup",   ()=>release());
+document.addEventListener("visibilitychange", ()=>{
+  if(document.hidden && state==="run") setState("paused");
+});
+
+/* ================= state ================= */
+const layers = { title:el("title"), dead:el("dead"), paused:el("paused"), hud:el("hud") };
+function el(id){ return document.getElementById(id); }
+let deadAt=0, tNow=0;
+
+function setState(s){
+  state=s;
+  layers.title.classList.toggle("hidden", s!=="title");
+  layers.dead.classList.toggle("hidden", s!=="dead");
+  layers.paused.classList.toggle("hidden", s!=="paused");
+  layers.hud.classList.toggle("hidden", s==="title");
+}
+function start(){ reset(); setState("run"); }
+
+function die(why){
+  deadWhy = why; deadAt = performance.now();
+  const d = Math.floor(dist);
+  best = Math.max(best, d);
+  el("p-why").textContent = why;
+  el("p-d").textContent = d.toLocaleString()+" FT";
+  el("p-best").textContent = best.toLocaleString()+" FT";
+  el("p-v").textContent = Math.round(v/UNIT*10)/10+" FT/S";
+  el("p-rev").textContent = new Date().toISOString().slice(0,10);
+  el("best").textContent = "RECORD: "+best.toLocaleString()+" FT";
+  if(!reduceMotion) shake = 10;
+  setState("dead");
+}
+
+/* ================= sim ================= */
+function jumpNow(){
+  runner.vy = JUMP; runner.ground=false; runner.sq=-0.18; lastPress=-9;
+  spawnParts(runner.wx, runner.y, 3, -1);
+}
+
+function tick(dt){
+  tNow += dt;
+  v = Math.min(VMAX, v + ACCEL*dt);
+  const prevWx = runner.wx, prevY = runner.y;
+  runner.wx += v*dt;
+  dist = runner.wx/UNIT;
+
+  /* jump: buffered + coyote (a tap shorter than one frame still counts) */
+  const wantJump = (tNow-lastPress) < BUFFER;
+  if(wantJump && (runner.ground || (tNow-lastGround)<COYOTE)) jumpNow();
+
+  if(!runner.ground){
+    const gmul = (holding && runner.vy<0) ? G_HOLD : 1;
+    runner.vy += G*gmul*dt;
+    runner.y  += runner.vy*dt;
+    runner.rot += dt*9;
+  }else{
+    lastGround = tNow;
+    const s = segAt(runner.wx);
+    if(!s || runner.wx > s.x+s.w){ runner.ground=false; }   /* ran off the edge */
+    else runner.y = s.top;
+  }
+
+  /* facade: crossing a tower's left face below its roof, rising or falling */
+  if(!runner.ground){
+    const sF = segAt(runner.wx);
+    if(sF && prevWx < sF.x && runner.y > sF.top+8){
+      die("Our hero ran face-first into fresh steel."); return;
+    }
+  }
+  /* landing */
+  if(!runner.ground && runner.vy>0){
+    const s = segAt(runner.wx);
+    if(s && prevY <= s.top && runner.y >= s.top){
+      const impact = runner.vy;
+      runner.y = s.top; runner.vy = 0; runner.ground = true;
+      runner.rot = 0; runner.sq = 0.22;
+      spawnParts(runner.wx, runner.y, 5, 1);
+      if(!reduceMotion && impact > 950){ shake = Math.min(8, impact/220); popWord(runner.wx, runner.y-34, "WHUMP!"); }
+      if((tNow-lastPress) < BUFFER) jumpNow();
+    }
+  }
+
+  /* burrs slow you down */
+  const s2 = segAt(runner.wx);
+  if(s2) for(const b of s2.burrs){
+    if(!b.broken && Math.abs((s2.x+b.x) - runner.wx) < 14 && (runner.y > s2.top-26)){
+      b.broken = true; v = Math.max(300, v*0.6);
+      spawnParts(runner.wx, s2.top, 8, 0);
+      popWord(runner.wx, s2.top-30, "CLANG!");
+      if(!reduceMotion) shake = Math.max(shake,4);
+    }
+  }
+
+  /* pit */
+  const screenY = runner.y - camY + H*0.55;
+  if(screenY > H + 80){ die("Our hero fell between the girders. The city gasped."); return; }
+
+  /* camera */
+  camX = runner.wx;
+  const target = (segAt(runner.wx+140)||s2||{top:runner.y}).top;
+  camY += (target - camY) * Math.min(1, dt*3.2);
+
+  runner.sq *= Math.pow(0.001, dt);
+  for(let i=parts.length-1;i>=0;i--){
+    const p=parts[i]; p.vy+=1400*dt; p.x+=p.vx*dt; p.y+=p.vy*dt; p.life-=dt;
+    if(p.life<=0) parts.splice(i,1);
+  }
+  genAhead();
+  el("dist").textContent = Math.floor(dist).toLocaleString();
+}
+
+function spawnParts(wx,y,n,dir){
+  if(reduceMotion) return;
+  for(let i=0;i<n;i++) parts.push({
+    x:wx, y:y, vx:(Math.random()-0.7)*220, vy:(dir<=0?-1:-0.3)*(80+Math.random()*220),
+    life:0.35+Math.random()*0.3
+  });
+}
+
+/* ================= draw ================= */
+/* the funny pages: newsprint, halftone, red steel */
+const C = { paper:"#f2e8d5", ink:"#1a1512", red:"#d13b27", redDk:"#a02c1e",
+            blue:"#2b5aa7", sky:"#bfd6d4", dust:"#c9b998", ghost:"rgba(217,60,130,0.30)",
+            cyan:"rgba(60,170,200,0.30)" };
+let assets = null;
+function makeAssets(){
+  assets = { W, H };
+  /* halftone dot pattern */
+  const hc = document.createElement("canvas"); hc.width = hc.height = 6;
+  const hg = hc.getContext("2d");
+  hg.fillStyle = "rgba(26,21,18,0.10)";
+  hg.beginPath(); hg.arc(3,3,1.15,0,7); hg.fill();
+  assets.halftone = cx.createPattern(hc, "repeat");
+  /* printed clouds, pre-rendered wide */
+  const cw = Math.max(1400, W*1.6), ch = Math.round(H*0.5);
+  const cc = document.createElement("canvas"); cc.width = cw; cc.height = ch;
+  const gg = cc.getContext("2d");
+  for(let i=0;i<5;i++){
+    const cxp = 120 + Math.random()*(cw-240), cyp = 40 + Math.random()*(ch-120);
+    const s = 0.7 + Math.random()*0.9;
+    const blobs = [[0,0,46],[38,8,34],[-40,10,30],[12,-16,30],[-14,-12,26]];
+    /* misregistered magenta ghost, then fill, then ink line */
+    for(const pass of ["ghost","fill","line"]){
+      gg.beginPath();
+      for(const [dx,dy,r] of blobs) gg.moveTo(cxp+dx*s+r*s, cyp+dy*s), gg.arc(cxp+dx*s, cyp+dy*s, r*s, 0, 7);
+      if(pass==="ghost"){ gg.save(); gg.translate(2.2,2.2); gg.strokeStyle=C.ghost; gg.lineWidth=2.5; gg.stroke(); gg.restore(); }
+      if(pass==="fill"){ gg.fillStyle="#e9f0ee"; gg.fill(); }
+      if(pass==="line"){ gg.strokeStyle=C.ink; gg.lineWidth=2.5; gg.stroke(); }
+    }
+  }
+  assets.clouds = cc; assets.cw = cw; assets.chh = ch;
+  /* distant skyline strip */
+  const sw = Math.max(1200, W*1.4), sh = 90;
+  const sc = document.createElement("canvas"); sc.width = sw; sc.height = sh;
+  const sg = sc.getContext("2d");
+  let x = 0;
+  while(x < sw){
+    const bw = 40 + Math.random()*70, bh = 22 + Math.random()*60;
+    sg.fillStyle = C.sky; sg.fillRect(x, sh-bh, bw, bh);
+    sg.strokeStyle = "rgba(26,21,18,0.5)"; sg.lineWidth = 1.5; sg.strokeRect(x+0.5, sh-bh+0.5, bw-1, bh-1);
+    x += bw + 6 + Math.random()*22;
+  }
+  assets.skyline = sc; assets.sw = sw;
+}
+
+/* comic exclamations */
+const words = [];
+function popWord(wx, wy, txt){
+  if(reduceMotion) return;
+  if(words.length > 5) words.shift();
+  words.push({ wx, wy, txt, born: tNow });
+}
+
+function drawBeam(x, y, w){
+  /* misregistration ghost */
+  cx.strokeStyle = C.ghost; cx.lineWidth = 2;
+  cx.strokeRect(x+2, y+2, w, 16);
+  /* I-beam: flange / web / flange */
+  cx.fillStyle = C.red;    cx.fillRect(x, y, w, 5);
+  cx.fillStyle = "#c23522"; cx.fillRect(x, y+5, w, 7);
+  cx.fillStyle = C.redDk;  cx.fillRect(x, y+12, w, 4);
+  cx.strokeStyle = C.ink; cx.lineWidth = 2;
+  cx.strokeRect(x+1, y+1, w-2, 15);
+  /* rivets along the web */
+  cx.fillStyle = C.ink;
+  const step = UNIT*2, first = Math.ceil(x/step)*step;
+  for(let t=first; t<x+w-6; t+=step){ cx.beginPath(); cx.arc(t, y+8.5, 1.6, 0, 7); cx.fill(); }
+}
+
+function drawWorker(rx, ry){
+  const airborne = !runner.ground;
+  const ph = Math.floor(runner.wx/22) % 2;   /* two-frame leg flicker */
+  cx.save();
+  cx.translate(rx, ry + runner.sq*8);
+  cx.scale(1 - runner.sq*0.4, 1 + runner.sq*0.6);
+  if(airborne) cx.rotate(0.12);
+  cx.lineWidth = 2; cx.strokeStyle = C.ink; cx.lineCap = "round";
+  /* legs */
+  cx.beginPath();
+  if(airborne){ cx.moveTo(-1,2); cx.lineTo(-6,8); cx.moveTo(2,2); cx.lineTo(6,7); }
+  else if(ph){ cx.moveTo(0,2); cx.lineTo(-6,11); cx.moveTo(0,2); cx.lineTo(5,10); }
+  else{ cx.moveTo(0,2); cx.lineTo(-4,11); cx.moveTo(0,2); cx.lineTo(7,9); }
+  cx.stroke();
+  /* body: blue overalls */
+  cx.fillStyle = C.blue; cx.fillRect(-5,-8,10,11);
+  cx.strokeRect(-5,-8,10,11);
+  /* trailing arm */
+  cx.beginPath();
+  if(airborne){ cx.moveTo(-4,-5); cx.lineTo(-10,-11); } else { cx.moveTo(-4,-5); cx.lineTo(-9,0); }
+  cx.stroke();
+  /* head + cap */
+  cx.fillStyle = C.paper;
+  cx.beginPath(); cx.arc(1,-13,4.5,0,7); cx.fill(); cx.stroke();
+  cx.fillStyle = C.blue;
+  cx.beginPath(); cx.arc(1,-14,4.5,Math.PI,0); cx.fill();
+  cx.fillRect(1,-15,8,2.5);
+  cx.strokeStyle = C.ink;
+  cx.beginPath(); cx.arc(1,-14,4.5,Math.PI,0); cx.stroke();
+  cx.restore();
+}
+
+function draw(){
+  if(!assets || assets.W !== W || assets.H !== H) makeAssets();
+  const ox = (Math.random()-0.5)*shake, oy = (Math.random()-0.5)*shake;
+  const toX = wx => wx - camX + W*0.30 + ox;
+  const toY = y  => y  - camY + H*0.55 + oy;
+
+  /* newsprint sky */
+  cx.fillStyle = C.paper; cx.fillRect(0,0,W,H);
+  cx.fillStyle = assets.halftone; cx.fillRect(0,0,W,H);
+  /* printed sun */
+  const sx = W*0.82, sy = H*0.16;
+  cx.strokeStyle = C.cyan; cx.lineWidth = 3;
+  cx.beginPath(); cx.arc(sx+2.5, sy+2, 26, 0, 7); cx.stroke();
+  cx.fillStyle = C.red;
+  cx.beginPath(); cx.arc(sx, sy, 26, 0, 7); cx.fill();
+  cx.strokeStyle = C.ink; cx.lineWidth = 2;
+  cx.beginPath(); cx.arc(sx, sy, 26, 0, 7); cx.stroke();
+  /* skyline + clouds parallax */
+  const skx = (camX*0.10) % assets.sw;
+  cx.drawImage(assets.skyline, -skx, H*0.62 - 90);
+  cx.drawImage(assets.skyline, -skx + assets.sw, H*0.62 - 90);
+  const clx = (camX*0.16) % assets.cw;
+  cx.drawImage(assets.clouds, -clx, H*0.04);
+  cx.drawImage(assets.clouds, -clx + assets.cw, H*0.04);
+
+  /* girders */
+  for(const s of segs){
+    const x = toX(s.x), y = toY(s.top), w = s.w;
+    if(x>W+60 || x+w<-60) continue;
+    /* support columns down from the beam */
+    for(let t=Math.ceil((s.x+30)/140)*140; t<s.x+s.w-30; t+=140){
+      const txp = toX(t);
+      cx.fillStyle = C.red; cx.fillRect(txp-5, y+16, 10, H-y+40);
+      cx.strokeStyle = C.ink; cx.lineWidth = 2;
+      cx.strokeRect(txp-4, y+16, 8, H-y+40);
+      cx.fillStyle = C.ink;
+      for(let ry=y+30; ry<H; ry+=46){ cx.beginPath(); cx.arc(txp, ry, 1.5, 0, 7); cx.fill(); }
+    }
+    drawBeam(x, y, w);
+    /* toolboxes */
+    for(const b of s.burrs){
+      if(b.broken) continue;
+      const bx = toX(s.x+b.x), by = y-13;
+      cx.fillStyle = C.redDk; cx.fillRect(bx-9, by, 18, 12);
+      cx.strokeStyle = C.ink; cx.lineWidth = 2; cx.strokeRect(bx-9, by, 18, 12);
+      cx.beginPath(); cx.moveTo(bx-4, by); cx.arc(bx, by, 4, Math.PI, 0); cx.stroke();
+    }
+  }
+
+  /* speed lines when moving fast */
+  if(!reduceMotion && v > 700){
+    cx.strokeStyle = "rgba(26,21,18,0.12)"; cx.lineWidth = 2;
+    for(let i=0;i<4;i++){
+      const ly = H*0.2 + i*H*0.18, lx = W - ((camX*1.4 + i*260) % (W+240)) - 120;
+      cx.beginPath(); cx.moveTo(lx, ly); cx.lineTo(lx+90, ly); cx.stroke();
+    }
+  }
+
+  /* dust particles */
+  cx.fillStyle = C.dust;
+  for(const p of parts){
+    cx.globalAlpha = Math.max(0, p.life*2.4);
+    cx.fillRect(toX(p.x)-2, toY(p.y)-2, 4, 4);
+  }
+  cx.globalAlpha = 1;
+
+  /* our hero */
+  drawWorker(toX(runner.wx), toY(runner.y)-11);
+
+  /* comic exclamations */
+  for(let i=words.length-1;i>=0;i--){
+    const wd = words[i], age = tNow - wd.born;
+    if(age > 0.8){ words.splice(i,1); continue; }
+    const a = 1 - age/0.8, pop = 1 + 0.35*Math.sin(Math.min(1, age*5)*Math.PI);
+    cx.save();
+    cx.translate(toX(wd.wx), toY(wd.wy) - age*26);
+    cx.scale(pop, pop); cx.rotate(-0.06);
+    cx.font = '22px "Alfa Slab One", serif';
+    cx.textAlign = "center";
+    cx.globalAlpha = a;
+    cx.lineWidth = 5; cx.strokeStyle = C.ink; cx.strokeText(wd.txt, 0, 0);
+    cx.fillStyle = C.red; cx.fillText(wd.txt, 0, 0);
+    cx.restore();
+  }
+  cx.globalAlpha = 1;
+}
+
+/* ================= loop ================= */
+function frame(t){
+  const dt = Math.min(0.05, (t-(tPrev||t))/1000); tPrev = t;
+  if(state==="run") tick(dt);
+  if(shake>0) shake = Math.max(0, shake - dt*26);
+  draw();
+  requestAnimationFrame(frame);
+}
+reset();
+setState("title");
+requestAnimationFrame(frame);
+</script>
+</body>
+</html>
