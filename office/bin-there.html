@@ -1,0 +1,1813 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Bin There · Office Hours · dweeb.co</title>
+<meta name="description" content="Rejected memos are piling up. Compensate for unpredictable HVAC gusts and send every crumpled disaster to recycling.">
+<meta name="theme-color" content="#fbfbf9">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect x='7' y='9' width='18' height='17' rx='2' fill='%233f6590'/%3E%3Crect x='6' y='8' width='20' height='3' rx='1' fill='%232b4866'/%3E%3Ccircle cx='16' cy='6' r='4' fill='%23f3f1ea' stroke='%239d988a'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --paper:#f4f3ef; --panel:#fbfbf9; --panel-2:#efeee9; --line:#dcd9d1; --line-2:#c8c4ba;
+  --ink:#23252a; --ink-2:#51545b; --ink-3:#71747c;
+  --blue:#3f6590; --blue-ink:#2f4f73; --blue-wash:#e4eaf1;
+  --ok:#3b6e54; --warn:#8f6218; --bad:#9b4437;
+  --sans:"DM Sans",system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+  --mono:"DM Mono",ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%;background:var(--paper);color:var(--ink);font-family:var(--sans);-webkit-font-smoothing:antialiased;overflow:hidden;overscroll-behavior:none}
+body{position:fixed;inset:0}
+button,a{font:inherit;color:inherit;-webkit-tap-highlight-color:transparent;touch-action:manipulation}
+:focus-visible{outline:2px solid var(--blue);outline-offset:2px}
+.sr{position:absolute!important;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
+
+.app{position:absolute;inset:0;display:grid;grid-template-columns:minmax(0,1fr);grid-template-rows:auto auto minmax(0,1fr);
+  padding:env(safe-area-inset-top,0px) env(safe-area-inset-right,0px) env(safe-area-inset-bottom,0px) env(safe-area-inset-left,0px)}
+
+/* ── window chrome ── */
+.bar{background:var(--panel);border-bottom:1px solid var(--line)}
+.bar-top{display:flex;align-items:center;gap:14px;padding:6px 14px;min-height:58px}
+.brand{display:flex;flex-direction:column;gap:4px;min-width:0;flex:1 1 auto}
+.brand b{display:flex;align-items:center;gap:9px;min-width:0;font:500 12px/1 var(--mono);letter-spacing:.13em;color:var(--ink);white-space:nowrap}
+.brand b span{overflow:hidden;text-overflow:ellipsis}
+.brand b::before{content:"";width:11px;height:11px;border-radius:2px;background:var(--blue);box-shadow:inset 0 -3px 0 #2b4866;flex:none}
+.doc{font:13px/1.2 var(--sans);color:var(--ink-2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.doc span{color:var(--ink-3)}
+.ctrls{margin-left:auto;display:flex;gap:6px;flex:none}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:7px;min-width:44px;height:44px;padding:0 13px;border:1px solid var(--line-2);border-radius:6px;background:var(--panel);color:var(--ink);font:500 13px/1 var(--sans);text-decoration:none;cursor:pointer;white-space:nowrap;transition:background-color .15s,border-color .15s}
+.btn:hover{background:var(--panel-2);border-color:#b3aea3}
+.btn:disabled{opacity:.45;cursor:default;background:var(--panel)}
+.btn svg{width:18px;height:18px;flex:none}
+.btn [hidden]{display:none}
+.tabs{display:flex;align-items:stretch;gap:2px;padding:0 14px;border-top:1px solid var(--line);font:500 13px/1 var(--sans);color:var(--ink-3)}
+.tabs span{padding:10px 12px 9px;border-bottom:2px solid transparent}
+.tabs .on{color:var(--ink);border-bottom-color:var(--blue)}
+.tabs .meta{margin-left:auto;padding:10px 0;font:400 12px/1 var(--mono);font-variant-numeric:tabular-nums;color:var(--ink-3)}
+
+/* ── status strip ── */
+.status{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));background:var(--panel-2);border-bottom:1px solid var(--line)}
+.stat{min-width:0;padding:8px 14px 9px;border-right:1px solid var(--line)}
+.stat:last-child{border-right:0}
+.k{display:block;font:500 11.5px/1.2 var(--sans);color:var(--ink-3);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.v{display:flex;align-items:center;gap:8px;margin-top:3px;font:500 19px/1.2 var(--sans);font-variant-numeric:tabular-nums;white-space:nowrap}
+.s{display:block;margin-top:2px;font:12px/1.25 var(--sans);color:var(--ink-2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.flow{display:inline-flex;align-items:center;gap:3px;width:31px;height:14px;overflow:hidden;flex:none}
+.flow i{flex:none;width:7px;height:7px;border-top:2px solid var(--warn);border-right:2px solid var(--warn);transform:rotate(45deg);animation:flow var(--flow-dur,1.2s) linear infinite}
+.flow i:nth-child(2){animation-delay:calc(var(--flow-dur,1.2s) * -.33)}
+.flow i:nth-child(3){animation-delay:calc(var(--flow-dur,1.2s) * -.66)}
+.flow[data-dir=left]{transform:scaleX(-1)}
+.flow[data-dir=none] i{animation:none;border:0;width:7px;height:2px;background:var(--line-2);transform:none}
+@keyframes flow{0%{transform:translateX(-5px) rotate(45deg);opacity:.15}50%{opacity:1}100%{transform:translateX(5px) rotate(45deg);opacity:.15}}
+
+/* ── play area ── */
+.play{position:relative;min-height:0;overflow:hidden;background:#e7e5df}
+.stage{position:absolute;inset:0;touch-action:none;-webkit-user-select:none;user-select:none;-webkit-touch-callout:none;outline:none;cursor:default}
+.stage.grab{cursor:grab}.stage.grabbing{cursor:grabbing}
+.stage:focus-visible{box-shadow:inset 0 0 0 2px var(--blue)}
+canvas{display:block;width:100%;height:100%}
+.notice{position:absolute;top:12px;left:50%;z-index:3;display:flex;align-items:baseline;gap:10px;max-width:min(92%,580px);padding:9px 14px 10px;background:var(--panel);border:1px solid var(--line-2);border-left:3px solid var(--blue);border-radius:4px;box-shadow:0 6px 18px rgba(35,37,42,.09);opacity:0;transform:translate(-50%,-6px);transition:opacity .22s,transform .22s;pointer-events:none}
+.notice.show{opacity:1;transform:translate(-50%,0)}
+.notice[data-tone=ok]{border-left-color:var(--ok)}.notice[data-tone=warn]{border-left-color:var(--warn)}.notice[data-tone=bad]{border-left-color:var(--bad)}
+.nl{flex:none;font:500 11px/1 var(--mono);color:var(--ink-3)}
+.nt{font:14px/1.4 var(--sans);color:var(--ink)}
+
+/* ── dialogs ── */
+.overlay{position:absolute;inset:0;z-index:5;display:flex;padding:16px;overflow:auto;touch-action:auto;background:rgba(236,235,230,.8);-webkit-backdrop-filter:blur(3px);backdrop-filter:blur(3px)}
+.overlay[hidden]{display:none}
+.sheet{position:relative;width:min(100%,470px);margin:auto;padding:24px 26px 22px;background:var(--panel);border:1px solid var(--line-2);border-radius:5px;box-shadow:0 22px 60px rgba(35,37,42,.16)}
+.sheet::before{content:"";position:absolute;left:0;right:0;top:0;height:4px;background:var(--blue);border-radius:5px 5px 0 0}
+.dept{font:500 11.5px/1 var(--mono);letter-spacing:.12em;color:var(--blue)}
+.sheet h1{margin:10px 0 14px;font:700 34px/1.05 var(--sans);letter-spacing:-.02em}
+.sheet h2{margin:10px 0 12px;font:700 24px/1.15 var(--sans);letter-spacing:-.01em}
+.memohead{display:grid;grid-template-columns:auto 1fr;gap:5px 14px;padding:10px 0;margin-bottom:14px;border-top:1px solid var(--line);border-bottom:1px solid var(--line);font-size:13.5px}
+.memohead dt{font:500 12px/1.5 var(--mono);color:var(--ink-3)}
+.memohead dd{color:var(--ink)}
+.sheet p{margin-bottom:12px;font-size:15px;line-height:1.55;color:var(--ink-2)}
+.keys{white-space:nowrap}
+.sheet .how{padding:10px 12px;background:var(--panel-2);border:1px solid var(--line);border-radius:4px;font-size:14px;line-height:1.6;color:var(--ink)}
+kbd{display:inline-block;min-width:1.6em;padding:0 5px;border:1px solid var(--line-2);border-bottom-width:2px;border-radius:3px;background:var(--panel);font:500 12px/1.5 var(--mono);text-align:center;color:var(--ink)}
+.acts{display:flex;gap:8px;margin-top:4px}
+.acts>*{flex:1}
+.primary,.secondary{display:inline-flex;align-items:center;justify-content:center;min-height:48px;padding:0 16px;border-radius:6px;font:500 15px/1.2 var(--sans);text-decoration:none;cursor:pointer;text-align:center}
+.primary{border:0;background:var(--blue);color:#fff}
+.primary:hover{background:var(--blue-ink)}
+.secondary{border:1px solid var(--line-2);background:var(--panel);color:var(--ink)}
+.secondary:hover{background:var(--panel-2)}
+.fineprint{margin:12px 0 0!important;font:12px/1.4 var(--mono)!important;color:var(--ink-3)!important;text-align:center}
+.review{width:100%;margin:2px 0 14px;border-collapse:collapse;font-size:14px}
+.review th{padding:7px 0;border-bottom:1px solid var(--line);font:400 13.5px/1.3 var(--sans);color:var(--ink-2);text-align:left}
+.review td{padding:7px 0;border-bottom:1px solid var(--line);font-weight:500;font-variant-numeric:tabular-nums;text-align:right}
+.rating{display:flex;align-items:center;gap:14px;margin-bottom:12px;padding:12px 14px;border:1px solid var(--line-2);border-radius:4px;background:var(--panel-2)}
+.rating .g{flex:none;width:52px;height:52px;display:grid;place-items:center;border:2px solid var(--blue);border-radius:50%;font:700 26px/1 var(--sans);color:var(--blue);transform:rotate(-6deg)}
+.rating .gl{font:500 15px/1.3 var(--sans)}
+.rating .gs{display:block;font:12px/1.3 var(--mono);color:var(--ink-3);margin-top:3px}
+.comment{font-style:italic}
+.badge{display:inline-block;margin-left:6px;padding:1px 6px;border:1px solid var(--ok);border-radius:3px;font:500 11px/1.4 var(--mono);color:var(--ok)}
+.badge[hidden]{display:none}
+
+/* ── responsive ── */
+@media (max-width:980px){
+  .tabs{display:none}
+  .btn .lbl{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap}
+  .btn{padding:0}
+}
+@media (max-width:760px){
+  .status{grid-template-columns:repeat(3,minmax(0,1fr))}
+  .stat:nth-child(3){border-right:0}
+  .stat:nth-child(-n+3){border-bottom:1px solid var(--line)}
+  .v{font-size:17px}
+}
+@media (max-width:560px){
+  .bar-top{gap:8px;padding:5px 8px;min-height:54px}
+  .ctrls{gap:4px}
+  .btn.wide{display:none}
+  .stat{padding:6px 10px 7px}
+  .k{font-size:11px}.s{font-size:11px}
+  .sheet{padding:20px 18px 18px}
+  .sheet h1{font-size:30px}
+  .brand b{font-size:11px;letter-spacing:.07em;gap:7px}
+  .doc{font-size:12px}
+  .notice{flex-direction:column;gap:4px;width:calc(100% - 24px);max-width:none;padding:8px 12px 9px}
+}
+@media (max-width:360px){ .doc{display:none} }
+@media (max-height:520px) and (min-width:561px){
+  .overlay{position:fixed;z-index:20;padding:max(10px,env(safe-area-inset-top,0px)) max(16px,env(safe-area-inset-right,0px)) max(10px,env(safe-area-inset-bottom,0px)) max(16px,env(safe-area-inset-left,0px))}
+  .sheet{width:min(100%,600px)}
+  .memohead{display:none}
+  .notice{left:12px;max-width:min(35%,320px);transform:translate(0,-6px)}
+  .sheet h2{margin:6px 0 8px;font-size:21px}
+  .rating{margin-bottom:8px;padding:7px 12px}.rating .g{width:40px;height:40px;font-size:20px}
+  .review,.review tbody{display:block}
+  .review{margin:0 0 8px}
+  .review tbody{display:grid;grid-template-columns:1fr 1fr;column-gap:22px}
+  .review tr{display:flex;justify-content:space-between;align-items:baseline;gap:8px;border-bottom:1px solid var(--line)}
+  .review th,.review td{padding:5px 0;border-bottom:0}
+  .notice.show{transform:translate(0,0)}
+  .tabs,.doc,.s{display:none}
+  .bar-top{min-height:50px;padding:3px 12px}
+  .status{grid-template-columns:repeat(6,minmax(0,1fr))}
+  .stat,.stat:nth-child(-n+3){padding:4px 12px 5px;border-bottom:0;border-right:1px solid var(--line)}
+  .stat:last-child{border-right:0}
+  .v{font-size:16px;margin-top:1px}
+  .sheet{padding:18px 20px 16px}.sheet h1{font-size:26px;margin:6px 0 10px}.sheet p{margin-bottom:9px;font-size:14px}
+}
+@media (prefers-reduced-motion:reduce){
+  .flow i{animation:none}
+  .notice{transition:none}
+}
+</style>
+</head>
+<body>
+<div class="app">
+  <header class="bar">
+    <div class="bar-top">
+      <div class="brand">
+        <b><span>DWEEB FACILITIES</span></b>
+        <span class="doc">Records_Disposal_Log <span>— Internal</span></span>
+      </div>
+      <div class="ctrls">
+        <button class="btn" id="btnPause" type="button" disabled>
+          <svg viewBox="0 0 20 20" aria-hidden="true" data-i="pause"><rect x="5" y="4" width="3.3" height="12" rx="1" fill="currentColor"/><rect x="11.7" y="4" width="3.3" height="12" rx="1" fill="currentColor"/></svg>
+          <svg viewBox="0 0 20 20" aria-hidden="true" data-i="play" hidden><path d="M6.5 4.2l9 5.8-9 5.8z" fill="currentColor"/></svg>
+          <span class="lbl" id="pauseLbl">Pause</span>
+        </button>
+        <button class="btn wide" id="btnRestart" type="button" disabled>
+          <svg viewBox="0 0 20 20" aria-hidden="true"><path d="M15.6 10.2a5.6 5.6 0 1 1-1.7-4.2" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/><path d="M15.9 3.4v3.7h-3.7" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          <span class="lbl">Restart</span>
+        </button>
+        <button class="btn" id="btnSound" type="button">
+          <svg viewBox="0 0 20 20" aria-hidden="true" data-i="on"><path d="M3.5 7.6h3l4.2-3.6v12l-4.2-3.6h-3z" fill="currentColor"/><path d="M13.4 7.2a4 4 0 0 1 0 5.6M15.5 5.1a7 7 0 0 1 0 9.8" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
+          <svg viewBox="0 0 20 20" aria-hidden="true" data-i="off" hidden><path d="M3.5 7.6h3l4.2-3.6v12l-4.2-3.6h-3z" fill="currentColor"/><path d="M13.3 7.8l4 4.4M17.3 7.8l-4 4.4" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
+          <span class="lbl" id="soundLbl">Sound on</span>
+        </button>
+        <button class="btn" id="btnEnd" type="button" disabled>
+          <svg viewBox="0 0 20 20" aria-hidden="true"><rect x="4.5" y="3.5" width="11" height="14" rx="1.5" fill="none" stroke="currentColor" stroke-width="1.6"/><path d="M7.4 10.4l2 2 3.6-4" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          <span class="lbl">End audit</span>
+        </button>
+        <a class="btn" id="lnkBack" href="index.html">
+          <svg viewBox="0 0 20 20" aria-hidden="true"><path d="M12 4.5L6.5 10l5.5 5.5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          <span class="lbl">Office Hours</span>
+        </a>
+      </div>
+    </div>
+    <div class="tabs" aria-hidden="true">
+      <span class="on">Disposal</span><span>Compliance</span><span>Metrics</span><span>Facilities</span>
+      <span class="meta" id="tabMeta">Session 00:00</span>
+    </div>
+  </header>
+
+  <section class="status" aria-label="Audit status">
+    <div class="stat"><span class="k">Compliance score</span><span class="v" id="hudScore">0</span><span class="s" id="hudRecord">Record 0</span></div>
+    <div class="stat"><span class="k">Disposal streak</span><span class="v" id="hudStreak">0</span><span class="s" id="hudBest">Best 0</span></div>
+    <div class="stat"><span class="k">HVAC variance</span><span class="v"><span class="flow" id="hudFlow" data-dir="none" aria-hidden="true"><i></i><i></i><i></i></span><span id="hudWind">0.0</span></span><span class="s" id="hudWindLbl">Calm</span></div>
+    <div class="stat"><span class="k">Accuracy</span><span class="v" id="hudAcc">—</span><span class="s" id="hudMade">0 of 0 disposed</span></div>
+    <div class="stat"><span class="k">Compliance grade</span><span class="v" id="hudGrade">—</span><span class="s" id="hudGradeLbl">Pending review</span></div>
+    <div class="stat"><span class="k">Container</span><span class="v" id="hudCart">Available</span><span class="s" id="hudFill">0 of 9 full</span></div>
+  </section>
+
+  <div class="play" id="play">
+    <div class="stage" id="stage" tabindex="0" role="application" aria-roledescription="throwing area" aria-label="Records room. A recycling cart stands ahead." aria-describedby="howto">
+      <canvas id="view"></canvas>
+    </div>
+    <p class="sr" id="howto">Drag the memo toward the cart and release to throw. With a keyboard, left and right arrows aim, up and down arrows set power, Space throws, Escape pauses, and M toggles sound.</p>
+    <div class="notice" id="notice" aria-hidden="true"><span class="nl" id="noticeLabel">Facilities</span><span class="nt" id="noticeText"></span></div>
+
+    <div class="overlay" id="ovIntro" role="dialog" aria-modal="true" aria-labelledby="introTitle">
+      <div class="sheet">
+        <p class="dept">OFFICE FACILITIES</p>
+        <h1 id="introTitle">Bin There</h1>
+        <dl class="memohead">
+          <dt>To</dt><dd>All associates</dd>
+          <dt>From</dt><dd>Facilities, Records Room B</dd>
+          <dt>Re</dt><dd>Disposal backlog</dd>
+        </dl>
+        <p>Rejected corporate memos are piling up. Flick each one into the recycling cart before Facilities notices. The HVAC system has opinions — read the variance before you throw.</p>
+        <p class="how">Drag the memo toward the cart and let go, or aim with <span class="keys"><kbd>←</kbd> <kbd>→</kbd></span>, set power with <span class="keys"><kbd>↑</kbd> <kbd>↓</kbd></span>, and press <kbd>Space</kbd>.</p>
+        <div class="acts"><button class="primary" id="btnBegin" type="button" data-autofocus>Begin Disposal Audit</button></div>
+        <p class="fineprint" id="introRec">No prior audits on file.</p>
+      </div>
+    </div>
+
+    <div class="overlay" id="ovPause" role="dialog" aria-modal="true" aria-labelledby="pauseTitle" hidden>
+      <div class="sheet">
+        <p class="dept">OFFICE FACILITIES</p>
+        <h2 id="pauseTitle">Audit Temporarily Suspended</h2>
+        <p>Your disposal session is on hold. The memos will wait. They always do.</p>
+        <div class="acts">
+          <button class="primary" id="btnResume" type="button" data-autofocus>Resume audit</button>
+        </div>
+        <div class="acts" style="margin-top:8px">
+          <button class="secondary" id="btnRestart2" type="button">Restart audit</button>
+          <button class="secondary" id="btnEnd2" type="button">End audit</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="overlay" id="ovReview" role="dialog" aria-modal="true" aria-labelledby="reviewTitle" hidden>
+      <div class="sheet">
+        <p class="dept">OFFICE FACILITIES</p>
+        <h2 id="reviewTitle">Disposal Performance Review</h2>
+        <div class="rating"><span class="g" id="rvGrade">—</span><span><span class="gl" id="rvGradeLbl">Pending review</span><span class="gs" id="rvPeriod">Review period 0 min 00 s</span></span></div>
+        <table class="review">
+          <tr><th scope="row">Records disposed</th><td id="rvDisposed">0 of 0</td></tr>
+          <tr><th scope="row">Accuracy</th><td id="rvAcc">—</td></tr>
+          <tr><th scope="row">Properly filed</th><td id="rvClean">0</td></tr>
+          <tr><th scope="row">Needs review</th><td id="rvRim">0</td></tr>
+          <tr><th scope="row">Longest streak</th><td><span id="rvStreak">0</span><span class="badge" id="rvStreakNew" hidden>New best</span></td></tr>
+          <tr><th scope="row">Compliance score</th><td><span id="rvScore">0</span><span class="badge" id="rvScoreNew" hidden>New record</span></td></tr>
+          <tr><th scope="row">Personal record</th><td id="rvRecord">0</td></tr>
+        </table>
+        <p class="comment" id="rvComment"></p>
+        <div class="acts">
+          <button class="primary" id="btnAgain" type="button" data-autofocus>Begin new audit</button>
+          <a class="secondary" href="index.html">Back to Office Hours</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="sr" id="live" aria-live="polite" aria-atomic="true"></div>
+<noscript><p style="position:fixed;inset:auto 0 0 0;padding:16px;background:#fbfbf9;font:15px sans-serif;text-align:center">Bin There needs JavaScript to run.</p></noscript>
+
+<script>
+(() => {
+"use strict";
+
+/* ════════════════════════════════════════════════════════════════════
+   CONFIG — every gameplay constant in one place.
+   World units are metres. The camera stands behind the desk looking
+   down +z. +x is to the right, +y is up, the floor is y = 0.
+   ════════════════════════════════════════════════════════════════════ */
+const CONFIG = {
+  camHeight: 1.7,              // eye height
+  eyeBehind: 1.3,              // the eye sits at z = -eyeBehind
+  room: { halfWidth: 2.5, depth: 9.0, ceiling: 2.95, playHalfWidth: 1.9 },
+  desk: { y: 0.74, zNear: -0.5, zFar: 0.68, halfWidth: 4 },
+  memo: { radius: 0.075, x: 0, y: 0.815, z: 0.5 },
+  cart: {
+    x: 0, z: 6.4,              // centre of the opening at the start of an audit
+    halfWidth: 0.4, halfDepth: 0.31,
+    rimY: 0.92, baseY: 0.16, rimRadius: 0.014,
+    capacity: 9,               // memos before Facilities empties it
+    relocateEvery: 5,          // successful disposals between relocations
+    roamX: 0.85, roamZMin: 5.6, roamZMax: 7.2,
+  },
+  cleanFraction: 0.5,          // enter inside this share of the opening, untouched = Properly Filed
+  gravity: 9.8,                // m/s²
+  drag: 0.03,                  // quadratic air drag: a = −drag·|v|·v
+  windAccel: 1.6,              // sideways m/s² at HVAC variance 10.0 (linear in the reading)
+  pitchDeg: 37,                // launch elevation
+  speedMin: 5.5,               // launch speed at 0% power (m/s)
+  speedMax: 10.1,              // launch speed at 100% power (m/s)
+  yawMaxDeg: 30,               // aim clamp, either side
+  step: 1 / 240,               // fixed physics step (s) — identical in play and in tests
+  maxFlight: 4.5,              // seconds before a throw is force-resolved
+  rimRestitution: 0.42, rimFriction: 0.86,
+  wallRestitution: 0.32,
+  floorRestitution: 0.22, floorFriction: 2.8,
+  gesture: {
+    refFraction: 0.42, refMin: 170, refMax: 420,  // reference drag length (px) from play height
+    velRef: 5.5,               // release speed (reference lengths per second) that counts as 1.0
+    distWeight: 0.6, velWeight: 0.55, cap: 1.3,
+    window: 0.09,              // seconds of pointer history used for release velocity
+    minForward: 14,            // px of upward drag needed to count as a throw
+    yawGain: 0.55,             // screen drag angle → aim angle
+  },
+  keyboard: { aimStep: 1, powerStep: 0.01, bigStep: 5 },
+  wind: { calmChance: 0.12, startMax: 5, streakStep: 0.5, max: 10 },
+  timing: { resolve: 0.72, crumple: 0.3, relocate: 0.75, stamp: 1.3, notice: 2.7 },
+  scoring: { base: 100, cleanBonus: 50, rimBonus: 20, streakStep: 15, streakCap: 10 },
+  apex: { y: 2.3, z: 3.8 },    // high point of a far-cart throw; fitView keeps it on screen
+};
+
+/* ── helpers ── */
+const TAU = Math.PI * 2, DEG = Math.PI / 180;
+const clamp = (v, a, b) => (v < a ? a : v > b ? b : v);
+const lerp = (a, b, t) => a + (b - a) * t;
+const easeOut = t => 1 - Math.pow(1 - t, 3);
+const easeInOut = t => (t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2);
+const rand = (a, b) => a + Math.random() * (b - a);
+const $ = id => document.getElementById(id);
+const fmt = n => Math.round(n).toLocaleString("en-US");
+const rmQuery = window.matchMedia ? window.matchMedia("(prefers-reduced-motion: reduce)") : null;
+let RM = !!(rmQuery && rmQuery.matches);
+if (rmQuery && rmQuery.addEventListener) rmQuery.addEventListener("change", e => { RM = e.matches; });
+
+/* ════════════════════════════ STORAGE ═════════════════════════════ */
+const Store = {
+  key: "dweeb.binThere.v1", ok: false,
+  data: { highScore: 0, bestStreak: 0, muted: false },
+  load() {
+    let raw = null;
+    try { raw = window.localStorage.getItem(this.key); this.ok = true; } catch (e) { this.ok = false; return; }
+    if (!raw) return;
+    try {
+      const d = JSON.parse(raw);
+      if (d && typeof d === "object") {
+        if (Number.isFinite(d.highScore) && d.highScore >= 0) this.data.highScore = Math.floor(d.highScore);
+        if (Number.isFinite(d.bestStreak) && d.bestStreak >= 0) this.data.bestStreak = Math.floor(d.bestStreak);
+        this.data.muted = d.muted === true;
+      }
+    } catch (e) { /* corrupt record: start fresh, keep storage enabled */ }
+  },
+  save() {
+    if (!this.ok) return;
+    try { window.localStorage.setItem(this.key, JSON.stringify(this.data)); } catch (e) { this.ok = false; }
+  },
+};
+
+/* ════════════════════════════ AUDIO ═══════════════════════════════
+   Everything is synthesized. The context is created on the first
+   user gesture, never before.                                        */
+const Sound = {
+  ctx: null, master: null, buf: null, bed: null, bedFilter: null, muted: false, level: 0.55,
+  ensure() {
+    if (this.ctx) { return true; }
+    const AC = window.AudioContext || window.webkitAudioContext;
+    if (!AC) return false;
+    try {
+      const ctx = new AC();
+      const master = ctx.createGain();
+      master.gain.value = this.muted ? 0 : this.level;
+      master.connect(ctx.destination);
+      const len = Math.floor(ctx.sampleRate * 1.6);
+      const buf = ctx.createBuffer(1, len, ctx.sampleRate);
+      const d = buf.getChannelData(0);
+      for (let i = 0; i < len; i++) d[i] = Math.random() * 2 - 1;
+      const src = ctx.createBufferSource(); src.buffer = buf; src.loop = true;
+      const lp = ctx.createBiquadFilter(); lp.type = "lowpass"; lp.frequency.value = 300; lp.Q.value = 0.5;
+      const bed = ctx.createGain(); bed.gain.value = 0;
+      src.connect(lp); lp.connect(bed); bed.connect(master); src.start();
+      this.ctx = ctx; this.master = master; this.buf = buf; this.bed = bed; this.bedFilter = lp;
+      return true;
+    } catch (e) { this.ctx = null; return false; }
+  },
+  live() { return !!this.ctx && this.ctx.state === "running" && !this.muted; },
+  resume() { if (this.ctx && this.ctx.state === "suspended") this.ctx.resume().catch(() => {}); },
+  suspend() { if (this.ctx && this.ctx.state === "running") this.ctx.suspend().catch(() => {}); },
+  setMuted(m) { this.muted = m; if (this.ctx) this.master.gain.setTargetAtTime(m ? 0 : this.level, this.ctx.currentTime, 0.04); },
+  setWind(w) {
+    if (!this.ctx) return;
+    const a = Math.min(1, Math.abs(w) / 10), t = this.ctx.currentTime;
+    this.bed.gain.setTargetAtTime(a < 0.05 ? 0 : 0.012 + 0.055 * a * a, t, 0.45);
+    this.bedFilter.frequency.setTargetAtTime(230 + 820 * a, t, 0.45);
+  },
+  noise(t, dur, freq, q, gain, type, rate) {
+    const c = this.ctx, s = c.createBufferSource(); s.buffer = this.buf; s.playbackRate.value = rate || 1;
+    const f = c.createBiquadFilter(); f.type = type || "bandpass"; f.frequency.value = freq; f.Q.value = q;
+    const g = c.createGain(); const a = Math.min(0.01, dur * 0.25);
+    g.gain.setValueAtTime(0.0001, t);
+    g.gain.exponentialRampToValueAtTime(Math.max(0.0002, gain), t + a);
+    g.gain.exponentialRampToValueAtTime(0.0001, t + dur);
+    s.connect(f); f.connect(g); g.connect(this.master);
+    s.start(t, Math.random() * 1.2, dur + 0.05);
+  },
+  tone(t, f0, dur, gain, type, f1) {
+    const c = this.ctx, o = c.createOscillator(), g = c.createGain();
+    o.type = type || "sine"; o.frequency.setValueAtTime(f0, t);
+    if (f1) o.frequency.exponentialRampToValueAtTime(f1, t + dur);
+    g.gain.setValueAtTime(0.0001, t);
+    g.gain.exponentialRampToValueAtTime(Math.max(0.0002, gain), t + 0.008);
+    g.gain.exponentialRampToValueAtTime(0.0001, t + dur);
+    o.connect(g); g.connect(this.master); o.start(t); o.stop(t + dur + 0.03);
+  },
+  crumple() {
+    if (!this.live()) return;
+    const t = this.ctx.currentTime + 0.01;
+    for (let i = 0; i < 9; i++) this.noise(t + i * 0.03 + Math.random() * 0.012, 0.03 + Math.random() * 0.035, 1600 + Math.random() * 3600, 0.9, 0.07 + Math.random() * 0.09, "bandpass", 0.9 + Math.random() * 0.5);
+  },
+  release(p) {
+    if (!this.live()) return;
+    const c = this.ctx, t = c.currentTime, s = c.createBufferSource(); s.buffer = this.buf;
+    const f = c.createBiquadFilter(); f.type = "bandpass"; f.Q.value = 0.9;
+    f.frequency.setValueAtTime(480, t); f.frequency.exponentialRampToValueAtTime(1500 + 900 * p, t + 0.22);
+    const g = c.createGain(); g.gain.setValueAtTime(0.0001, t);
+    g.gain.exponentialRampToValueAtTime(0.09 + 0.08 * p, t + 0.05); g.gain.exponentialRampToValueAtTime(0.0001, t + 0.3);
+    s.connect(f); f.connect(g); g.connect(this.master); s.start(t, Math.random(), 0.35);
+  },
+  rim(s) { if (!this.live()) return; const t = this.ctx.currentTime, g = clamp(s, 0.25, 1); this.tone(t, 330, 0.1, 0.15 * g, "triangle", 225); this.tone(t, 1180, 0.06, 0.03 * g); this.noise(t, 0.035, 2600, 1.1, 0.09 * g, "bandpass", 1); },
+  wall() { if (!this.live()) return; const t = this.ctx.currentTime; this.tone(t, 150, 0.12, 0.11, "sine", 92); this.noise(t, 0.05, 700, 0.7, 0.08, "lowpass", 1); },
+  floor(s) { if (!this.live()) return; const t = this.ctx.currentTime; this.noise(t, 0.08, 900, 0.7, 0.05 + 0.06 * clamp(s, 0, 1), "lowpass", 0.8); },
+  bin() { if (!this.live()) return; const t = this.ctx.currentTime; this.noise(t, 0.24, 1500, 0.6, 0.11, "lowpass", 0.75); this.tone(t + 0.015, 125, 0.18, 0.15, "sine", 68); },
+  success(clean) {
+    if (!this.live()) return;
+    const t = this.ctx.currentTime + 0.06;
+    if (clean) { this.tone(t, 784, 0.16, 0.05); this.tone(t + 0.09, 1175, 0.3, 0.045); }
+    else { this.tone(t, 659, 0.15, 0.04); this.tone(t + 0.09, 880, 0.22, 0.036); }
+  },
+  fail() { if (!this.live()) return; const t = this.ctx.currentTime + 0.05; this.tone(t, 311, 0.16, 0.035, "triangle"); this.tone(t + 0.15, 233, 0.26, 0.032, "triangle"); },
+  roll() { if (!this.live()) return; const t = this.ctx.currentTime; for (let i = 0; i < 4; i++) this.noise(t + i * 0.16, 0.22, 170, 0.6, 0.05, "lowpass", 0.6); },
+  click() { if (!this.live()) return; this.tone(this.ctx.currentTime, 1320, 0.03, 0.025, "triangle"); },
+};
+
+/* ════════════════════════════ COPY ════════════════════════════════ */
+const LINES = {
+  clean: [
+    "Properly filed. Facilities has no notes.",
+    "Record disposition approved.",
+    "Textbook disposal. Someone will laminate this.",
+    "Clean transfer to recycling. No further action required.",
+    "That memo has been permanently reorganized.",
+    "Audit trail: spotless.",
+    "Compliance restored.",
+    "Filed with the confidence of someone who reads the handbook.",
+    "Dead centre. Facilities is quietly impressed.",
+  ],
+  basket: [
+    "Accepted. Barely within policy, but accepted.",
+    "Facilities acknowledges adequate effort.",
+    "Disposal logged.",
+    "Received by recycling. No receipt will be issued.",
+    "The memo has left the building's attention.",
+    "Transfer complete. Nobody needs to know how.",
+    "Record retired early, as intended.",
+    "Container confirms receipt.",
+  ],
+  rimIn: [
+    "It went in. The rim has filed a complaint.",
+    "Disposed, pending review.",
+    "Accepted after a brief dispute with the container.",
+    "Technically compliant.",
+    "That one negotiated its way in.",
+    "Approved with comments.",
+    "Landed. The rim would like it noted that it tried.",
+  ],
+  rimOut: [
+    "Rejected at the rim. Please resubmit.",
+    "The container declined your request.",
+    "Returned to sender by the recycling cart.",
+    "Close. Close is not a disposal category.",
+    "The rim has escalated this memo back to you.",
+    "Bounced. Please attach a cover sheet next time.",
+  ],
+  short: [
+    "Short. That document remains discoverable.",
+    "Unscheduled floor storage detected.",
+    "The memo stopped short of its career goals.",
+    "Please reopen the disposal ticket.",
+    "That landing has been noted in your file.",
+    "Insufficient follow-through. See attached.",
+  ],
+  long: [
+    "Overshot. The memo is now in Legal's jurisdiction.",
+    "Past the container. Facilities has been notified.",
+    "Long. That record will surface during the next audit.",
+    "The memo has been relocated to an undisclosed area.",
+    "Beyond the cart. Beyond, frankly, reason.",
+  ],
+  left: [
+    "Wide left. The HVAC was mentioned in your briefing.",
+    "Left of the cart. The floor is not an approved container.",
+    "Drifted left. Please consult the variance reading.",
+    "Wide left. The maintenance ticket remains open.",
+  ],
+  right: [
+    "Wide right. The HVAC was mentioned in your briefing.",
+    "Right of the cart. The floor is not an approved container.",
+    "Drifted right. Please consult the variance reading.",
+    "Wide right. The draft sends its regards.",
+  ],
+  relocate: [
+    "Facilities has relocated the container. No reason was given.",
+    "The recycling cart has been moved for operational reasons.",
+    "Container repositioned per a memo you will never see.",
+    "The cart has been rolled somewhere more inconvenient.",
+  ],
+  serviced: [
+    "Container emptied. The memos are now someone else's problem.",
+    "Facilities has serviced the cart. The backlog is back to merely enormous.",
+    "Recycling collected. Please resume disposing.",
+  ],
+  calm: [
+    "The HVAC is idle. Enjoy this while it lasts.",
+    "No airflow detected. Facilities is as surprised as you are.",
+  ],
+  gusty: [
+    "HVAC variance elevated. Maintenance ticket #4471 remains open.",
+    "Strong draft reported. Aim accordingly.",
+    "The air handler is having a day.",
+  ],
+};
+const STREAK_LINES = {
+  3: "Three consecutive disposals. A pattern is emerging.",
+  5: "Five consecutive records responsibly mismanaged.",
+  8: "Management has noticed the metric. This is not necessarily good.",
+  10: "Ten in a row. Your quarterly disposal forecast has been revised upward.",
+  15: "Fifteen straight. Facilities is drafting a policy about you.",
+  20: "Twenty consecutive. This is now your primary job function.",
+  25: "Twenty-five in a row. Please stop being this good at this.",
+  30: "Thirty. HR has scheduled a conversation about priorities.",
+  40: "Forty consecutive. The recycling cart has requested a transfer.",
+  50: "Fifty. Nobody authorized this level of excellence.",
+};
+const TOTAL_LINES = {
+  10: "Ten memos processed. The backlog remains technically infinite.",
+  25: "Twenty-five disposals logged. A certificate is being considered.",
+  50: "Fifty records retired. Legal would like a word, eventually.",
+  100: "One hundred disposals. This has been escalated to the leadership newsletter.",
+};
+const REVIEW_LINES = {
+  A: ["Exceeds expectations. Please continue disposing at this level without asking for a raise.", "Exemplary. This session will be cited in training materials nobody reads."],
+  B: ["Meets expectations. Consistent, dependable, largely unremarkable disposal.", "Solid work. The floor remained mostly visible."],
+  C: ["Room for growth. Several memos remain on the floor as a teaching aid.", "Adequate. The recycling cart has asked for more consistency."],
+  D: ["A development plan has been opened. It will also be thrown away.", "Below target. Facilities suggests reading the HVAC variance before throwing."],
+  F: ["Results are under review. The floor absorbed most of this session.", "Unsatisfactory. The memos have formed a working group."],
+  "—": ["Insufficient data. Facilities requires at least three attempts before forming an opinion."],
+};
+const OUTCOME = {
+  clean:  { stamp: "PROPERLY FILED",  tone: "ok",   made: true,  label: "Properly filed" },
+  basket: { stamp: "FILED",           tone: "blue", made: true,  label: "Filed" },
+  rimIn:  { stamp: "NEEDS REVIEW",    tone: "warn", made: true,  label: "Needs review" },
+  rimOut: { stamp: "REJECTED AT RIM", tone: "bad",  made: false, label: "Rejected at the rim" },
+  short:  { stamp: "SHORT",           tone: "bad",  made: false, label: "Short" },
+  long:   { stamp: "OVERSHOT",        tone: "bad",  made: false, label: "Overshot" },
+  left:   { stamp: "WIDE LEFT",       tone: "bad",  made: false, label: "Wide left" },
+  right:  { stamp: "WIDE RIGHT",      tone: "bad",  made: false, label: "Wide right" },
+};
+const TONE = { ok: "#3b6e54", blue: "#3f6590", warn: "#8f6218", bad: "#9b4437" };
+const bags = {}, lastPicked = {};
+function line(kind) {
+  let bag = bags[kind];
+  if (!bag || !bag.length) {
+    bag = bags[kind] = LINES[kind].slice();
+    for (let i = bag.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); const t = bag[i]; bag[i] = bag[j]; bag[j] = t; }
+    if (bag.length > 1 && bag[bag.length - 1] === lastPicked[kind]) { const t = bag[0]; bag[0] = bag[bag.length - 1]; bag[bag.length - 1] = t; }
+  }
+  const l = bag.pop(); lastPicked[kind] = l; return l;
+}
+
+/* ════════════════════════════ PHYSICS ═════════════════════════════
+   Deterministic fixed-step simulation. The same step function drives
+   the game and the ?debug test hooks.                                 */
+const EV = { RIM: 1, WALL: 2, FLOOR: 4, ENTER: 8, BOTTOM: 16 };
+function makeBall() {
+  return { x: 0, y: 0, z: 0, vx: 0, vy: 0, vz: 0, t: 0, state: "air", rimHits: 0, wallHit: false,
+    outcome: null, reported: false, ev: 0, impact: 0, spin: 0.4, spinV: 0, windAcc: 0, windValue: 0,
+    shape: 0, entryX: 0, entryZ: 0, landX: 0, landZ: 0, inBin: false, apexY: 0, apexZ: 0,
+    trail: new Float32Array(18), trailN: 0, trailHead: 0, trailT: 0 };
+}
+const Physics = {
+  launch(b, aimDeg, power) {
+    const C = CONFIG, M = C.memo;
+    const p = clamp(power, 0, 1), s = C.speedMin + p * (C.speedMax - C.speedMin);
+    const pitch = C.pitchDeg * DEG, yaw = clamp(aimDeg, -C.yawMaxDeg, C.yawMaxDeg) * DEG;
+    b.x = M.x; b.y = M.y; b.z = M.z;
+    b.vx = s * Math.cos(pitch) * Math.sin(yaw);
+    b.vy = s * Math.sin(pitch);
+    b.vz = s * Math.cos(pitch) * Math.cos(yaw);
+    b.t = 0; b.state = "air"; b.rimHits = 0; b.wallHit = false; b.outcome = null; b.reported = false;
+    b.ev = 0; b.inBin = false; b.spin = 0.4; b.spinV = (5 + 7 * p) * (yaw < 0 ? -1 : 1);
+    b.apexY = b.y; b.apexZ = b.z;
+  },
+  step(b, cart, windAcc, dt) {
+    const C = CONFIG, K = C.cart, r = C.memo.radius;
+    if (b.state === "done") return;
+    b.t += dt;
+    if (b.state === "in") {                         // dropping onto the pile inside the bin
+      b.vy -= C.gravity * dt;
+      b.y += b.vy * dt;
+      b.x = clamp(b.x + b.vx * dt * 0.25, cart.x - K.halfWidth + r, cart.x + K.halfWidth - r);
+      b.z = clamp(b.z + b.vz * dt * 0.25, cart.z - K.halfDepth + r, cart.z + K.halfDepth - r);
+      b.spin += b.spinV * dt * 0.5;
+      if (b.y <= cart.pileY + r) { b.y = cart.pileY + r; b.state = "done"; b.inBin = true; b.ev |= EV.BOTTOM; }
+      return;
+    }
+    if (b.state === "floor") {                      // bouncing, then sliding to a stop
+      b.vy -= C.gravity * dt;
+      if (b.y <= r + 1e-4) {
+        const hs = Math.hypot(b.vx, b.vz), dec = C.floorFriction * dt;
+        if (hs <= dec) { b.vx = 0; b.vz = 0; } else { b.vx -= b.vx / hs * dec; b.vz -= b.vz / hs * dec; }
+        b.spinV = (b.vx + b.vz * 0.3) * 9;
+      }
+      b.x += b.vx * dt; b.y += b.vy * dt; b.z += b.vz * dt;
+      b.spin += b.spinV * dt;
+      if (b.y < r) {
+        b.y = r;
+        if (b.vy < -0.9) { b.ev |= EV.FLOOR; b.impact = -b.vy; }
+        b.vy = b.vy < -0.6 ? -b.vy * C.floorRestitution : 0;
+      }
+      this.cartWalls(b, cart); this.room(b);
+      if (b.y <= r + 1e-4 && b.vy === 0 && b.vx === 0 && b.vz === 0) b.state = "done";
+      else if (b.t > C.maxFlight + 3) b.state = "done";
+      return;
+    }
+    // airborne: gravity, drag, and the HVAC's sideways push
+    const sp = Math.hypot(b.vx, b.vy, b.vz), k = C.drag * sp;
+    b.vx += (windAcc - k * b.vx) * dt;
+    b.vy += (-C.gravity - k * b.vy) * dt;
+    b.vz += (-k * b.vz) * dt;
+    const py = b.y;
+    b.x += b.vx * dt; b.y += b.vy * dt; b.z += b.vz * dt;
+    b.spin += b.spinV * dt;
+    if (b.y > b.apexY) { b.apexY = b.y; b.apexZ = b.z; }
+
+    this.rim(b, cart);
+    const dx = b.x - cart.x, dz = b.z - cart.z;
+    if (py >= K.rimY && b.y < K.rimY && Math.abs(dx) < K.halfWidth && Math.abs(dz) < K.halfDepth) {
+      const clean = b.rimHits === 0 && Math.abs(dx) <= C.cleanFraction * K.halfWidth && Math.abs(dz) <= C.cleanFraction * K.halfDepth;
+      b.outcome = b.rimHits > 0 ? "rimIn" : clean ? "clean" : "basket";
+      b.state = "in"; b.entryX = dx; b.entryZ = dz; b.ev |= EV.ENTER;
+      return;
+    }
+    this.cartWalls(b, cart);
+    this.room(b);
+    if (b.y <= r) {
+      b.y = r;
+      if (!b.outcome) { b.outcome = this.classify(b, cart); b.landX = b.x; b.landZ = b.z; }
+      b.ev |= EV.FLOOR; b.impact = -b.vy;
+      b.vy = -b.vy * C.floorRestitution;
+      b.vx *= 0.7; b.vz *= 0.55;                    // crumpled paper doesn't skid far
+      b.state = "floor";
+      return;
+    }
+    if (b.t > C.maxFlight && !b.outcome) { b.outcome = this.classify(b, cart); b.landX = b.x; b.landZ = b.z; b.state = "floor"; }
+  },
+  // the rim is four thin bars at rim height: sphere-vs-segment contacts
+  rim(b, cart) {
+    const K = CONFIG.cart, rad = CONFIG.memo.radius + K.rimRadius, y = K.rimY;
+    const x0 = cart.x - K.halfWidth, x1 = cart.x + K.halfWidth, z0 = cart.z - K.halfDepth, z1 = cart.z + K.halfDepth;
+    if (b.y > y + rad || b.y < y - rad || b.x < x0 - rad || b.x > x1 + rad || b.z < z0 - rad || b.z > z1 + rad) return;
+    this.contact(b, clamp(b.x, x0, x1), y, z0, rad);
+    this.contact(b, clamp(b.x, x0, x1), y, z1, rad);
+    this.contact(b, x0, y, clamp(b.z, z0, z1), rad);
+    this.contact(b, x1, y, clamp(b.z, z0, z1), rad);
+  },
+  contact(b, qx, qy, qz, rad) {
+    let nx = b.x - qx, ny = b.y - qy, nz = b.z - qz;
+    const d2 = nx * nx + ny * ny + nz * nz;
+    if (d2 >= rad * rad || d2 < 1e-12) return;
+    const d = Math.sqrt(d2); nx /= d; ny /= d; nz /= d;
+    b.x = qx + nx * rad; b.y = qy + ny * rad; b.z = qz + nz * rad;
+    const vn = b.vx * nx + b.vy * ny + b.vz * nz;
+    if (vn >= 0) return;
+    const e = CONFIG.rimRestitution, f = CONFIG.rimFriction;
+    const tx = b.vx - vn * nx, ty = b.vy - vn * ny, tz = b.vz - vn * nz;
+    b.vx = tx * f - e * vn * nx; b.vy = ty * f - e * vn * ny; b.vz = tz * f - e * vn * nz;
+    b.rimHits++;
+    if (-vn > 0.35) { b.ev |= EV.RIM; b.impact = -vn; }
+  },
+  // outer walls of the bin, below the rim
+  cartWalls(b, cart) {
+    const K = CONFIG.cart, r = CONFIG.memo.radius;
+    if (b.y >= K.rimY) return;
+    const x0 = cart.x - K.halfWidth, x1 = cart.x + K.halfWidth, z0 = cart.z - K.halfDepth, z1 = cart.z + K.halfDepth;
+    const qx = clamp(b.x, x0, x1), qz = clamp(b.z, z0, z1);
+    let nx = b.x - qx, nz = b.z - qz;
+    const d2 = nx * nx + nz * nz;
+    if (d2 >= r * r) return;
+    if (d2 < 1e-12) {                               // centre inside the footprint: leave by the nearest face
+      const dl = b.x - x0, dr = x1 - b.x, df = b.z - z0, db = z1 - b.z, m = Math.min(dl, dr, df, db);
+      nx = 0; nz = 0;
+      if (m === dl) { nx = -1; b.x = x0 - r; } else if (m === dr) { nx = 1; b.x = x1 + r; }
+      else if (m === df) { nz = -1; b.z = z0 - r; } else { nz = 1; b.z = z1 + r; }
+    } else {
+      const d = Math.sqrt(d2); nx /= d; nz /= d;
+      b.x = qx + nx * r; b.z = qz + nz * r;
+    }
+    const vn = b.vx * nx + b.vz * nz;
+    if (vn < 0) {
+      const e = CONFIG.wallRestitution;
+      b.vx -= (1 + e) * vn * nx; b.vz -= (1 + e) * vn * nz;
+      b.wallHit = true;
+      if (-vn > 0.4) { b.ev |= EV.WALL; b.impact = -vn; }
+    }
+  },
+  room(b) {
+    const R = CONFIG.room, r = CONFIG.memo.radius, lim = R.playHalfWidth - r;
+    if (b.x < -lim) { b.x = -lim; if (b.vx < 0) b.vx = -b.vx * 0.3; }
+    else if (b.x > lim) { b.x = lim; if (b.vx > 0) b.vx = -b.vx * 0.3; }
+    if (b.z > R.depth - r) { b.z = R.depth - r; if (b.vz > 0) b.vz = -b.vz * 0.3; }
+    if (b.y > R.ceiling - r) { b.y = R.ceiling - r; if (b.vy > 0) b.vy = -b.vy * 0.3; }
+  },
+  // name a miss by the axis it missed along most
+  classify(b, cart) {
+    const K = CONFIG.cart;
+    if (b.rimHits > 0) return "rimOut";
+    if (b.wallHit && b.z < cart.z) return "short";
+    const ex = Math.abs(b.x - cart.x) - K.halfWidth, ez = Math.abs(b.z - cart.z) - K.halfDepth;
+    if (ez >= ex) return b.z < cart.z ? "short" : "long";
+    return b.x < cart.x ? "left" : "right";
+  },
+};
+const windAccelOf = w => (w / 10) * CONFIG.windAccel;
+
+/* ════════════════════════════ VIEW ════════════════════════════════
+   A single perspective camera. fitView keeps the memo near the lower
+   edge, the cart in the upper part, and the arc's high point on screen. */
+const V = { w: 1, h: 1, dpr: 1, f: 800, cx: 0, hy: 0 };
+const P = { x: 0, y: 0, k: 0 };                  // scratch point, reused everywhere
+function project(x, y, z, o) {
+  const k = V.f / (z + CONFIG.eyeBehind);
+  o.x = V.cx + x * k; o.y = V.hy + (CONFIG.camHeight - y) * k; o.k = k;
+  return o;
+}
+function fitView() {
+  const C = CONFIG, m = C.memo, K = C.cart, e = C.eyeBehind, h = C.camHeight;
+  const short = V.h < 420;
+  const memoT = short ? 0.875 : 0.87, cartT = short ? 0.26 : 0.34;
+  const A = (h - m.y) / (m.z + e), B = (h - K.rimY) / (K.z + e), Ap = (C.apex.y - h) / (C.apex.z + e);
+  let f = (memoT - cartT) * V.h / (A - B);
+  f = Math.min(f, (memoT * V.h - 10) / (A + Ap));          // arc apex stays on screen
+  f = Math.min(f, (V.w / 2) * (K.z + e) / 1.85);           // keep ±1.85 m visible around the cart
+  V.f = Math.max(40, f); V.cx = V.w / 2; V.hy = memoT * V.h - A * V.f;
+}
+
+/* ── procedural memo shapes ── */
+const SHAPES = [];
+const RECT = new Float32Array([1.4,0, 1.4,-0.9, 1.4,-1.8, 0.7,-1.8, 0,-1.8, -0.7,-1.8, -1.4,-1.8, -1.4,-0.9, -1.4,0, -1.4,0.9, -1.4,1.8, -0.7,1.8, 0,1.8, 0.7,1.8, 1.4,1.8, 1.4,0.9]);
+function makeShapes() {
+  for (let s = 0; s < 6; s++) {
+    const pts = new Float32Array(32), creases = [];
+    for (let i = 0; i < 16; i++) { const a = -i / 16 * TAU + rand(-0.12, 0.12), r = rand(0.8, 1.04); pts[i * 2] = Math.cos(a) * r; pts[i * 2 + 1] = Math.sin(a) * r; }
+    for (let j = 0; j < 4; j++) {
+      const cr = new Float32Array(6); let x = rand(-0.5, 0.5), y = rand(-0.5, 0.5);
+      for (let q = 0; q < 3; q++) { cr[q * 2] = x; cr[q * 2 + 1] = y; x = clamp(x + rand(-0.45, 0.45), -0.7, 0.7); y = clamp(y + rand(-0.45, 0.45), -0.7, 0.7); }
+      creases.push(cr);
+    }
+    SHAPES.push({ pts, creases });
+  }
+}
+const PILE = new Float32Array([-0.45,-0.2, 0.3,0.25, -0.05,0.45, 0.55,-0.35, -0.6,0.5, 0.15,-0.5, 0.62,0.55, -0.3,-0.6, 0.05,0.05, -0.62,-0.05, 0.4,0.0, -0.2,0.25, 0.25,-0.15, -0.45,0.15, 0.6,0.2, -0.1,-0.35, 0.35,0.6, -0.55,-0.45]);
+const LEAVES = [ // stem angle (rad, 0 = up), stem length, leaf length, leaf tilt
+  [-0.55, 0.62, 0.22, -0.5], [0.5, 0.66, 0.22, 0.5], [-0.25, 0.92, 0.24, -0.3], [0.2, 0.96, 0.24, 0.35],
+  [-0.95, 0.45, 0.2, -0.7], [0.9, 0.48, 0.2, 0.75], [0.03, 1.06, 0.25, 0.05], [-0.42, 0.8, 0.2, -0.2], [0.38, 0.82, 0.2, 0.25],
+];
+const MOTES = [];
+function makeMotes() { for (let i = 0; i < 30; i++) MOTES.push({ x: rand(-2.2, 2.2), y: rand(0.3, 2.4), z: rand(2.2, 8.8), p: rand(0, TAU) }); }
+
+/* ════════════════════════════ RENDER ══════════════════════════════ */
+const canvas = $("view"), ctx = canvas.getContext("2d");
+const bg = document.createElement("canvas"), bgx = bg.getContext("2d");
+const fg = document.createElement("canvas"), fgx = fg.getContext("2d");
+let deskTopY = 0, FONT_AIM = "500 12px 'DM Mono', monospace";
+const DASH = [5, 6], NODASH = [];
+const SHADOW = (() => {
+  const c = document.createElement("canvas"); c.width = c.height = 128;
+  const g = c.getContext("2d"), gr = g.createRadialGradient(64, 64, 2, 64, 64, 63);
+  gr.addColorStop(0, "rgba(35,37,42,0.55)"); gr.addColorStop(0.5, "rgba(35,37,42,0.24)"); gr.addColorStop(1, "rgba(35,37,42,0)");
+  g.fillStyle = gr; g.fillRect(0, 0, 128, 128); return c;
+})();
+function shadowImg(c, x, y, w, h, a) { if (w < 1 || h < 0.5) return; c.globalAlpha = a; c.drawImage(SHADOW, x - w / 2, y - h / 2, w, h); c.globalAlpha = 1; }
+function shadowAt(c, x, surfY, z, height, alpha) {
+  project(x, surfY, z, P);
+  const r = CONFIG.memo.radius * P.k, hgt = Math.max(0, height - surfY - CONFIG.memo.radius);
+  const w = r * 2.7 * (1 + hgt * 0.3);
+  shadowImg(c, P.x, P.y, w, w * 0.34, alpha * clamp(0.55 - hgt * 0.14, 0.08, 0.55));
+}
+// flat-array polygon, for static layers
+function poly(c, pts, fill, stroke, lw) {
+  c.beginPath();
+  for (let i = 0; i < pts.length; i += 3) { project(pts[i], pts[i + 1], pts[i + 2], P); if (i) c.lineTo(P.x, P.y); else c.moveTo(P.x, P.y); }
+  c.closePath();
+  if (fill) { c.fillStyle = fill; c.fill(); }
+  if (stroke) { c.strokeStyle = stroke; c.lineWidth = lw || 1; c.stroke(); }
+}
+// allocation-free quad, for per-frame layers
+function path4(c, ax, ay, az, bx, by, bz, cx, cy, cz, dx, dy, dz) {
+  c.beginPath();
+  project(ax, ay, az, P); c.moveTo(P.x, P.y);
+  project(bx, by, bz, P); c.lineTo(P.x, P.y);
+  project(cx, cy, cz, P); c.lineTo(P.x, P.y);
+  project(dx, dy, dz, P); c.lineTo(P.x, P.y);
+  c.closePath();
+}
+function line3(c, x0, y0, z0, x1, y1, z1, stroke, lw) {
+  c.beginPath(); project(x0, y0, z0, P); c.moveTo(P.x, P.y); project(x1, y1, z1, P); c.lineTo(P.x, P.y);
+  c.strokeStyle = stroke; c.lineWidth = lw; c.stroke();
+}
+function box(c, x0, x1, y0, y1, z0, z1, col) {
+  if (y1 < CONFIG.camHeight) poly(c, [x0, y1, z0, x1, y1, z0, x1, y1, z1, x0, y1, z1], col.top, col.edge, 1);
+  if (x1 < 0) poly(c, [x1, y0, z0, x1, y0, z1, x1, y1, z1, x1, y1, z0], col.side, col.edge, 1);
+  if (x0 > 0) poly(c, [x0, y0, z0, x0, y0, z1, x0, y1, z1, x0, y1, z0], col.side, col.edge, 1);
+  poly(c, [x0, y0, z0, x1, y0, z0, x1, y1, z0, x0, y1, z0], col.front, col.edge, 1);
+}
+function planeText(c, text, x, y, z, sizeM, color, weight, align) {
+  project(x, y, z, P); const px = sizeM * P.k; if (px < 5) return;
+  c.font = (weight || 500) + " " + px.toFixed(1) + "px 'DM Mono', ui-monospace, monospace";
+  c.fillStyle = color; c.textAlign = align || "center"; c.textBaseline = "middle"; c.fillText(text, P.x, P.y);
+}
+function roundRectPath(c, x, y, w, h, r) {
+  r = Math.min(r, w / 2, h / 2);
+  c.beginPath(); c.moveTo(x + r, y); c.lineTo(x + w - r, y); c.quadraticCurveTo(x + w, y, x + w, y + r);
+  c.lineTo(x + w, y + h - r); c.quadraticCurveTo(x + w, y + h, x + w - r, y + h); c.lineTo(x + r, y + h);
+  c.quadraticCurveTo(x, y + h, x, y + h - r); c.lineTo(x, y + r); c.quadraticCurveTo(x, y, x + r, y); c.closePath();
+}
+
+function buildLayers() {
+  bg.width = fg.width = canvas.width; bg.height = fg.height = canvas.height;
+  for (const c of [bgx, fgx]) { c.setTransform(V.dpr, 0, 0, V.dpr, 0, 0); c.clearRect(0, 0, V.w, V.h); c.lineCap = "butt"; c.lineJoin = "miter"; }
+  drawRoom(bgx); drawProps(bgx); drawDesk(fgx);
+  project(0, CONFIG.desk.y, CONFIG.desk.zFar, P); deskTopY = Math.max(0, Math.floor(P.y) - 3);
+  FONT_AIM = "500 " + (V.w < 420 ? 11 : 12) + "px 'DM Mono', ui-monospace, monospace";
+}
+
+function drawRoom(c) {
+  const R = CONFIG.room, W = R.halfWidth, D = R.depth, Cl = R.ceiling, n = 0.05;
+  c.fillStyle = "#eeede8"; c.fillRect(0, 0, V.w, V.h);
+  poly(c, [-W, Cl, n, W, Cl, n, W, Cl, D, -W, Cl, D], "#efeee9");                   // drop ceiling
+  for (let x = -W; x <= W + 1e-6; x += 0.625) line3(c, x, Cl, n, x, Cl, D, "#dcdad2", 1);
+  for (let z = 0.6; z <= D; z += 0.625) line3(c, -W, Cl, z, W, Cl, z, "#dcdad2", 1);
+  for (let i = 0; i < 2; i++) {                                                    // light panels
+    const lz = 3.2 + i * 3.1;
+    poly(c, [-0.62, Cl - 0.004, lz, 0.62, Cl - 0.004, lz, 0.62, Cl - 0.004, lz + 0.62, -0.62, Cl - 0.004, lz + 0.62], "#fbfaf5", "#d0cec6", 1);
+  }
+  poly(c, [-W, 0, D, W, 0, D, W, Cl, D, -W, Cl, D], "#e6e4de");                     // back wall
+  poly(c, [-W, 0, n, -W, 0, D, -W, Cl, D, -W, Cl, n], "#dcd9d1");                   // side walls
+  poly(c, [W, 0, n, W, 0, D, W, Cl, D, W, Cl, n], "#dedbd3");
+  poly(c, [-W, 0, n, W, 0, n, W, 0, D, -W, 0, D], "#d1cdc3");                       // floor
+  for (let x = -W; x <= W + 1e-6; x += 0.5) line3(c, x, 0.001, n, x, 0.001, D, "#c6c1b6", 1);
+  for (let z = 0.5; z <= D; z += 0.5) line3(c, -W, 0.001, z, W, 0.001, z, "#c6c1b6", 1);
+  const zb = D - 0.002;                                                            // baseboards
+  poly(c, [-W, 0, zb, W, 0, zb, W, 0.1, zb, -W, 0.1, zb], "#9d9fa4");
+  poly(c, [-W + 0.002, 0, n, -W + 0.002, 0, D, -W + 0.002, 0.1, D, -W + 0.002, 0.1, n], "#a4a6aa");
+  poly(c, [W - 0.002, 0, n, W - 0.002, 0, D, W - 0.002, 0.1, D, W - 0.002, 0.1, n], "#a4a6aa");
+  line3(c, -W, 0, D, -W, Cl, D, "#cfccc3", 1); line3(c, W, 0, D, W, Cl, D, "#cfccc3", 1);
+  line3(c, -W, Cl, D, W, Cl, D, "#d6d3cb", 1);
+  // soft shading where walls meet floor and ceiling
+  project(0, 0, D, P); const yFloor = P.y; project(0, 0.55, D, P); const yAO = P.y;
+  let gr = c.createLinearGradient(0, yFloor, 0, yAO); gr.addColorStop(0, "rgba(60,58,52,0.09)"); gr.addColorStop(1, "rgba(60,58,52,0)");
+  poly(c, [-W, 0.1, D - 0.004, W, 0.1, D - 0.004, W, 0.55, D - 0.004, -W, 0.55, D - 0.004], gr);
+  project(0, Cl, D, P); const yTop = P.y; project(0, Cl - 0.5, D, P);
+  gr = c.createLinearGradient(0, yTop, 0, P.y); gr.addColorStop(0, "rgba(60,58,52,0.07)"); gr.addColorStop(1, "rgba(60,58,52,0)");
+  poly(c, [-W, Cl - 0.5, D - 0.004, W, Cl - 0.5, D - 0.004, W, Cl, D - 0.004, -W, Cl, D - 0.004], gr);
+  // light pools under the ceiling panels
+  for (let i = 0; i < 2; i++) {
+    const lz = 3.2 + i * 3.1 + 0.31;
+    project(0, 0, lz - 1.1, P); const yNear = P.y; project(0, 0, lz + 1.1, P); const yFar = P.y; project(0, 0, lz, P);
+    const rx = 1.35 * P.k, ry = Math.max(4, (yNear - yFar) / 2);
+    c.save(); c.translate(P.x, (yNear + yFar) / 2); c.scale(1, ry / rx);
+    const lg = c.createRadialGradient(0, 0, 0, 0, 0, rx);
+    lg.addColorStop(0, "rgba(255,254,247,0.42)"); lg.addColorStop(1, "rgba(255,254,247,0)");
+    c.fillStyle = lg; c.beginPath(); c.arc(0, 0, rx, 0, TAU); c.fill(); c.restore();
+  }
+  // left wall: records retention schedule, pinned above the cabinets
+  const xl = -W + 0.004;
+  poly(c, [xl, 1.55, 3.7, xl, 1.55, 5.1, xl, 2.3, 5.1, xl, 2.3, 3.7], "#f6f5f0", "#a7a9ad", 1.2);
+  poly(c, [xl + 0.001, 2.14, 3.78, xl + 0.001, 2.14, 5.02, xl + 0.001, 2.24, 5.02, xl + 0.001, 2.24, 3.78], "#3f6590");
+  for (let r = 0; r < 7; r++) { const y = 1.64 + r * 0.068; line3(c, xl + 0.001, y, 3.78, xl + 0.001, y, 5.02, "#cfcfca", 1); }
+  line3(c, xl + 0.001, 1.62, 4.3, xl + 0.001, 2.1, 4.3, "#cfcfca", 1);
+  line3(c, xl + 0.001, 1.62, 4.72, xl + 0.001, 2.1, 4.72, "#cfcfca", 1);
+  // right wall: supply-closet door and the thermostat everyone blames
+  const xr = W - 0.004;
+  poly(c, [xr, 0, 5.3, xr, 0, 6.3, xr, 2.14, 6.3, xr, 2.14, 5.3], "#9b9ea4");
+  poly(c, [xr - 0.001, 0, 5.36, xr - 0.001, 0, 6.24, xr - 0.001, 2.08, 6.24, xr - 0.001, 2.08, 5.36], "#c4c6ca", "#a4a7ac", 1);
+  poly(c, [xr - 0.002, 1.25, 5.5, xr - 0.002, 1.25, 5.64, xr - 0.002, 1.85, 5.64, xr - 0.002, 1.85, 5.5], "#a9bccd", "#8f9398", 1);
+  project(xr - 0.002, 1.02, 6.12, P); const hk = P.k;
+  line3(c, xr - 0.002, 1.02, 6.14, xr - 0.002, 1.02, 6.02, "#5d6168", Math.max(2, 0.025 * hk));
+  poly(c, [xr - 0.001, 2.2, 5.55, xr - 0.001, 2.2, 6.05, xr - 0.001, 2.32, 6.05, xr - 0.001, 2.32, 5.55], "#3a3d43");
+  poly(c, [xr - 0.001, 1.4, 6.75, xr - 0.001, 1.4, 6.9, xr - 0.001, 1.55, 6.9, xr - 0.001, 1.55, 6.75], "#f1f0ec", "#a4a7ac", 1);
+  poly(c, [xr - 0.002, 1.46, 6.78, xr - 0.002, 1.46, 6.87, xr - 0.002, 1.51, 6.87, xr - 0.002, 1.51, 6.78], "#8fa7a0");
+}
+
+function drawProps(c) {
+  const D = CONFIG.room.depth, zw = D - 0.003;
+  // HVAC supply register, back wall above the cart
+  poly(c, [-0.52, 2.1, zw, 0.52, 2.1, zw, 0.52, 2.44, zw, -0.52, 2.44, zw], "#f4f3ef", "#aeada7", 1.4);
+  for (let i = 1; i < 8; i++) { const y = 2.1 + i * 0.0425; line3(c, -0.47, y, zw, 0.47, y, zw, "#b9b8b2", 1); }
+  planeText(c, "HVAC ZONE 3B", 0, 2.52, zw, 0.05, "#8b8e95", 500);
+  // wall clock, frozen at 4:52
+  project(-1.32, 1.96, zw, P);
+  { const x = P.x, y = P.y, r = 0.16 * P.k;
+    c.beginPath(); c.arc(x, y, r, 0, TAU); c.fillStyle = "#fbfaf6"; c.fill(); c.lineWidth = Math.max(1.2, 0.022 * P.k); c.strokeStyle = "#6f727a"; c.stroke();
+    c.lineWidth = 1; c.strokeStyle = "#8b8e95";
+    for (let i = 0; i < 12; i++) { const a = i / 12 * TAU; c.beginPath(); c.moveTo(x + Math.cos(a) * r * 0.76, y + Math.sin(a) * r * 0.76); c.lineTo(x + Math.cos(a) * r * 0.88, y + Math.sin(a) * r * 0.88); c.stroke(); }
+    const ha = (4 + 52 / 60) / 12 * TAU - Math.PI / 2, ma = 52 / 60 * TAU - Math.PI / 2;
+    c.lineCap = "round"; c.strokeStyle = "#2f3238";
+    c.lineWidth = Math.max(1.4, 0.02 * P.k); c.beginPath(); c.moveTo(x, y); c.lineTo(x + Math.cos(ha) * r * 0.48, y + Math.sin(ha) * r * 0.48); c.stroke();
+    c.lineWidth = Math.max(1, 0.012 * P.k); c.beginPath(); c.moveTo(x, y); c.lineTo(x + Math.cos(ma) * r * 0.72, y + Math.sin(ma) * r * 0.72); c.stroke();
+    c.lineCap = "butt"; }
+  // room sign
+  poly(c, [0.95, 1.8, zw, 1.78, 1.8, zw, 1.78, 2.04, zw, 0.95, 2.04, zw], "#3a3d43");
+  planeText(c, "RECORDS ROOM B", 1.365, 1.945, zw, 0.062, "#f1efe9", 500);
+  planeText(c, "AUTHORIZED DISPOSAL ONLY", 1.365, 1.855, zw, 0.033, "#b7bac0", 400);
+  // bulletin board with notes
+  poly(c, [-1.18, 1.12, zw, -0.56, 1.12, zw, -0.56, 1.6, zw, -1.18, 1.6, zw], "#c9b28f", "#9b8b6c", 1.2);
+  const notes = [[-1.1, 1.36, "#e9d68d", 0.13], [-0.94, 1.22, "#bcd0e1", 0.12], [-0.78, 1.4, "#ead0cb", 0.12], [-0.72, 1.2, "#e9d68d", 0.11]];
+  for (let i = 0; i < notes.length; i++) { const nt = notes[i]; poly(c, [nt[0], nt[1], zw - 0.002, nt[0] + nt[3], nt[1], zw - 0.002, nt[0] + nt[3], nt[1] + nt[3], zw - 0.002, nt[0], nt[1] + nt[3], zw - 0.002], nt[2]); }
+  planeText(c, "DO NOT", -1.035, 1.44, zw - 0.003, 0.022, "#6f6a5c", 500);
+  // archive boxes, back-left corner
+  const kraft = { front: "#c8b38e", side: "#b39e7a", top: "#d6c4a1", edge: "#9d8866" };
+  const labels = ["FY 2019", "LEGAL HOLD", "MISC.", "Q3 ??", "KEEP"];
+  const stacks = [[-2.38, -1.74, 8.3, 3], [-1.68, -1.12, 8.42, 2]];
+  let li = 0;
+  for (let s = 0; s < stacks.length; s++) {
+    const st = stacks[s];
+    for (let j = 0; j < st[3]; j++) {
+      const y0 = j * 0.32, y1 = y0 + 0.31, x0 = st[0], x1 = st[1], z0 = st[2];
+      box(c, x0, x1, y0, y1, z0, 8.95, kraft);
+      const mx = (x0 + x1) / 2;
+      poly(c, [mx - 0.14, y0 + 0.1, z0 - 0.002, mx + 0.14, y0 + 0.1, z0 - 0.002, mx + 0.14, y0 + 0.2, z0 - 0.002, mx - 0.14, y0 + 0.2, z0 - 0.002], "#f3f0e7", "#b9ab8e", 1);
+      planeText(c, labels[li++ % labels.length], mx, y0 + 0.15, z0 - 0.004, 0.036, "#5b5548", 500);
+      poly(c, [mx - 0.06, y1 - 0.07, z0 - 0.002, mx + 0.06, y1 - 0.07, z0 - 0.002, mx + 0.06, y1 - 0.04, z0 - 0.002, mx - 0.06, y1 - 0.04, z0 - 0.002], "#7f6d52");
+    }
+  }
+  // filing cabinets along the left wall (drawer faces point into the room)
+  const steel = { front: "#b1b5bb", side: "#c4c7cc", top: "#d2d5d9", edge: "#979ba2" };
+  for (let i = 3; i >= 0; i--) {
+    const z0 = 3.4 + i * 0.56, z1 = z0 + 0.52, x1 = -1.95;
+    box(c, -2.5, x1, 0, 1.32, z0, z1, steel);
+    for (let d = 1; d < 4; d++) line3(c, x1, d * 0.33, z0 + 0.02, x1, d * 0.33, z1 - 0.02, "#9a9ea5", 1);
+    for (let d = 0; d < 4; d++) {
+      const top = (d + 1) * 0.33, mz = (z0 + z1) / 2;
+      project(x1, top - 0.1, mz, P); const lw = Math.max(1.5, 0.02 * P.k);
+      line3(c, x1, top - 0.1, mz - 0.08, x1, top - 0.1, mz + 0.08, "#6d7178", lw);
+      poly(c, [x1, top - 0.05, mz - 0.05, x1, top - 0.05, mz + 0.05, x1, top - 0.02, mz + 0.05, x1, top - 0.02, mz - 0.05], "#eceae4");
+    }
+    if (i === 1) poly(c, [x1 + 0.002, 0.9, z0 + 0.14, x1 + 0.002, 0.9, z0 + 0.26, x1 + 0.002, 1.02, z0 + 0.26, x1 + 0.002, 1.02, z0 + 0.14], "#e9d68d");
+  }
+  // water cooler and plant pot, back-right
+  box(c, 1.75, 2.12, 0, 0.98, 8.5, 8.86, { front: "#e3e3df", side: "#d3d3ce", top: "#ecece8", edge: "#b5b5af" });
+  poly(c, [1.86, 0.72, 8.498, 2.01, 0.72, 8.498, 2.01, 0.82, 8.498, 1.86, 0.82, 8.498], "#5b6068");
+  project(1.9, 0.78, 8.496, P); c.fillStyle = "#6f8fae"; c.beginPath(); c.arc(P.x, P.y, Math.max(1.5, 0.014 * P.k), 0, TAU); c.fill();
+  project(1.97, 0.78, 8.496, P); c.fillStyle = "#a76b5f"; c.beginPath(); c.arc(P.x, P.y, Math.max(1.5, 0.014 * P.k), 0, TAU); c.fill();
+  box(c, 1.8, 2.07, 0.98, 1.4, 8.55, 8.81, { front: "rgba(160,190,216,0.9)", side: "rgba(140,172,202,0.9)", top: "#9cb9d3", edge: "#7d9dbb" });
+  line3(c, 1.84, 1.03, 8.548, 1.84, 1.34, 8.548, "rgba(255,255,255,0.7)", Math.max(1, 0.01 * P.k));
+  box(c, 1.9, 1.97, 1.4, 1.45, 8.64, 8.72, { front: "#5f7fa0", side: "#56769a", top: "#6d8cab", edge: "#4a6788" });
+  box(c, 1.18, 1.48, 0, 0.34, 8.5, 8.78, { front: "#8b8f95", side: "#7b7f86", top: "#5a4a3c", edge: "#6c7077" });
+  // desk chair parked on the right
+  const chX = 1.55, chZ = 4.75;
+  project(chX + 0.3, 0, chZ - 0.27, P);
+  if (P.x < V.w - 2) {                              // skip it rather than show a sliver at the edge
+  project(chX, 0.02, chZ, P);
+  { const cxp = P.x, cyp = P.y; c.strokeStyle = "#34373d"; c.lineWidth = Math.max(1.5, 0.025 * P.k); c.lineCap = "round";
+    for (let i = 0; i < 5; i++) { const a = i / 5 * TAU + 0.3; project(chX + Math.cos(a) * 0.27, 0.02, chZ + Math.sin(a) * 0.27, P); c.beginPath(); c.moveTo(cxp, cyp); c.lineTo(P.x, P.y); c.stroke(); }
+    c.lineCap = "butt"; }
+  box(c, chX - 0.21, chX + 0.21, 0.6, 1.02, chZ + 0.2, chZ + 0.27, { front: "#4a4d54", side: "#3f4249", top: "#575a62", edge: "#34373d" });
+  line3(c, chX, 0.05, chZ, chX, 0.45, chZ, "#2f3238", Math.max(2, 0.03 * P.k));
+  line3(c, chX, 0.5, chZ + 0.22, chX, 0.62, chZ + 0.22, "#2f3238", Math.max(2, 0.025 * P.k));
+  box(c, chX - 0.23, chX + 0.23, 0.45, 0.52, chZ - 0.22, chZ + 0.22, { front: "#474a51", side: "#3e4148", top: "#565962", edge: "#34373d" });
+  }
+  const vr = Math.hypot(V.w, V.h) * 0.62, vg = c.createRadialGradient(V.w / 2, V.h * 0.45, vr * 0.45, V.w / 2, V.h * 0.45, vr);
+  vg.addColorStop(0, "rgba(35,37,42,0)"); vg.addColorStop(1, "rgba(35,37,42,0.10)");
+  c.fillStyle = vg; c.fillRect(0, 0, V.w, V.h);
+}
+
+function drawDesk(c) {
+  const d = CONFIG.desk, W = d.halfWidth;
+  project(0, d.y, d.zFar, P); const yFar = P.y; project(0, d.y, d.zNear, P); const yNear = P.y;
+  const gr = c.createLinearGradient(0, yFar, 0, Math.min(yNear, V.h));
+  gr.addColorStop(0, "#dcd7cc"); gr.addColorStop(1, "#c4beb1");
+  poly(c, [-W, d.y, d.zNear, W, d.y, d.zNear, W, d.y, d.zFar, -W, d.y, d.zFar], gr);
+  line3(c, -W, d.y, d.zFar, W, d.y, d.zFar, "#85878c", 2);
+  line3(c, -W, d.y, d.zFar - 0.012, W, d.y, d.zFar - 0.012, "#ebe7de", 1);
+  // sticky pad, pen, a coffee ring
+  poly(c, [-0.78, d.y + 0.002, 0.2, -0.56, d.y + 0.002, 0.2, -0.56, d.y + 0.002, 0.4, -0.78, d.y + 0.002, 0.4], "#e8d68f", "#c9b86f", 1);
+  line3(c, -0.75, d.y + 0.003, 0.33, -0.6, d.y + 0.003, 0.33, "rgba(120,110,70,0.35)", 1);
+  line3(c, -0.75, d.y + 0.003, 0.29, -0.64, d.y + 0.003, 0.29, "rgba(120,110,70,0.35)", 1);
+  project(0.5, d.y, 0.2, P); const pw = Math.max(2, 0.012 * P.k);
+  c.lineCap = "round"; line3(c, 0.5, d.y + 0.006, 0.18, 0.7, d.y + 0.006, 0.4, "#2f3238", pw); line3(c, 0.5, d.y + 0.006, 0.18, 0.53, d.y + 0.006, 0.213, "#9b4437", pw); c.lineCap = "butt";
+  project(0.72, d.y, 0.56, P); const ex = P.x, ey = P.y, rx = 0.055 * P.k;
+  project(0.72, d.y, 0.61, P); const ry = Math.max(1, Math.abs(ey - P.y));
+  c.beginPath(); c.ellipse(ex, ey, rx, ry, 0, 0, TAU); c.strokeStyle = "rgba(118,86,58,0.22)"; c.lineWidth = 2; c.stroke();
+}
+
+function drawRibbons(c, t) {
+  const zw = CONFIG.room.depth - 0.006, w = clamp(G.wind / 10, -1, 1), a = Math.abs(w);
+  project(0, 2.1, zw, P); const k = P.k, seg = 0.4 / 6 * k;
+  c.lineCap = "round"; c.lineJoin = "round"; c.strokeStyle = "#bf8a36"; c.lineWidth = Math.max(1.5, 0.026 * k);
+  for (let i = 0; i < 5; i++) {
+    project(-0.4 + i * 0.2, 2.1, zw, P);
+    let x = P.x, y = P.y;
+    c.beginPath(); c.moveTo(x, y);
+    for (let s = 1; s <= 6; s++) {
+      const frac = s / 6;
+      const flutter = RM ? 0 : Math.sin(t * (4.5 + 8 * a) + i * 1.3 + s * 0.85) * (0.05 + 0.24 * a) * frac;
+      const ang = w * 1.25 * Math.sqrt(frac) + flutter;
+      x += Math.sin(ang) * seg; y += Math.cos(ang) * seg;
+      c.lineTo(x, y);
+    }
+    c.stroke();
+  }
+  c.lineCap = "butt"; c.lineJoin = "miter";
+}
+function drawLanyard(c, t) {
+  const zw = CONFIG.room.depth - 0.006, w = clamp(G.wind / 10, -1, 1);
+  project(0.6, 1.64, zw, P); const k = P.k, hx = P.x, hy = P.y;
+  const swing = w * 0.5 + (RM ? 0 : Math.sin(t * 1.9) * 0.05 * (0.3 + Math.abs(w)));
+  const L = 0.24 * k, bw = 0.12 * k, bh = 0.16 * k;
+  c.save(); c.translate(hx, hy); c.rotate(-swing);
+  c.strokeStyle = "#3f6590"; c.lineWidth = Math.max(1.2, 0.013 * k);
+  c.beginPath(); c.moveTo(0, 0); c.lineTo(-bw * 0.3, L - 0.02 * k); c.lineTo(0, L); c.lineTo(bw * 0.3, L - 0.02 * k); c.closePath(); c.stroke();
+  c.fillStyle = "#8b8e95"; c.fillRect(-bw * 0.12, L - 0.012 * k, bw * 0.24, 0.03 * k);
+  c.fillStyle = "#fbfbf9"; c.fillRect(-bw / 2, L, bw, bh); c.strokeStyle = "#9a9da3"; c.lineWidth = 1; c.strokeRect(-bw / 2, L, bw, bh);
+  c.fillStyle = "#c7ccd3"; c.fillRect(-bw * 0.32, L + bh * 0.18, bw * 0.34, bh * 0.36);
+  c.fillStyle = "#3f6590"; c.fillRect(-bw / 2, L + bh * 0.76, bw, bh * 0.12);
+  c.restore();
+  c.fillStyle = "#6f727a"; c.beginPath(); c.arc(hx, hy, Math.max(1.5, 0.012 * k), 0, TAU); c.fill();
+}
+function drawPlant(c, t) {
+  const w = clamp(G.wind / 10, -1, 1), aw = Math.abs(w);
+  project(1.33, 0.34, 8.64, P); const k = P.k, bx = P.x, by = P.y;
+  c.lineWidth = Math.max(1, 0.012 * k);
+  for (let i = 0; i < LEAVES.length; i++) {
+    const L = LEAVES[i];
+    const sway = w * 0.3 * (0.4 + L[1]) + (RM ? 0 : Math.sin(t * (2.1 + aw * 3) + i * 1.7) * (0.025 + 0.1 * aw));
+    const ang = L[0] + sway, tx = bx + Math.sin(ang) * L[1] * k, ty = by - Math.cos(ang) * L[1] * k;
+    c.strokeStyle = "#5d7858"; c.beginPath(); c.moveTo(bx, by); c.quadraticCurveTo(bx + Math.sin(ang * 0.5) * L[1] * k * 0.5, by - L[1] * k * 0.55, tx, ty); c.stroke();
+    const rot = ang - Math.PI / 2 + L[3] * 0.6, ll = L[2] * k;
+    c.fillStyle = i % 2 ? "#6f8b69" : "#7c9775";
+    c.beginPath(); c.ellipse(tx + Math.cos(rot) * ll * 0.45, ty + Math.sin(rot) * ll * 0.45, ll * 0.5, ll * 0.17, rot, 0, TAU); c.fill();
+  }
+}
+function drawDust(c) {
+  if (RM) return;
+  c.fillStyle = "rgba(118,122,130,0.32)";
+  for (let i = 0; i < MOTES.length; i++) { const m = MOTES[i]; project(m.x, m.y, m.z, P); const s = Math.max(1, 0.011 * P.k); c.fillRect(P.x, P.y, s, s); }
+}
+function updateMotes(dt) {
+  if (RM) return;
+  const v = G.wind / 10 * 0.9, t = G.time;
+  for (let i = 0; i < MOTES.length; i++) {
+    const m = MOTES[i];
+    m.x += (v + 0.04 * Math.sin(t * 0.5 + m.p)) * dt; m.y += 0.03 * Math.sin(t * 0.7 + m.p) * dt;
+    if (m.x > 2.3) m.x = -2.3; else if (m.x < -2.3) m.x = 2.3;
+  }
+}
+
+function memoPath(c, pts) { c.beginPath(); c.moveTo(pts[0], pts[1]); for (let i = 2; i < pts.length; i += 2) c.lineTo(pts[i], pts[i + 1]); c.closePath(); }
+function drawMemoShape(c, x, y, r, rot, si, alpha) {
+  if (r < 0.6) return;
+  const sh = SHAPES[si];
+  c.save(); c.translate(x, y); c.scale(r, r); if (alpha < 1) c.globalAlpha = alpha;
+  c.rotate(rot); memoPath(c, sh.pts); c.fillStyle = "#d4d0c3"; c.fill();
+  c.save(); c.clip();
+  c.rotate(-rot); c.beginPath(); c.arc(-0.24, -0.28, 0.84, 0, TAU); c.fillStyle = "#f4f2eb"; c.fill(); c.rotate(rot);
+  c.lineWidth = 0.075; c.strokeStyle = "#b3ae9f"; c.lineJoin = "round";
+  for (let j = 0; j < sh.creases.length; j++) { const cr = sh.creases[j]; c.beginPath(); c.moveTo(cr[0], cr[1]); c.lineTo(cr[2], cr[3]); c.lineTo(cr[4], cr[5]); c.stroke(); }
+  c.restore();
+  memoPath(c, sh.pts); c.lineWidth = 0.065; c.strokeStyle = "#999486"; c.stroke();
+  c.restore();
+}
+function drawCrumple(c, t) {
+  const m = CONFIG.memo, d = CONFIG.desk, e = easeOut(clamp(t, 0, 1));
+  project(m.x, d.y + 0.001, m.z, P);
+  shadowImg(c, P.x, P.y, m.radius * lerp(3.6, 2.7, e) * P.k, m.radius * lerp(0.7, 0.92, e) * P.k, 0.4);
+  project(m.x, lerp(d.y + 0.14, m.y, e), m.z, P);
+  const r = m.radius * P.k, sh = SHAPES[G.memo.shape].pts;
+  c.save(); c.translate(P.x, P.y); c.rotate(lerp(-0.04, 0.4, e)); c.scale(r, r);
+  c.beginPath();
+  for (let i = 0; i < 16; i++) { const px = lerp(RECT[i * 2], sh[i * 2], e), py = lerp(RECT[i * 2 + 1], sh[i * 2 + 1], e); if (i) c.lineTo(px, py); else c.moveTo(px, py); }
+  c.closePath(); c.fillStyle = e < 0.5 ? "#f7f5ef" : "#eeebe3"; c.fill(); c.lineWidth = 0.05; c.strokeStyle = "#a7a396"; c.stroke();
+  if (e < 0.55) {
+    c.globalAlpha = 1 - e / 0.55;
+    c.fillStyle = "#c3c0b8";
+    for (let i = 0; i < 6; i++) c.fillRect(-1.05, -1.3 + i * 0.34, i === 0 ? 1.1 : 2.05 - (i % 3) * 0.4, 0.1);
+    c.strokeStyle = "#9b4437"; c.lineWidth = 0.08; c.strokeRect(0.05, 0.8, 1.1, 0.46);
+    c.fillStyle = "#9b4437"; c.fillRect(0.2, 0.98, 0.8, 0.1);
+  }
+  c.restore();
+}
+
+function wheel(c, wx, wz) {
+  project(wx, 0.075 + G.cart.jolt * 0.2, wz, P); const r = 0.075 * P.k;
+  c.fillStyle = "#26292e"; roundRectPath(c, P.x - r * 0.42, P.y - r, r * 0.84, r * 2, r * 0.35); c.fill();
+  c.fillStyle = "#6c7077"; c.beginPath(); c.arc(P.x, P.y, r * 0.22, 0, TAU); c.fill();
+}
+function drawCartShadow(c) {
+  const K = CONFIG.cart, s = G.cart, x = s.x + s.wob;
+  project(x, 0, s.z - K.halfDepth, P); const yf = P.y, kf = P.k, cx = P.x;
+  project(x, 0, s.z + K.halfDepth, P); const yb = P.y;
+  shadowImg(c, cx, (yf + yb) / 2 + 1, K.halfWidth * 2 * kf * 1.3, (yf - yb) * 1.6 + 8, 0.45);
+}
+function drawCartPart(c, part) {
+  const K = CONFIG.cart, s = G.cart;
+  const x = s.x + s.wob, z = s.z, hw = K.halfWidth, hd = K.halfDepth;
+  const rim = K.rimY + s.jolt, base = K.baseY + s.jolt;
+  const x0 = x - hw, x1 = x + hw, z0 = z - hd, z1 = z + hd;
+  project(x, rim, z0, P); const k = P.k;
+  if (part === 0) {
+    wheel(c, x0 + 0.08, z1 - 0.07); wheel(c, x1 - 0.08, z1 - 0.07);
+    c.strokeStyle = "#2b4866"; c.lineWidth = Math.max(1.5, 0.03 * k); c.lineCap = "round"; c.lineJoin = "round";
+    c.beginPath();
+    project(x0 + 0.06, rim, z1 + 0.02, P); c.moveTo(P.x, P.y);
+    project(x0 + 0.06, rim + 0.14, z1 + 0.03, P); c.lineTo(P.x, P.y);
+    project(x1 - 0.06, rim + 0.14, z1 + 0.03, P); c.lineTo(P.x, P.y);
+    project(x1 - 0.06, rim, z1 + 0.02, P); c.lineTo(P.x, P.y);
+    c.stroke(); c.lineCap = "butt";
+    path4(c, x0, rim, z0, x1, rim, z0, x1, rim, z1, x0, rim, z1); c.fillStyle = "#232d37"; c.fill();
+    c.save(); c.clip();
+    const py = s.pileY + s.jolt;
+    path4(c, x0, py, z1, x1, py, z1, x1, rim, z1, x0, rim, z1); c.fillStyle = "#2f3c49"; c.fill();
+    if (s.fill > 0) {
+      path4(c, x0, py, z0, x1, py, z0, x1, py, z1, x0, py, z1); c.fillStyle = "#cfcabd"; c.fill();
+      const n = Math.min(s.fill * 2, PILE.length / 2);
+      c.lineWidth = 1; c.strokeStyle = "#aaa596";
+      for (let i = 0; i < n; i++) {
+        project(x + PILE[i * 2] * hw, py + 0.03, z + PILE[i * 2 + 1] * hd, P);
+        c.beginPath(); c.arc(P.x, P.y, 0.065 * P.k, 0, TAU); c.fillStyle = i % 2 ? "#e9e6dd" : "#f2f0e9"; c.fill(); c.stroke();
+      }
+    }
+    c.restore();
+    return;
+  }
+  if (x0 > 0) { path4(c, x0, base, z0, x0, base, z1, x0, rim, z1, x0, rim, z0); c.fillStyle = "#34577b"; c.fill(); }
+  else if (x1 < 0) { path4(c, x1, base, z0, x1, base, z1, x1, rim, z1, x1, rim, z0); c.fillStyle = "#34577b"; c.fill(); }
+  path4(c, x0, base, z0, x1, base, z0, x1, rim, z0, x0, rim, z0); c.fillStyle = "#3f6590"; c.fill();
+  path4(c, x0, rim, z0, x1, rim, z0, x1, rim - 0.05, z0, x0, rim - 0.05, z0); c.fillStyle = "#36597f"; c.fill();
+  line3(c, x0 + 0.03, base + 0.11, z0, x1 - 0.03, base + 0.11, z0, "#35587d", Math.max(1, 0.012 * k));
+  const ly0 = base + (rim - base) * 0.4, ly1 = base + (rim - base) * 0.72, lx = hw * 0.62;
+  path4(c, x - lx, ly0, z0, x + lx, ly0, z0, x + lx, ly1, z0, x - lx, ly1, z0); c.fillStyle = "#e4eaf1"; c.fill();
+  project(x, (ly0 + ly1) / 2, z0, P);
+  const fs = 0.056 * P.k;
+  if (fs >= 6) {
+    c.fillStyle = "#2f4f73"; c.textAlign = "center"; c.textBaseline = "middle";
+    c.font = "500 " + fs.toFixed(1) + "px 'DM Mono', ui-monospace, monospace"; c.fillText("RECYCLING", P.x, P.y - fs * 0.42);
+    c.font = "400 " + (fs * 0.62).toFixed(1) + "px 'DM Mono', ui-monospace, monospace"; c.fillText("PAPER ONLY", P.x, P.y + fs * 0.62);
+  } else {
+    c.fillStyle = "#9fb3c8"; c.fillRect(P.x - lx * P.k * 0.6, P.y - 1, lx * P.k * 1.2, 2);
+  }
+  path4(c, x0, rim, z0, x1, rim, z0, x1, rim, z1, x0, rim, z1); c.strokeStyle = "#2b4866"; c.lineWidth = Math.max(1.5, 0.026 * k); c.lineJoin = "round"; c.stroke(); c.lineJoin = "miter";
+  wheel(c, x0 + 0.08, z0 + 0.07); wheel(c, x1 - 0.08, z0 + 0.07);
+}
+
+function drawBall(c, b, alpha) {
+  if (b.trailN && b.state === "air" && !RM) {
+    for (let i = 0; i < b.trailN; i++) {
+      const q = ((b.trailHead - b.trailN + i + 6) % 6) * 3, f = (i + 1) / (b.trailN + 1);
+      project(b.trail[q], b.trail[q + 1], b.trail[q + 2], P);
+      c.globalAlpha = 0.05 + 0.13 * f; c.fillStyle = "#6f737b";
+      c.beginPath(); c.arc(P.x, P.y, Math.max(1, CONFIG.memo.radius * P.k * (0.25 + 0.4 * f)), 0, TAU); c.fill();
+    }
+    c.globalAlpha = 1;
+  }
+  project(b.x, b.y, b.z, P); drawMemoShape(c, P.x, P.y, CONFIG.memo.radius * P.k, b.spin, b.shape, alpha);
+}
+function overDesk(b) { return b.state === "air" && b.z < CONFIG.desk.zFar + 0.05; }
+function behindCart(x, y, z, frontZ) { return z > frontZ && y < CONFIG.cart.rimY; }
+function drawParticles(c) {
+  for (let i = 0; i < G.parts.length; i++) {
+    const p = G.parts[i]; if (!p.on) continue;
+    project(p.x, p.y, p.z, P); const s = Math.max(1.5, p.s * P.k);
+    c.save(); c.translate(P.x, P.y); c.rotate(p.rot); c.globalAlpha = clamp(p.life / p.max * 1.6, 0, 1);
+    c.fillStyle = "#f1eee6"; c.fillRect(-s / 2, -s * 0.35, s, s * 0.7); c.strokeStyle = "#aba697"; c.lineWidth = 1; c.strokeRect(-s / 2, -s * 0.35, s, s * 0.7);
+    c.restore();
+  }
+}
+function drawDeskMemo(c) {
+  const md = G.mode;
+  const show = md === "ready" || md === "aiming" || md === "intro" || md === "review" || (md === "paused" && G.resumeTo === "ready");
+  if (!show) return;
+  if (G.memo.t < 1) { drawCrumple(c, G.memo.t); return; }
+  const m = CONFIG.memo;
+  project(m.x, CONFIG.desk.y + 0.001, m.z, P);
+  shadowImg(c, P.x, P.y, m.radius * 2.7 * P.k, m.radius * 0.92 * P.k, 0.45);
+  project(m.x, m.y, m.z, P);
+  let ox = 0, oy = 0;
+  if (md === "aiming") {
+    const dx = drag.x - drag.x0, dy = drag.y - drag.y0, d = Math.hypot(dx, dy);
+    if (d > 0.5) { const pull = Math.min(d, 28) * 0.5; ox = dx / d * pull; oy = dy / d * pull; }
+  }
+  drawMemoShape(c, P.x + ox, P.y + oy, m.radius * P.k, 0.4, G.memo.shape, 1);
+}
+function drawAim(c) {
+  const m = CONFIG.memo;
+  if (G.mode === "aiming") {
+    const g = readGesture(false); if (g.forward < 4) return;
+    project(m.x, m.y, m.z, P);
+    c.setLineDash(DASH); c.strokeStyle = "rgba(63,101,144,0.7)"; c.lineWidth = 2;
+    c.beginPath(); c.moveTo(P.x, P.y); c.lineTo(drag.x, drag.y); c.stroke(); c.setLineDash(NODASH);
+    c.beginPath(); c.arc(drag.x, drag.y, 11, 0, TAU); c.strokeStyle = "rgba(63,101,144,0.55)"; c.lineWidth = 1.5; c.stroke();
+    return;
+  }
+  if (G.mode !== "ready" || !G.keyAim || G.memo.t < 1) return;
+  project(m.x, m.y, m.z, P); const mx = P.x, my = P.y, rpx = m.radius * P.k;
+  const yaw = G.aim * DEG, tz = G.cart.z, tx = m.x + Math.tan(yaw) * (tz - m.z);
+  project(tx, CONFIG.cart.rimY, tz, P);
+  let vx = P.x - mx, vy = P.y - my; const d = Math.hypot(vx, vy) || 1; vx /= d; vy /= d;
+  const len = rpx * 1.7 + G.power * Math.min(d, V.h * 0.55) * 0.8, ex = mx + vx * len, ey = my + vy * len;
+  c.setLineDash(DASH); c.strokeStyle = "rgba(63,101,144,0.8)"; c.lineWidth = 2;
+  c.beginPath(); c.moveTo(mx + vx * rpx * 1.35, my + vy * rpx * 1.35); c.lineTo(ex, ey); c.stroke(); c.setLineDash(NODASH);
+  c.fillStyle = "rgba(63,101,144,0.9)"; c.beginPath(); c.moveTo(ex + vx * 8, ey + vy * 8); c.lineTo(ex - vy * 5, ey + vx * 5); c.lineTo(ex + vy * 5, ey - vx * 5); c.closePath(); c.fill();
+  const rr = rpx * 1.55;
+  c.lineWidth = 4; c.lineCap = "round";
+  c.beginPath(); c.arc(mx, my, rr, 0, TAU); c.strokeStyle = "rgba(35,37,42,0.12)"; c.stroke();
+  if (G.power > 0) { c.beginPath(); c.arc(mx, my, rr, -Math.PI / 2, -Math.PI / 2 + TAU * G.power); c.strokeStyle = "#3f6590"; c.stroke(); }
+  c.lineCap = "butt";
+  const aimTxt = G.aim === 0 ? "0°" : Math.abs(G.aim) + "° " + (G.aim < 0 ? "left" : "right");
+  c.font = FONT_AIM; c.textBaseline = "middle"; c.textAlign = "left"; c.fillStyle = "#3d4046";
+  c.fillText(aimTxt, mx + rr + 10, my - 8); c.fillText(Math.round(G.power * 100) + "% power", mx + rr + 10, my + 8);
+}
+function drawStamp(c) {
+  const s = G.stamp, life = CONFIG.timing.stamp; if (s.t >= life) return;
+  const u = s.t / life, a = u < 0.72 ? 1 : 1 - (u - 0.72) / 0.28;
+  project(s.x, s.y, s.z, P);
+  const fs = clamp(V.w * 0.021, 13, 18);
+  c.font = "500 " + fs + "px 'DM Mono', ui-monospace, monospace";
+  const tw = c.measureText(s.text).width, pw = tw + fs * 1.3, ph = fs * 1.9;
+  const sx = clamp(P.x, pw / 2 + 10, V.w - pw / 2 - 10), sy = clamp(P.y, ph + 8, V.h - ph * 2);
+  const sc = RM ? 1 : 1 + 0.4 * Math.max(0, 1 - s.t / 0.11);
+  const col = TONE[s.tone];
+  c.save(); c.globalAlpha = a; c.translate(sx, sy); c.rotate(-0.07); c.scale(sc, sc);
+  c.fillStyle = "rgba(251,251,249,0.78)"; roundRectPath(c, -pw / 2, -ph / 2, pw, ph, 4); c.fill();
+  c.strokeStyle = col; c.lineWidth = 2.4; c.stroke();
+  roundRectPath(c, -pw / 2 + 4, -ph / 2 + 4, pw - 8, ph - 8, 2); c.lineWidth = 1; c.stroke();
+  c.fillStyle = col; c.textAlign = "center"; c.textBaseline = "middle"; c.fillText(s.text, 0, 1);
+  if (s.pts) {
+    c.rotate(0.07); c.font = "500 " + (fs * 1.05).toFixed(1) + "px 'DM Mono', ui-monospace, monospace"; c.fillStyle = "#23252a";
+    c.fillText(s.pts, 0, ph / 2 + fs * 1.05 - (RM ? 0 : Math.min(s.t, 0.9) * 16));
+  }
+  c.restore();
+}
+
+function render() {
+  const c = ctx;
+  c.setTransform(1, 0, 0, 1, 0, 0);
+  c.drawImage(bg, 0, 0);
+  c.setTransform(V.dpr, 0, 0, V.dpr, 0, 0);
+  const t = G.time, K = CONFIG.cart, frontZ = G.cart.z - K.halfDepth + 0.04;
+  drawRibbons(c, t); drawLanyard(c, t); drawPlant(c, t); drawDust(c);
+  drawCartShadow(c);
+  const L = G.litter, B = G.balls;
+  for (let i = 0; i < L.length; i++) shadowAt(c, L[i].x, 0, L[i].z, CONFIG.memo.radius, L[i].a);
+  for (let i = 0; i < B.length; i++) if (!overDesk(B[i]) && B[i].state !== "in") shadowAt(c, B[i].x, 0, B[i].z, B[i].y, 1);
+  const r = CONFIG.memo.radius;
+  for (let i = 0; i < L.length; i++) if (behindCart(L[i].x, r, L[i].z, frontZ)) { project(L[i].x, r, L[i].z, P); drawMemoShape(c, P.x, P.y, r * P.k, L[i].rot, L[i].shape, L[i].a); }
+  for (let i = 0; i < B.length; i++) { const b = B[i]; if (b.state !== "in" && !overDesk(b) && behindCart(b.x, b.y, b.z, frontZ)) drawBall(c, b, 1); }
+  drawCartPart(c, 0);
+  for (let i = 0; i < B.length; i++) if (B[i].state === "in") drawBall(c, B[i], 1);
+  drawCartPart(c, 1);
+  for (let i = 0; i < L.length; i++) if (!behindCart(L[i].x, r, L[i].z, frontZ)) { project(L[i].x, r, L[i].z, P); drawMemoShape(c, P.x, P.y, r * P.k, L[i].rot, L[i].shape, L[i].a); }
+  for (let i = 0; i < B.length; i++) { const b = B[i]; if (b.state !== "in" && !overDesk(b) && !behindCart(b.x, b.y, b.z, frontZ)) drawBall(c, b, 1); }
+  drawParticles(c);
+  c.setTransform(1, 0, 0, 1, 0, 0);
+  const sy = Math.min(fg.height - 1, Math.floor(deskTopY * V.dpr));
+  if (fg.height - sy > 0) c.drawImage(fg, 0, sy, fg.width, fg.height - sy, 0, sy, fg.width, fg.height - sy);
+  c.setTransform(V.dpr, 0, 0, V.dpr, 0, 0);
+  for (let i = 0; i < B.length; i++) { const b = B[i]; if (overDesk(b)) { shadowAt(c, b.x, CONFIG.desk.y, b.z, b.y, 1); drawBall(c, b, 1); } }
+  drawDeskMemo(c);
+  drawAim(c);
+  drawStamp(c);
+}
+
+/* ════════════════════════════ GAME STATE ══════════════════════════ */
+const G = {
+  mode: "intro", resumeTo: "ready", time: 0, wind: 0,
+  aim: 0, power: 0.5, keyAim: false,
+  s: null,
+  cart: { x: CONFIG.cart.x, z: CONFIG.cart.z, wob: 0, wobV: 0, jolt: 0, joltV: 0, fill: 0, pileY: CONFIG.cart.baseY, move: null, status: "Available", statusT: 0 },
+  balls: [], litter: [], parts: [], litterSeq: 0,
+  memo: { t: 1, shape: 0 },
+  resolveT: 0, relocateNext: false, serviceNext: false,
+  stamp: { text: "", tone: "blue", pts: "", t: 99, x: 0, y: 0, z: 0 },
+  shownSec: -1,
+};
+for (let i = 0; i < 32; i++) G.parts.push({ on: false, x: 0, y: 0, z: 0, vx: 0, vy: 0, vz: 0, life: 0, max: 1, rot: 0, vr: 0, s: 0.03 });
+const CART_PHYS = { x: 0, z: 0, pileY: 0 };
+function newSession() { return { score: 0, attempts: 0, made: 0, streak: 0, best: 0, clean: 0, rimIn: 0, elapsed: 0, recordBeaten: false, streakBeaten: false }; }
+const EMPTY = newSession();
+const isActive = () => G.mode === "ready" || G.mode === "aiming" || G.mode === "flight" || G.mode === "resolve";
+const canThrow = () => G.mode === "ready" && G.memo.t >= 1 && !G.cart.move;
+
+function grade(s) {
+  if (s.attempts < 3) return { letter: "—", label: "Pending review" };
+  const a = s.made / s.attempts;
+  if (a >= 0.8) return { letter: "A", label: "Exceeds expectations" };
+  if (a >= 0.65) return { letter: "B", label: "Meets expectations" };
+  if (a >= 0.5) return { letter: "C", label: "Needs development" };
+  if (a >= 0.35) return { letter: "D", label: "Improvement plan" };
+  return { letter: "F", label: "Under review" };
+}
+const windBand = m => (m < 0.5 ? "Calm" : m < 3 ? "Light" : m < 6 ? "Moderate" : "Strong");
+function windPhrase() {
+  const m = Math.abs(G.wind);
+  if (m < 0.05) return "HVAC calm";
+  return "HVAC variance " + m.toFixed(1) + ", " + windBand(m).toLowerCase() + ", blowing " + (G.wind < 0 ? "left" : "right");
+}
+function rollWind() {
+  const W = CONFIG.wind, streak = G.s ? G.s.streak : 0;
+  const cap = Math.min(W.max, W.startMax + streak * W.streakStep);
+  let m = Math.random() < W.calmChance ? Math.random() * 0.4 : 0.5 + Math.pow(Math.random(), 1.2) * (cap - 0.5);
+  m = Math.round(m * 10) / 10;
+  G.wind = m === 0 ? 0 : (Math.random() < 0.5 ? -m : m);   // the displayed number IS the physics input
+  Sound.setWind(G.wind);
+  updateWindHUD();
+}
+
+function throwMemo(aim, power) {
+  if (!canThrow()) return false;
+  const b = makeBall();
+  Physics.launch(b, aim, power);
+  b.windValue = G.wind; b.windAcc = windAccelOf(G.wind); b.shape = G.memo.shape;
+  G.balls.push(b); G.mode = "flight";
+  Sound.release(clamp(power, 0, 1));
+  return true;
+}
+
+function onOutcome(b) {
+  b.reported = true;
+  const o = b.outcome, meta = OUTCOME[o], s = G.s, sc = CONFIG.scoring;
+  s.attempts++;
+  let pts = 0;
+  if (meta.made) {
+    s.made++; s.streak++; if (s.streak > s.best) s.best = s.streak;
+    if (o === "clean") s.clean++; else if (o === "rimIn") s.rimIn++;
+    const bonus = o === "clean" ? sc.cleanBonus : o === "rimIn" ? sc.rimBonus : 0;
+    const mult = 1 + Math.abs(b.windValue) / 10;
+    pts = Math.round((sc.base + bonus) * mult) + Math.min(s.streak - 1, sc.streakCap) * sc.streakStep;
+    s.score += pts;
+    if (s.made % CONFIG.cart.relocateEvery === 0) G.relocateNext = true;
+  } else {
+    s.streak = 0;
+  }
+  if (s.score > Store.data.highScore) { Store.data.highScore = s.score; s.recordBeaten = true; }
+  if (s.best > Store.data.bestStreak) { Store.data.bestStreak = s.best; s.streakBeaten = true; }
+  Store.save();
+
+  const ms = meta.made ? (STREAK_LINES[s.streak] || TOTAL_LINES[s.made] || null) : null;
+  if (ms) showNotice(ms, "Milestone", "ok");
+  else showNotice(line(o), meta.label, meta.tone);
+
+  const st = G.stamp;
+  st.text = meta.stamp; st.tone = meta.tone; st.pts = pts ? "+" + fmt(pts) : ""; st.t = 0;
+  if (meta.made) { st.x = G.cart.x; st.y = CONFIG.cart.rimY + 0.62; st.z = G.cart.z; }
+  else { st.x = clamp(b.landX, -1.6, 1.6); st.y = 0.6; st.z = clamp(b.landZ, 1.6, 8.6); }
+
+  if (meta.made) Sound.success(o === "clean"); else Sound.fail();
+
+  rollWind();                                   // next throw's airflow is set (and shown) now
+  let msg = meta.label + ". " + (meta.made ? "Plus " + pts + " points. Streak " + s.streak + ". " : "Streak reset. ");
+  msg += "Score " + fmt(s.score) + ". Next throw: " + windPhrase() + ".";
+  if (G.relocateNext) msg += " Facilities is relocating the container.";
+  announce(msg);
+
+  G.mode = "resolve"; G.resolveT = 0;
+  updateHUD();
+}
+function binLanding(b) {
+  const c = G.cart, K = CONFIG.cart;
+  c.fill = Math.min(K.capacity, c.fill + 1);
+  if (c.fill >= K.capacity) G.serviceNext = true;
+  if (!RM) { c.joltV -= 0.28; c.wobV += (b.entryX >= 0 ? 1 : -1) * 0.12; }
+  puff(b.x, K.rimY + 0.03, b.z, 5);
+  Sound.bin();
+  updateHUD();
+}
+function puff(x, y, z, n) {
+  if (RM) n = Math.min(n, 2);
+  for (let i = 0; i < G.parts.length && n > 0; i++) {
+    const p = G.parts[i]; if (p.on) continue;
+    p.on = true; p.x = x + rand(-0.08, 0.08); p.y = y; p.z = z + rand(-0.06, 0.06);
+    p.vx = rand(-0.6, 0.6); p.vy = rand(0.9, 1.9); p.vz = rand(-0.3, 0.3);
+    p.life = p.max = rand(0.45, 0.8); p.rot = rand(0, TAU); p.vr = rand(-8, 8); p.s = rand(0.022, 0.04);
+    n--;
+  }
+}
+function addLitter(b) {
+  const L = G.litter, item = { x: b.x, z: b.z, shape: b.shape, rot: b.spin, a: 1, fading: false, n: ++G.litterSeq };
+  let i = 0; while (i < L.length && L[i].z > item.z) i++;
+  L.splice(i, 0, item);
+  let live = 0, oldest = null;
+  for (let j = 0; j < L.length; j++) if (!L[j].fading) { live++; if (!oldest || L[j].n < oldest.n) oldest = L[j]; }
+  if (live > 10 && oldest) oldest.fading = true;
+}
+function startRelocate() {
+  const K = CONFIG.cart, c = G.cart;
+  let tx = c.x, tz = c.z, tries = 0;
+  do { tx = rand(-K.roamX, K.roamX); tz = rand(K.roamZMin, K.roamZMax); } while (Math.hypot(tx - c.x, tz - c.z) < 0.55 && ++tries < 16);
+  c.move = { fx: c.x, fz: c.z, tx: Math.round(tx * 100) / 100, tz: Math.round(tz * 100) / 100, t: 0 };
+  c.status = "Relocating"; c.statusT = 0;
+  Sound.roll();
+  queueNotice(line("relocate"), "Facilities", "blue");
+}
+function nextMemo() {
+  if (G.serviceNext) {
+    G.serviceNext = false; G.cart.fill = 0; G.cart.status = "Serviced"; G.cart.statusT = 1.8;
+    queueNotice(line("serviced"), "Facilities", "blue");
+  }
+  if (G.relocateNext && !G.cart.move) { G.relocateNext = false; startRelocate(); }
+  else if (!N.timer && !N.queue.length && Math.random() < 0.35) {
+    const m = Math.abs(G.wind);
+    if (m < 0.5) queueNotice(line("calm"), "Facilities", "blue");
+    else if (m >= 7) queueNotice(line("gusty"), "Facilities", "warn");
+  }
+  G.memo.t = 0; G.memo.shape = (G.memo.shape + 1 + Math.floor(Math.random() * (SHAPES.length - 1))) % SHAPES.length;
+  G.mode = "ready"; G.resolveT = 0;
+  Sound.crumple();
+  updateHUD();
+}
+function updateCart(dt) {
+  const c = G.cart, K = CONFIG.cart;
+  if (c.move) {
+    c.move.t = Math.min(1, c.move.t + dt / CONFIG.timing.relocate);
+    const e = easeInOut(c.move.t);
+    c.x = lerp(c.move.fx, c.move.tx, e); c.z = lerp(c.move.fz, c.move.tz, e);
+    if (c.move.t >= 1) { c.move = null; c.status = "Available"; updateHUD(); announce("Container relocated. " + windPhrase() + "."); }
+  }
+  if (RM) { c.wob = c.wobV = c.jolt = c.joltV = 0; }
+  else {
+    c.wobV += (-90 * c.wob - 8 * c.wobV) * dt; c.wob += c.wobV * dt;
+    c.joltV += (-220 * c.jolt - 12 * c.joltV) * dt; c.jolt += c.joltV * dt;
+  }
+  const target = K.baseY + (c.fill / K.capacity) * (K.rimY - K.baseY - 0.16);
+  c.pileY += (target - c.pileY) * Math.min(1, dt * 6);
+  if (c.statusT > 0) { c.statusT -= dt; if (c.statusT <= 0 && !c.move) { c.status = "Available"; updateHUD(); } }
+}
+
+let acc = 0;
+function update(dt) {
+  G.time += dt;
+  if (G.s && G.mode !== "paused") {
+    G.s.elapsed += dt;
+    const sec = Math.floor(G.s.elapsed);
+    if (sec !== G.shownSec) { G.shownSec = sec; tabMeta.textContent = "Session " + String(Math.floor(sec / 60)).padStart(2, "0") + ":" + String(sec % 60).padStart(2, "0"); }
+  }
+  updateMotes(dt);
+  updateCart(dt);
+  if (G.memo.t < 1) G.memo.t = Math.min(1, G.memo.t + dt / CONFIG.timing.crumple);
+
+  CART_PHYS.x = G.cart.x; CART_PHYS.z = G.cart.z; CART_PHYS.pileY = G.cart.pileY;
+  acc += dt;
+  let guard = 0;
+  while (acc >= CONFIG.step && guard < 60) {
+    for (let i = 0; i < G.balls.length; i++) { const b = G.balls[i]; if (b.state !== "done") Physics.step(b, CART_PHYS, b.windAcc, CONFIG.step); }
+    acc -= CONFIG.step; guard++;
+  }
+  if (guard >= 60) acc = 0;
+
+  for (let i = G.balls.length - 1; i >= 0; i--) {
+    const b = G.balls[i], ev = b.ev; b.ev = 0;
+    if (ev & EV.RIM) { Sound.rim(b.impact / 3); if (!RM) G.cart.wobV += clamp(b.impact, 0, 3) * 0.04 * (b.x >= G.cart.x ? 1 : -1); }
+    if (ev & EV.WALL) { Sound.wall(); if (!RM) G.cart.wobV += (b.vx >= 0 ? -1 : 1) * 0.06; }
+    if (ev & EV.FLOOR) Sound.floor(b.impact / 4);
+    if (b.state === "air" && (b.trailT += dt) >= 0.035) {
+      b.trailT = 0; const q = b.trailHead * 3; b.trail[q] = b.x; b.trail[q + 1] = b.y; b.trail[q + 2] = b.z;
+      b.trailHead = (b.trailHead + 1) % 6; if (b.trailN < 6) b.trailN++;
+    }
+    if (b.outcome && !b.reported) onOutcome(b);
+    if (ev & EV.BOTTOM) binLanding(b);
+    if (b.state === "done") { if (!b.inBin) addLitter(b); G.balls.splice(i, 1); }
+  }
+  for (let i = G.litter.length - 1; i >= 0; i--) { const l = G.litter[i]; if (l.fading) { l.a -= dt * 1.2; if (l.a <= 0) G.litter.splice(i, 1); } }
+  for (let i = 0; i < G.parts.length; i++) {
+    const p = G.parts[i]; if (!p.on) continue;
+    p.life -= dt; if (p.life <= 0) { p.on = false; continue; }
+    p.vy -= 4.2 * dt; p.vx *= 1 - 1.5 * dt; p.vx += G.wind / 10 * 0.8 * dt;
+    p.x += p.vx * dt; p.y += p.vy * dt; p.z += p.vz * dt; p.rot += p.vr * dt;
+  }
+  if (G.mode === "resolve") { G.resolveT += dt; if (G.resolveT >= CONFIG.timing.resolve) nextMemo(); }
+  G.stamp.t += dt;
+}
+
+/* ════════════════════════════ UI ══════════════════════════════════ */
+const stageEl = $("stage"), playEl = $("play"), tabMeta = $("tabMeta"), liveEl = $("live");
+const H = {
+  score: $("hudScore"), record: $("hudRecord"), streak: $("hudStreak"), best: $("hudBest"),
+  acc: $("hudAcc"), made: $("hudMade"), grade: $("hudGrade"), gradeLbl: $("hudGradeLbl"),
+  wind: $("hudWind"), windLbl: $("hudWindLbl"), flow: $("hudFlow"), cart: $("hudCart"), fill: $("hudFill"),
+};
+function setText(el, t) { if (el.textContent !== t) el.textContent = t; }
+function updateHUD() {
+  const s = G.s || EMPTY;
+  setText(H.score, fmt(s.score)); setText(H.record, "Record " + fmt(Store.data.highScore));
+  setText(H.streak, String(s.streak)); setText(H.best, "Best " + Store.data.bestStreak);
+  setText(H.acc, s.attempts ? Math.round(s.made / s.attempts * 100) + "%" : "—");
+  setText(H.made, s.made + " of " + s.attempts + " disposed");
+  const gr = grade(s); setText(H.grade, gr.letter); setText(H.gradeLbl, gr.label);
+  setText(H.cart, G.cart.status); setText(H.fill, G.cart.fill + " of " + CONFIG.cart.capacity + " full");
+  updateWindHUD();
+}
+function updateWindHUD() {
+  const w = G.wind, m = Math.abs(w);
+  setText(H.wind, m.toFixed(1));
+  setText(H.windLbl, m < 0.05 ? "Calm, no drift" : m < 0.5 ? "Calm, slight drift " + (w < 0 ? "←" : "→") : windBand(m) + (w < 0 ? ", ← leftward" : ", rightward →"));
+  H.flow.dataset.dir = m < 0.05 ? "none" : w < 0 ? "left" : "right";
+  H.flow.style.setProperty("--flow-dur", (1.6 - 1.2 * Math.min(1, m / 10)).toFixed(2) + "s");
+}
+let liveT = 0;
+function announce(msg) { clearTimeout(liveT); liveEl.textContent = ""; liveT = setTimeout(() => { liveEl.textContent = msg; }, 60); }
+
+const N = { el: $("notice"), label: $("noticeLabel"), text: $("noticeText"), timer: 0, t2: 0, queue: [] };
+function showNotice(text, label, tone) {
+  clearTimeout(N.t2);
+  N.label.textContent = label; N.text.textContent = text; N.el.dataset.tone = tone || "blue";
+  N.el.classList.remove("show"); void N.el.offsetWidth; N.el.classList.add("show");
+  clearTimeout(N.timer); N.timer = setTimeout(hideNotice, CONFIG.timing.notice * 1000);
+}
+function hideNotice() {
+  N.el.classList.remove("show"); N.timer = 0;
+  if (N.queue.length) { const q = N.queue.shift(); N.t2 = setTimeout(() => showNotice(q[0], q[1], q[2]), 260); }
+}
+function queueNotice(text, label, tone) { if (N.timer) N.queue.push([text, label, tone]); else showNotice(text, label, tone); }
+function clearNotices() { clearTimeout(N.timer); clearTimeout(N.t2); N.timer = 0; N.queue.length = 0; N.el.classList.remove("show"); }
+
+const OV = { intro: $("ovIntro"), pause: $("ovPause"), review: $("ovReview") };
+function showOverlay(name) {
+  for (const k in OV) OV[k].hidden = k !== name;
+  stageEl.setAttribute("aria-hidden", "true");
+  const f = OV[name].querySelector("[data-autofocus]");
+  if (f) f.focus({ preventScroll: true });
+}
+function hideOverlays() { for (const k in OV) OV[k].hidden = true; stageEl.removeAttribute("aria-hidden"); }
+
+const btnPause = $("btnPause"), btnRestart = $("btnRestart"), btnSound = $("btnSound"), btnEnd = $("btnEnd");
+function setButtons() {
+  const paused = G.mode === "paused", live = isActive();
+  btnPause.disabled = !(live || paused);
+  btnPause.querySelector("[data-i=pause]").hidden = paused;
+  btnPause.querySelector("[data-i=play]").hidden = !paused;
+  $("pauseLbl").textContent = paused ? "Resume" : "Pause";
+  btnPause.setAttribute("aria-label", paused ? "Resume audit" : "Pause audit");
+  btnRestart.disabled = !(live || paused || G.mode === "review");
+  btnEnd.disabled = !(live || paused);
+}
+function setSoundBtn() {
+  const m = Store.data.muted;
+  btnSound.querySelector("[data-i=on]").hidden = m;
+  btnSound.querySelector("[data-i=off]").hidden = !m;
+  $("soundLbl").textContent = m ? "Sound off" : "Sound on";
+  btnSound.setAttribute("aria-label", m ? "Sound off. Turn sound on" : "Sound on. Turn sound off");
+}
+function toggleSound() {
+  Store.data.muted = !Store.data.muted; Store.save();
+  Sound.ensure(); Sound.setMuted(Store.data.muted);
+  if (!Store.data.muted && isActive()) { Sound.resume(); Sound.setWind(G.wind); }
+  setSoundBtn(); announce(Store.data.muted ? "Sound off." : "Sound on.");
+}
+
+function startAudit() {
+  G.s = newSession(); G.shownSec = -1;
+  G.balls.length = 0; G.litter.length = 0;
+  for (let i = 0; i < G.parts.length; i++) G.parts[i].on = false;
+  const c = G.cart, K = CONFIG.cart;
+  c.x = K.x; c.z = K.z; c.wob = c.wobV = c.jolt = c.joltV = 0; c.fill = 0; c.pileY = K.baseY; c.move = null; c.status = "Available"; c.statusT = 0;
+  G.relocateNext = G.serviceNext = false; G.stamp.t = 99; G.aim = 0; G.power = 0.5; G.keyAim = false;
+  drag.active = false; acc = 0;
+  clearNotices();
+  Sound.ensure(); Sound.setMuted(Store.data.muted); Sound.resume();
+  rollWind();
+  G.memo.t = 0; G.mode = "ready"; G.resolveT = 0;
+  hideOverlays(); updateHUD(); setButtons();
+  tabMeta.textContent = "Session 00:00";
+  Sound.crumple();
+  stageEl.focus({ preventScroll: true });
+  announce("Disposal audit started. The recycling cart is straight ahead. " + windPhrase() + ".");
+  startLoop();
+}
+function pause() {
+  if (!isActive()) return;
+  if (drag.active) cancelDrag();
+  G.resumeTo = (G.mode === "aiming") ? "ready" : G.mode; G.mode = "paused";
+  Sound.suspend(); showOverlay("pause"); setButtons();
+  announce("Audit temporarily suspended.");
+  render(); stopLoop();
+}
+function resume() {
+  if (G.mode !== "paused") return;
+  G.mode = G.resumeTo; hideOverlays(); setButtons();
+  Sound.resume(); lastTs = 0; startLoop();
+  stageEl.focus({ preventScroll: true }); announce("Audit resumed.");
+}
+function endAudit() {
+  if (!(isActive() || G.mode === "paused")) return;
+  if (drag.active) cancelDrag();
+  G.mode = "review"; Sound.setWind(0);
+  fillReview(); showOverlay("review"); setButtons(); startLoop();
+}
+function fillReview() {
+  const s = G.s, gr = grade(s), sec = Math.round(s.elapsed);
+  $("rvGrade").textContent = gr.letter; $("rvGradeLbl").textContent = gr.label;
+  $("rvPeriod").textContent = "Review period " + Math.floor(sec / 60) + " min " + String(sec % 60).padStart(2, "0") + " s";
+  $("rvDisposed").textContent = s.made + " of " + s.attempts;
+  $("rvAcc").textContent = s.attempts ? Math.round(s.made / s.attempts * 100) + "%" : "—";
+  $("rvClean").textContent = String(s.clean); $("rvRim").textContent = String(s.rimIn);
+  $("rvStreak").textContent = String(s.best); $("rvStreakNew").hidden = !(s.streakBeaten && s.best > 0);
+  $("rvScore").textContent = fmt(s.score); $("rvScoreNew").hidden = !(s.recordBeaten && s.score > 0);
+  $("rvRecord").textContent = fmt(Store.data.highScore);
+  const pool = REVIEW_LINES[gr.letter];
+  $("rvComment").textContent = "Reviewer comments: " + pool[Math.floor(Math.random() * pool.length)];
+  announce("Disposal Performance Review. Rating " + (gr.letter === "—" ? "pending" : gr.letter) + ", " + gr.label + ". " + s.made + " of " + s.attempts + " disposed. Score " + fmt(s.score) + ".");
+}
+function introRecords() {
+  const d = Store.data; let t;
+  if (d.highScore > 0 || d.bestStreak > 0) t = "Personal record " + fmt(d.highScore) + ", best streak " + d.bestStreak + ".";
+  else t = "No prior audits on file.";
+  if (!Store.ok) t += " Records can't be saved in this browser.";
+  $("introRec").textContent = t;
+}
+
+/* ════════════════════════════ INPUT ═══════════════════════════════ */
+const NS = 12;
+const drag = { active: false, id: -1, x0: 0, y0: 0, x: 0, y: 0, n: 0, head: 0, sx: new Float32Array(NS), sy: new Float32Array(NS), st: new Float64Array(NS) };
+const GOUT = { aim: 0, power: 0, forward: 0 };
+function pushSample(x, y, t) { drag.sx[drag.head] = x; drag.sy[drag.head] = y; drag.st[drag.head] = t; drag.head = (drag.head + 1) % NS; if (drag.n < NS) drag.n++; drag.x = x; drag.y = y; }
+function readGesture(useVelocity) {
+  const g = CONFIG.gesture, L = clamp(V.h * g.refFraction, g.refMin, g.refMax);
+  const dx = drag.x - drag.x0, dy = drag.y - drag.y0, forward = -dy, dist = Math.hypot(dx, dy);
+  let vx = 0, vy = 0;
+  if (useVelocity && drag.n > 1) {
+    const last = (drag.head - 1 + NS) % NS, tl = drag.st[last];
+    let j = last;
+    for (let i = 1; i < drag.n; i++) { const q = (last - i + NS) % NS; if (tl - drag.st[q] > g.window * 1000) break; j = q; }
+    const dts = (tl - drag.st[j]) / 1000;
+    if (dts > 0.008) { vx = (drag.sx[last] - drag.sx[j]) / dts; vy = (drag.sy[last] - drag.sy[j]) / dts; }
+  }
+  const speed = vy < 0 ? Math.hypot(vx, vy) : 0;
+  const distN = Math.min(dist / L, g.cap), velN = Math.min(speed / (L * g.velRef), g.cap);
+  let ang = Math.atan2(dx, Math.max(1, forward));
+  if (speed > L * 1.5) ang = 0.6 * ang + 0.4 * Math.atan2(vx, Math.max(1, -vy));
+  GOUT.aim = clamp(ang / DEG * g.yawGain, -CONFIG.yawMaxDeg, CONFIG.yawMaxDeg);
+  GOUT.power = clamp(g.distWeight * distN + g.velWeight * velN, 0, 1);
+  GOUT.forward = forward;
+  return GOUT;
+}
+function localXY(e) { const r = canvas.getBoundingClientRect(); return [e.clientX - r.left, e.clientY - r.top]; }
+function nearMemo(px, py) {
+  const m = CONFIG.memo; project(m.x, m.y, m.z, P);
+  const rpx = m.radius * P.k;
+  return Math.hypot(px - P.x, py - P.y) <= Math.max(60, rpx * 2.6) || (py > P.y - rpx * 3 && Math.abs(px - P.x) < V.w * 0.3);
+}
+function cancelDrag() {
+  if (!drag.active) return;
+  drag.active = false;
+  try { stageEl.releasePointerCapture(drag.id); } catch (e) { /* already released */ }
+  stageEl.classList.remove("grabbing");
+  if (G.mode === "aiming") G.mode = "ready";
+}
+stageEl.addEventListener("pointerdown", e => {
+  if (!e.isPrimary || drag.active) return;
+  if (isActive()) { Sound.ensure(); Sound.resume(); }
+  if (!canThrow()) { if (isActive()) e.preventDefault(); return; }
+  const [px, py] = localXY(e);
+  if (!nearMemo(px, py)) return;
+  e.preventDefault();
+  try { stageEl.setPointerCapture(e.pointerId); } catch (err) { /* ignore */ }
+  drag.active = true; drag.id = e.pointerId; drag.x0 = px; drag.y0 = py; drag.head = 0; drag.n = 0;
+  pushSample(px, py, e.timeStamp);
+  G.mode = "aiming"; G.keyAim = false;
+  stageEl.classList.add("grabbing");
+  stageEl.focus({ preventScroll: true });
+});
+stageEl.addEventListener("pointermove", e => {
+  if (drag.active && e.pointerId === drag.id) {
+    e.preventDefault();
+    const list = e.getCoalescedEvents ? e.getCoalescedEvents() : null;
+    if (list && list.length) { for (let i = 0; i < list.length; i++) { const [x, y] = localXY(list[i]); pushSample(x, y, list[i].timeStamp); } }
+    else { const [x, y] = localXY(e); pushSample(x, y, e.timeStamp); }
+    return;
+  }
+  if (e.pointerType === "mouse") { const [x, y] = localXY(e); stageEl.classList.toggle("grab", canThrow() && nearMemo(x, y)); }
+}, { passive: false });
+stageEl.addEventListener("pointerup", e => {
+  if (!drag.active || e.pointerId !== drag.id) return;
+  e.preventDefault();
+  const [x, y] = localXY(e); pushSample(x, y, e.timeStamp);
+  const g = readGesture(true), aim = g.aim, power = g.power, fwd = g.forward;
+  cancelDrag();
+  if (fwd >= CONFIG.gesture.minForward) throwMemo(aim, power);
+});
+stageEl.addEventListener("pointercancel", e => { if (drag.active && e.pointerId === drag.id) cancelDrag(); });
+stageEl.addEventListener("lostpointercapture", e => { if (drag.active && e.pointerId === drag.id) cancelDrag(); });
+stageEl.addEventListener("contextmenu", e => e.preventDefault());
+
+let aimT = 0;
+function keyAimed() {
+  G.keyAim = true;
+  clearTimeout(aimT);
+  aimT = setTimeout(() => announce("Aim " + (G.aim === 0 ? "straight" : Math.abs(G.aim) + " degrees " + (G.aim < 0 ? "left" : "right")) + ", power " + Math.round(G.power * 100) + " percent."), 450);
+}
+window.addEventListener("keydown", e => {
+  const tgt = e.target instanceof Element ? e.target : null;
+  const inDialog = tgt && tgt.closest(".overlay");
+  const onControl = tgt && tgt.closest("button, a");
+  if (e.key === "Escape") {
+    if (G.mode === "paused") { resume(); e.preventDefault(); }
+    else if (isActive()) { pause(); e.preventDefault(); }
+    return;
+  }
+  if ((e.key === "m" || e.key === "M") && !e.ctrlKey && !e.metaKey && !e.altKey) { toggleSound(); return; }
+  if (inDialog || !isActive() || e.ctrlKey || e.metaKey || e.altKey) return;
+  const K = CONFIG.keyboard, big = e.shiftKey ? K.bigStep : 1;
+  let handled = true;
+  switch (e.key) {
+    case "ArrowLeft":  G.aim = clamp(Math.round(G.aim - K.aimStep * big), -CONFIG.yawMaxDeg, CONFIG.yawMaxDeg); keyAimed(); break;
+    case "ArrowRight": G.aim = clamp(Math.round(G.aim + K.aimStep * big), -CONFIG.yawMaxDeg, CONFIG.yawMaxDeg); keyAimed(); break;
+    case "ArrowUp":    G.power = clamp(Math.round((G.power + K.powerStep * big) * 100) / 100, 0, 1); keyAimed(); break;
+    case "ArrowDown":  G.power = clamp(Math.round((G.power - K.powerStep * big) * 100) / 100, 0, 1); keyAimed(); break;
+    case " ": case "Spacebar":
+      if (onControl) { handled = false; break; }
+      if (e.repeat) break;
+      G.keyAim = true;
+      if (canThrow()) throwMemo(G.aim, G.power);
+      break;
+    default: handled = false;
+  }
+  if (handled) e.preventDefault();
+});
+
+function refocusIfPointer(e) { if (e.detail > 0 && isActive()) stageEl.focus({ preventScroll: true }); }
+$("btnBegin").addEventListener("click", () => { Sound.ensure(); startAudit(); });
+btnPause.addEventListener("click", e => { Sound.click(); if (G.mode === "paused") resume(); else { pause(); } });
+$("btnResume").addEventListener("click", resume);
+btnRestart.addEventListener("click", e => { if (!btnRestart.disabled) { Sound.click(); startAudit(); announce("Audit restarted. " + windPhrase() + "."); } });
+$("btnRestart2").addEventListener("click", () => { startAudit(); announce("Audit restarted. " + windPhrase() + "."); });
+btnSound.addEventListener("click", e => { toggleSound(); refocusIfPointer(e); });
+btnEnd.addEventListener("click", () => { Sound.click(); endAudit(); });
+$("btnEnd2").addEventListener("click", endAudit);
+$("btnAgain").addEventListener("click", startAudit);
+
+/* ════════════════════════════ LOOP & LIFECYCLE ════════════════════ */
+let raf = 0, lastTs = 0;
+function frame(ts) {
+  raf = requestAnimationFrame(frame);
+  const dt = lastTs ? Math.min(0.05, (ts - lastTs) / 1000) : 0;
+  lastTs = ts;
+  if (isActive()) update(dt);
+  else if (G.mode === "intro" || G.mode === "review") { G.time += dt; updateMotes(dt); }
+  render();
+}
+function startLoop() { if (!raf && !document.hidden) { lastTs = 0; raf = requestAnimationFrame(frame); } }
+function stopLoop() { if (raf) cancelAnimationFrame(raf); raf = 0; }
+
+function resize() {
+  const r = playEl.getBoundingClientRect();
+  const w = Math.max(1, Math.round(r.width)), h = Math.max(1, Math.round(r.height));
+  const dpr = Math.min(window.devicePixelRatio || 1, 2.5);
+  if (w === V.w && h === V.h && dpr === V.dpr) return;
+  V.w = w; V.h = h; V.dpr = dpr;
+  canvas.width = Math.round(w * dpr); canvas.height = Math.round(h * dpr);
+  fitView(); buildLayers();
+  if (!raf) render();
+}
+document.addEventListener("visibilitychange", () => {
+  if (document.hidden) { if (isActive()) pause(); stopLoop(); Sound.suspend(); }
+  else if (G.mode !== "paused") { startLoop(); if (isActive()) Sound.resume(); }
+});
+
+/* ── debug hooks (?debug only) for the physics harness ── */
+if (/[?&]debug\b/.test(location.search)) {
+  window.binThere = {
+    CONFIG, G,
+    simulate(aim, power, wind, cartX, cartZ) {
+      const b = makeBall(), cart = { x: cartX ?? CONFIG.cart.x, z: cartZ ?? CONFIG.cart.z, pileY: CONFIG.cart.baseY };
+      Physics.launch(b, aim, power);
+      const wa = windAccelOf(wind || 0);
+      for (let i = 0; i < 4000 && !b.outcome; i++) Physics.step(b, cart, wa, CONFIG.step);
+      return { outcome: b.outcome, x: +b.x.toFixed(3), z: +b.z.toFixed(3), t: +b.t.toFixed(3), rimHits: b.rimHits, apexY: +b.apexY.toFixed(3), apexZ: +b.apexZ.toFixed(3), landX: b.landX, landZ: b.landZ };
+    },
+    setWind(w) { G.wind = w; Sound.setWind(w); updateWindHUD(); },
+    throwMemo(aim, power) { return throwMemo(aim, power); },
+    view() { return { ...V }; },
+    project(x, y, z) { const o = { x: 0, y: 0, k: 0 }; project(x, y, z, o); return o; },
+    mode() { return G.mode; },
+  };
+}
+
+/* ── boot ── */
+Store.load(); Sound.muted = Store.data.muted;
+makeShapes(); makeMotes();
+setSoundBtn(); setButtons(); introRecords();
+resize();
+if (window.ResizeObserver) new ResizeObserver(resize).observe(playEl); else window.addEventListener("resize", resize);
+if (document.fonts && document.fonts.ready) document.fonts.ready.then(() => { buildLayers(); if (!raf) render(); }).catch(() => {});
+rollWind(); updateHUD();
+showOverlay("intro");
+startLoop();
+})();
+</script>
+</body>
+</html>
